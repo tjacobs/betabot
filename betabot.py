@@ -16,18 +16,43 @@ ser= serial.Serial(
 ch1 = 1.0
 ch2 = 0
 
+
+forwardback = 1000
+updown = 1000
+
+moverange = 100
+
+stepstep = 1
+
 while 1:
 
-    ch1 = ch1 + .05
+    if stepstep == 1:
+	forwardback = forwardback + 1
+    if stepstep == 2:
+        updown = updown - 1
+    if stepstep == 3:
+        forwardback = forwardback - 1
+    if stepstep == 4:
+        updown = updown + 1
+
+    if stepstep == 1 and forwardback > 1000 + moverange:
+	stepstep = 2
+    if stepstep == 2 and updown < 1000 - moverange:
+       stepstep = 3
+    if stepstep == 3 and forwardback < 1000 - moverange:
+       stepstep = 4
+    if stepstep == 4 and updown > 1000 + moverange:
+       stepstep = 1
+
+
+
 
     channels = [0]*16
-    channels[0] = 1000
-    channels[1] = 1000
-    channels[2] = int(math.sin(ch1)*250 + 1000) 
+    channels[0] = 1000 + forwardback + updown
+    channels[1] = 1000 - forwardback + updown
+    channels[2] = 1000 #int(math.sin(ch1)*250 + 1000) 
     channels[3] = 1000 
-    channels[4] = int(math.cos(ch1)*250 + 550) 
-    if( ch1 > 15 ):
-        channels[4] = 1000
+    channels[4] = 1000
     channels[5] = 50
     channels[6] = 50
     channels[7] = 50
@@ -38,7 +63,6 @@ while 1:
     sbus_data[0] = 0x0F
 
     # SBUS channel bytes. 11 bits per channel.
-#    sbus_data[1:25] = 0
     ch = 0
     bit_in_channel = 0
     byte_in_sbus = 1
@@ -60,7 +84,7 @@ while 1:
 
     ser.write( array.array('B', sbus_data).tostring() ) 
 
-    time.sleep( .05 )
+    time.sleep( .001 )
 
 
 
