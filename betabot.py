@@ -1,5 +1,11 @@
 #!/usr/bin/env python
-          
+
+from lidar_lite import Lidar_Lite
+lidar = Lidar_Lite()
+connected = lidar.connect(1)
+if connected < -1:
+  print "Not Connected"
+
 import time
 import serial
 import math
@@ -15,16 +21,19 @@ ser= serial.Serial(
 
 ch1 = 1.0
 ch2 = 0
-
+arm = 500
 
 forwardback = 1000
 updown = 1000
 
-moverange = 100
+moverange = 400
 
 stepstep = 1
 
 while 1:
+   
+    ch1 = ch1 + .04
+    if ch1 > 50: arm = 1000
 
     if stepstep == 1:
 	forwardback = forwardback + 1
@@ -45,14 +54,15 @@ while 1:
        stepstep = 1
 
 
-
+    d = lidar.getDistance()
 
     channels = [0]*16
-    channels[0] = 1000 + forwardback + updown
+    channels[0] = d * 10 + 100 #1000 + forwardback + updown
     channels[1] = 1000 - forwardback + updown
-    channels[2] = 1000 #int(math.sin(ch1)*250 + 1000) 
+    channels[2] = int(ch1 % 1500 + 000) #int(math.sin(ch1)*250 + 1000) 
+    channels[2] = d * 10 + 100 #int(math.sin(ch1)*450 + 1000) 
     channels[3] = 1000 
-    channels[4] = 1000
+    channels[4] = arm
     channels[5] = 50
     channels[6] = 50
     channels[7] = 50
@@ -84,7 +94,7 @@ while 1:
 
     ser.write( array.array('B', sbus_data).tostring() ) 
 
-    time.sleep( .001 )
+    #time.sleep( .001 )
 
 
 
