@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
-from lidar_lite import Lidar_Lite
-lidar = Lidar_Lite()
-connected = lidar.connect(1)
+from ams import AMS
+from time import sleep
+
+ams = AMS()
+connected = ams.connect(1)
+
 if connected < -1:
   print "Not Connected"
 
@@ -25,16 +28,25 @@ arm = 500
 
 forwardback = 1000
 updown = 1000
+posd = 0
 
 moverange = 400
 
 stepstep = 1
+i = 0
+shiftd = 0
+shiftd2 = 0
+d = ams.getAngle(1)
+d2 = ams.getAngle(2)
+oldd = d
+oldd2 = d2
 
 while 1:
    
-    ch1 = ch1 + .04
-    if ch1 > 50: arm = 1000
-
+    ch1 = ch1 + .14
+    if ch1 > 5: 
+        arm = 1000
+#    print ch1
     if stepstep == 1:
 	forwardback = forwardback + 1
     if stepstep == 2:
@@ -53,14 +65,50 @@ while 1:
     if stepstep == 4 and updown > 1000 + moverange:
        stepstep = 1
 
+    #if i % 100 == 0:
+    #    while ams.getMagnitude() < 100:
+    #       sleep( 1 )
+    #i += 1
 
-    d = lidar.getDistance()
+    d = ams.getAngle(1)
+    d2 = ams.getAngle(2)
+    setpoint = int( math.cos(ch1)*2000)
+    setpoint2 = int( math.sin(ch1)*2000)
+    print d, d2, setpoint, setpoint2
+    d = d + setpoint
+    d2 = d2 + setpoint2
+    #posd += ( d - posd ) * 0.001
 
+    if ( d - oldd ) > 15000:
+	oldd += 16000
+        print "blip"
+    if ( d - oldd ) < -15000:
+	oldd -= 16000
+        print "blipo"
+    if ( d2 - oldd2 ) > 15000:
+	oldd2 += 16000
+        print "blip"
+    if ( d2 - oldd2 ) < -15000:
+	oldd2 -= 16000
+        print "blipo"
+
+    diff = (d - oldd ) * 0.2
+    if( abs( diff ) < 2000 ):   
+        shiftd -= diff
+    diff2 = (d2 - oldd2 ) * 0.2
+    if( abs( diff2 ) < 2000 ):   
+        shiftd2 -= diff2
+#    print int( diff )
+    oldd += (d - oldd) * 0.1
+    oldd2 += (d2 - oldd2) * 0.1
+    shiftd *= 0.5 
+    shiftd2 *= 0.5 
+#    print posd
     channels = [0]*16
-    channels[0] = d * 10 + 100 #1000 + forwardback + updown
-    channels[1] = 1000 - forwardback + updown
+    channels[0] = int( 990 + shiftd ) #int(posd * 10 + 100) #1000 + forwardback + updown
+    channels[1] = int( 990 + shiftd2 ) #int(posd * 10 + 100) #1000 - forwardback + updown
     channels[2] = int(ch1 % 1500 + 000) #int(math.sin(ch1)*250 + 1000) 
-    channels[2] = d * 10 + 100 #int(math.sin(ch1)*450 + 1000) 
+    #channels[2] = int(posd * 10 + 100) #int(math.sin(ch1)*450 + 1000) 
     channels[3] = 1000 
     channels[4] = arm
     channels[5] = 50

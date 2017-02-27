@@ -4,6 +4,7 @@ import time
 class AMS():
   def __init__(self):
     self.address = 0x40
+    self.address2 = 0x42
     self.angleReadReg1 = 0xFE
     self.angleReadReg2 = 0xFF
     self.magnitudeReadReg1 = 0xFC
@@ -21,18 +22,21 @@ class AMS():
     self.bus.write_byte_data(self.address, register, value);
     time.sleep(0.02)
 
-  def readAndWait(self, register):
+  def readAndWait(self, register, sensorNum):
     res = False
+    address = self.address
+    if( sensorNum == 2 ):
+        address = self.address2
     try: 
-    	res = self.bus.read_byte_data(self.address, register)
+    	res = self.bus.read_byte_data(address, register)
     except IOError:
         print "Oop"
     time.sleep(0.02)
     return res
 
-  def getAngle(self):
-    angle1 = self.readAndWait(self.angleReadReg1)
-    angle2 = self.readAndWait(self.angleReadReg2)
+  def getAngle(self, sensorNum):
+    angle1 = self.readAndWait(self.angleReadReg1, sensorNum)
+    angle2 = self.readAndWait(self.angleReadReg2, sensorNum)
     return (angle2 << 6) + angle1
 
   def getMagnitude(self):
