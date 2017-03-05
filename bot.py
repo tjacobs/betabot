@@ -2,12 +2,39 @@
 # Code: https://github.com/tjacobs/betabot
 # by Tom Jacobs
 
+# Neural Network: LSTM.
+# 
+
+# Inputs are:
+# IMU X, Y angles (2) ( 0 - 1, 0.5, 0.5 is flat level )
+# CurrentAngles (8) ( 0 - 1, from 20 to 160 degrees, 0 being knees all straight up in the air, flipped for backwards motors )
+# Resistances (8) ( 0 - 1, amount of resistance each motor is currently experiencing )
+# MotorSpeeds (8) ( 0 - 1, current motor speeds from calculated from PID loop from output params )
+# Sin(t) (1) ( 0 - 1, sin of t, where t is increasing with time )
+# Cos(t) (1) ( 0 - 1, cos of t, where t is increasing with time )
+
+# Outputs are:
+# TargetAngles (8) ( 0 - 1, from 20 to 160 degrees. Flipped for every backwards motor, so 0 is always up. )
+# P_rate (8) (0 - 1, from off to max_p_rate) (add later, fix to resonable default to start with)
+
+# How it works
+# Robot starts standing, all legs almost knees sraight up.
+# CurrentAngles = [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
+
+# 1. Train the network to stay like that.
+# Loss function = difference of targetAngles to [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
+
+# 2. 
+
+
 from ams import AMS
 from time import sleep
 import time
 #import serial
 import math
 import array
+
+hit = False
 
 # Go
 def main():
@@ -24,30 +51,66 @@ def main():
 	stepStages = [1, 3, 1, 3]
 
 	# What speed is each motor at?
-	motorSpeeds = [0] * 4
+	motorSpeeds = [0] * 8
+	lastAngles = [0] * 8
 
 	# Arm mode
 	arm = 1000
 
+	lastCheck = time.time()*1000
+
 	# Loop
+	global hit
 	while True:
 		stepStages, targetAngles = updateTargetAngles(stepStages)
 		currentAngles = [4000]*8  #readCurrentAngles(sensors)
 		Ps = calculatePs(currentAngles, targetAngles)
 		motorSpeeds = clampMotorSpeeds(Ps)
+
+		if hit:
+			motorSpeeds[0] = 0 
 		sendMotorSpeeds(sbus, motorSpeeds, arm)
-		print( motorSpeeds )
+#		print( motorSpeeds )
+
+		# Calculate how much the motor has moved in the last 100ms
+		if time.time()*1000 > lastCheck + 100:
+			lastCheck = time.time()*1000
+			moved = currentAngles[0] - lastAngles[0]
+			lastAngles[0] = currentAngles[0]
+
+			# See if any resistance to movement
+			if motorSpeeds[0] > 10:
+				if moved < 10:
+					print( "Ouch" )
+					hit = True
+			if motorSpeeds[0] < -10:
+				if moved > -10:
+					print( "Ow" )
+					hit = True
+
+			# Calculate the percentage of lost motor power. 
+			# Calculated as: percentage of motor speed applied right now, from 0 to 1, 
+			# subtract the amount of angle moved as a percentage of what we'd expect at that motor speed.
+			# This should be < 0.05 when no resistance, > 0.5 when pushing load, and if > 0.9, it's stuck.
+			motorRate = abs(motorSpeeds[0]) / 100.0
+			# (motor power applied)  - (angle moved * motorPower)
+			resistance = ( motorRate - (abs(moved) * motorRate / 1000.0 ) )
+			# 1000.0 is the angle expected to move in 100ms with motor at full power (rate 1.0)
+
+			if( motorRate > 0.1 and resistance > 0.5 ):
+				print( "Ouchie" )
+
 
 # -------------
 # Functions
 
 timeThen = time.time()*1000
 def updateTargetAngles( stepStages ):
+	global hit
 	targetAngles = [0] * 8
-
 	# Every 2 seconds
 	global timeThen
-	if( time.time()*1000 > timeThen + 2000 ):
+	if( time.time()*1000 > timeThen + 1000 ):
 		timeThen = time.time()*1000
 
 		for i in range(len(stepStages)):
@@ -68,6 +131,9 @@ def updateTargetAngles( stepStages ):
 				stage = 1
 				targetAngles[i*2] = 4000
 				targetAngles[i*2 +1] = 4000
+				if i == 0:
+					hit = False
+					print( "ok again" )
 			stepStages[i] = stage
 
 	return stepStages, targetAngles
