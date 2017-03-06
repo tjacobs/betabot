@@ -24,17 +24,17 @@
 # 1. Train the network to stay like that.
 # Loss function = difference of targetAngles to [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
 
-# 2. 
 
 
 from ams import AMS
 from time import sleep
 import time
-#import serial
+import serial
 import math
 import array
 
 hit = False
+armTime = time.time()*1000
 
 # Go
 def main():
@@ -54,39 +54,44 @@ def main():
 	motorSpeeds = [0] * 8
 	lastAngles = [0] * 8
 
-	# Arm mode
-	arm = 1000
-
 	lastCheck = time.time()*1000
 
 	# Loop
 	global hit
 	while True:
+		# Arm mode
+		arm = 500
+		if time.time()*1000 > armTime + 1000:
+			arm = 1000
+
 		stepStages, targetAngles = updateTargetAngles(stepStages)
-		currentAngles = [4000]*8  #readCurrentAngles(sensors)
+		currentAngles = readCurrentAngles(sensors)
 		Ps = calculatePs(currentAngles, targetAngles)
 		motorSpeeds = clampMotorSpeeds(Ps)
 
-		if hit:
-			motorSpeeds[0] = 0 
+#		if hit:
+#			motorSpeeds[0] = 0 
 		sendMotorSpeeds(sbus, motorSpeeds, arm)
-#		print( motorSpeeds )
+		print( "Current " + str( currentAngles ) )
+		print( "Target  " + str( targetAngles ) )
+		print( "Motor   " + str( motorSpeeds ) )
 
 		# Calculate how much the motor has moved in the last 100ms
 		if time.time()*1000 > lastCheck + 100:
 			lastCheck = time.time()*1000
 			moved = currentAngles[0] - lastAngles[0]
+#			print( "Moved: " + str( moved ) )
 			lastAngles[0] = currentAngles[0]
 
 			# See if any resistance to movement
-			if motorSpeeds[0] > 10:
-				if moved < 10:
-					print( "Ouch" )
-					hit = True
-			if motorSpeeds[0] < -10:
-				if moved > -10:
-					print( "Ow" )
-					hit = True
+			#if motorSpeeds[0] > 10:
+			#	if moved < 10:
+			#		print( "Ouch" )
+			#		hit = True
+			#if motorSpeeds[0] < -10:
+			#	if moved > -10:
+			#		print( "Ow" )
+			#		hit = True
 
 			# Calculate the percentage of lost motor power. 
 			# Calculated as: percentage of motor speed applied right now, from 0 to 1, 
@@ -96,41 +101,41 @@ def main():
 			# (motor power applied)  - (angle moved * motorPower)
 			resistance = ( motorRate - (abs(moved) * motorRate / 1000.0 ) )
 			# 1000.0 is the angle expected to move in 100ms with motor at full power (rate 1.0)
-
-			if( motorRate > 0.1 and resistance > 0.5 ):
-				print( "Ouchie" )
+#			if( motorRate > 0.1 and resistance > 0.5 ):
+#				print( "Ouchie" )
 
 
 # -------------
 # Functions
 
+targetAngles = [0] * 8
 timeThen = time.time()*1000
 def updateTargetAngles( stepStages ):
 	global hit
-	targetAngles = [0] * 8
+	global targetAngles
+	
 	# Every 2 seconds
 	global timeThen
-	if( time.time()*1000 > timeThen + 1000 ):
+	if( time.time()*1000 > timeThen + 500 ):
 		timeThen = time.time()*1000
-
 		for i in range(len(stepStages)):
 			stage = stepStages[i]
 			if stage == 1:
 				stage = 2
-				targetAngles[i*2] = 4000
-				targetAngles[i*2 +1] = 4000
-			elif stage == 2:
-				stage = 3
 				targetAngles[i*2] = 7000
 				targetAngles[i*2 +1] = 7000
+			elif stage == 2:
+				stage = 3
+				targetAngles[i*2] = 5000
+				targetAngles[i*2 +1] = 5000
 			elif stage == 3:
 				stage = 4
-				targetAngles[i*2] = 4000
-				targetAngles[i*2 +1] = 4000
+				targetAngles[i*2] = 3000
+				targetAngles[i*2 +1] = 8000
 			elif stage == 4:
 				stage = 1
-				targetAngles[i*2] = 4000
-				targetAngles[i*2 +1] = 4000
+				targetAngles[i*2] = 6000
+				targetAngles[i*2 +1] = 11000
 				if i == 0:
 					hit = False
 					print( "ok again" )
@@ -139,36 +144,36 @@ def updateTargetAngles( stepStages ):
 	return stepStages, targetAngles
 
 def readCurrentAngles(sensors):
-	currentAngles = []
+	currentAngles = [0] * 8
 	for i in range(4):
-		currentAngles[i] = sensors.getAngle(i)
+		currentAngles[i] = sensors.getAngle(i+1)
 	return currentAngles
 
 def clampMotorSpeeds( motorSpeeds ):
-	minSpeed = -200
-	maxSpeed = 200
+	minSpeed = -100
+	maxSpeed = 100
 	for i in range(len(motorSpeeds)):
 		motorSpeeds[i] = max(min(motorSpeeds[i], maxSpeed), minSpeed)
 	return motorSpeeds
 
 def calculatePs( currentAngles, targetAngles ):
 	Ps = [0] * len( targetAngles )
-	P_rate = 0.5
+	P_rate = 0.05
 	for i in range(len(targetAngles)):
 		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
 	return Ps
 
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
-	motorSpeeds = [0]*8
+	motorSpeeds = [0] * 8
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
-	sendSBUSPacket( sbus, [motorSpeeds[0], motorSpeeds[1], motorSpeeds[2], motorSpeeds[3], arm] )
+	middle = 995
+	sendSBUSPacket( sbus, [motorSpeeds[0]+middle, motorSpeeds[1]+middle, motorSpeeds[2]+middle, motorSpeeds[3]+middle, arm] )
 
 # ----------
 # SBUS
 
 def openSBUS():
-	return 0
 	return serial.Serial(
 		port='/dev/serial0',
 		baudrate = 115200, # Must rebuild and flash betaflight to listen at this rate, not 100,000 as per normal SBUS.
@@ -180,10 +185,10 @@ def openSBUS():
 def sendSBUSPacket(sbus, channelValues):
 
 	# 16 blank channels, copy as many channels as given
-	channels = [0]*16
+	channels = [100]*16
 	for j in range(len(channelValues)):
 		channels[j] = int(channelValues[j])
-
+	print( channels )
 	# SBUS start byte
 	sbus_data = [0]*25
 	sbus_data[0] = 0x0F
@@ -208,7 +213,7 @@ def sendSBUSPacket(sbus, channelValues):
 			ch = ch + 1
 
 	# Send
-	#sbus.write( array.array('B', sbus_data).tostring() ) 
+	sbus.write( array.array('B', sbus_data).tostring() ) 
 
 
 if __name__=="__main__":
