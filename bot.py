@@ -72,11 +72,12 @@ def main():
 			currentAngles = readCurrentAngles(sensors)
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
-
+			
 			if hit == True:
-				motorSpeeds[0] = 0
+				motorSpeeds[0] = motorSpeeds[0] / 8
+				motorSpeeds[1] = motorSpeeds[1] / 8
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
-			#stepStages[0] = 1
+
 			# Calculate how much the motor has moved in the last 100ms
 			if time.time()*1000 > lastCheck + 100:
 				lastCheck = time.time()*1000
@@ -85,7 +86,7 @@ def main():
 					moved = moved - 16384
 				if( moved < -(16384 - 5000) ):
 					moved = moved + 16384
-				percentageMoved = abs( moved / 10.0 )				
+				percentageMoved = abs( moved / 30.0 )				
 				percentagePower = abs(lastLastMotorSpeeds[0])
 				
 				# Record values for next check
@@ -94,26 +95,41 @@ def main():
 				lastMotorSpeeds[0] = motorSpeeds[0]
 
 				percentageExpectedMoved = percentagePower
-				if( percentagePower > 50 and motorSpeeds[0] > 50 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
+				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
+				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.7 and hit == False):
 					print "OW!"
 					hit = True
 				
 
 	except:
 		
-		print "DONE"
+		print "DONE" 
 		arm = 500
+		sendMotorSpeeds(sbus, motorSpeeds, arm)
+		sleep(0.5)
 		sendMotorSpeeds(sbus, motorSpeeds, arm)
 
 # -------------
 # Functions
 
+t = 0
+import math
+def updateTargetAngles( stepStages ):
+	global targetAngles, t, hit
+	targetAngles[0] = int( math.sin( t * math.pi / 70 ) * 4000 + 6000 )
+	targetAngles[1] = int( math.sin( t * math.pi / 70 + (0.5*math.pi)) * 4000 + 10000 )
+	t += 1
+	if( t > 70*2 ):
+		t = 0
+		hit = False
+	return stepStages, targetAngles
+
 targetAngles = [0] * 8
 timeThen = time.time()*1000
-def updateTargetAngles( stepStages ):
+def updateTargetAnglesOld( stepStages ):
 	global hit
 	global targetAngles
-	
+	# int( math.cos(ch1)*2000)
 	# Every 2 seconds
 	global timeThen
 	if( time.time()*1000 > timeThen + 500 ):
@@ -168,7 +184,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 	middle = 995
-	sendSBUSPacket( sbus, [motorSpeeds[0]*2+middle, motorSpeeds[1]*2+middle, motorSpeeds[2]*2+middle, motorSpeeds[3]*2+middle, arm] )
+	sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*2+middle, motorSpeeds[3]*2+middle, arm] )
 
 # ----------
 # SBUS
