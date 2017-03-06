@@ -73,14 +73,10 @@ def main():
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
 
-	#		if hit:
-	#			motorSpeeds[0] = 0
-			motorSpeeds[0] = 100
 			if hit == True:
 				motorSpeeds[0] = 0
-			motorSpeeds[1] = 0
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
-
+			#stepStages[0] = 1
 			# Calculate how much the motor has moved in the last 100ms
 			if time.time()*1000 > lastCheck + 100:
 				lastCheck = time.time()*1000
@@ -89,29 +85,19 @@ def main():
 					moved = moved - 16384
 				if( moved < -(16384 - 5000) ):
 					moved = moved + 16384
-					
-				# Calculate the percentage of lost motor power. 
-				# Calculated as: percentage of motor speed applied right now, from 0 to 1, 
-				# subtract the amount of angle moved as a percentage of what we'd expect at that motor speed.
-				# This should be < 0.05 when no resistance, > 0.5 when pushing load, and if > 0.9, it's stuck.
-				motorRate = abs(lastLastMotorSpeeds[0]) / 100.0
+				percentageMoved = abs( moved / 10.0 )				
+				percentagePower = abs(lastLastMotorSpeeds[0])
 				
 				# Record values for next check
 				lastAngles[0] = currentAngles[0]
 				lastLastMotorSpeeds[0] = lastMotorSpeeds[0]
 				lastMotorSpeeds[0] = motorSpeeds[0]
 
-				#print "moved: " + str( moved )
-				#print "motorRate: " + str( motorRate )
-				# (motor power applied)  - (angle moved * motorPower)
-				resistance = ( motorRate - (abs(moved) * motorRate / 1200.0 ) )
-				# 1000.0 is the angle expected to move in 100ms with motor at full power (rate 1.0)
-				if resistance > 0.3:
-					print "Resistance: " + str( resistance )
-				if( motorRate > 0.1 and resistance > 0.4 and hit == False):
+				percentageExpectedMoved = percentagePower
+				if( percentagePower > 50 and motorSpeeds[0] > 50 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
+					print "OW!"
 					hit = True
-					print( "Ouchie" )
-
+				
 
 	except:
 		
