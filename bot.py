@@ -31,13 +31,29 @@ from time import sleep
 import time
 import math
 import array
+import tensorflow as tf
 
 hit = False
 armTime = time.time()*1000
 
+n_legs = 1
+n_params = 6
+sess = tf.Session()
+
+def clamp(n, smallest, largest): return max(smallest, min(n, largest))
+
+def network(x):
+
+	# Fully Connected.
+    fc_W  = tf.Variable(tf.truncated_normal(shape=(n_legs, n_params), mean = 0, stddev = 0.1))
+    fc_b  = tf.Variable(tf.zeros(n_params))
+    output = tf.matmul(x, fc_W) + fc_b
+    return tf.sigmoid( output )
+
+
 # Go
 def main():
-	try:
+#	try:
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
 		connected = sensors.connect(1)
@@ -56,6 +72,11 @@ def main():
 		lastAngles = [0] * 8
 		lastCheck = time.time()*1000
 
+		x_in = [[1]]
+		x = tf.placeholder(tf.float32, (1, 1))
+		input = network(x)
+		sess.run(tf.global_variables_initializer())
+
 		# Loop
 		global hit
 		while True:
@@ -64,13 +85,16 @@ def main():
 			arm = 500
 			if time.time()*1000 > armTime + 1000:
 				arm = 1000
-
-			# Set params
+    
+			x_in[0][0] = x_in[0][0] + 0.1
+		    # What does our brain say to do?
+			output = sess.run(input, feed_dict={x:x_in})
+			print( output )
 			speed = 10
 			left = {}
-			left['offset'] = 0
-			left['timeOffset'] = 0
-			left['scale'] = 4000
+			left['offset'] =     clamp( output[0][0], 0.0, 1.0) * 1000.0
+			left['timeOffset'] = clamp( output[0][1], 0.0, 1.0) * 1.0
+			left['scale'] =      clamp( output[0][2], 0.0, 1.0) * 4000.0
 			right = {}
 			right['offset'] = 0
 			right['timeOffset'] = 0.5 # Quarter turn
@@ -114,13 +138,13 @@ def main():
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
 				
 
-	except:
+	# except:
 		
-		print( "DONE" )
-		arm = 500
-		sendMotorSpeeds(sbus, motorSpeeds, arm)
-		sleep(0.5)
-		sendMotorSpeeds(sbus, motorSpeeds, arm)
+	# 	print( "DONE" )
+	# 	arm = 500
+	# 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+	# 	sleep(0.5)
+	# 	sendMotorSpeeds(sbus, motorSpeeds, arm)
 
 # -------------
 # Functions
