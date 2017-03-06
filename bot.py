@@ -29,7 +29,6 @@
 from ams import AMS
 from time import sleep
 import time
-import serial
 import math
 import array
 
@@ -48,35 +47,40 @@ def main():
 		# Talk to motor controller via serial UART SBUS
 		sbus = openSBUS()
 
-		# Which part of the step is each leg in?
-		stepStages = [1, 3, 1, 3]
-
-		# What speed is each motor at?
+		# What speed is each motor at, and one step back, two steps back?
 		motorSpeeds = [0] * 8
-		lastAngles = [0] * 8
 		lastMotorSpeeds = [0] * 8
 		lastLastMotorSpeeds = [0] * 8
 
+		# Last loop values
+		lastAngles = [0] * 8
 		lastCheck = time.time()*1000
 
 		# Loop
 		global hit
 		while True:
 			
-			# Arm mode
+			# Arm after a second
 			arm = 500
 			if time.time()*1000 > armTime + 1000:
 				arm = 1000
 
-			stepStages, targetAngles = updateTargetAngles(stepStages)
+			# Set params
+			speed = 10
+			left = {}
+			left['offset'] = 0
+			left['timeOffset'] = 0
+			left['scale'] = 4000
+			right = {}
+			right['offset'] = 0
+			right['timeOffset'] = 0.5 # Quarter turn
+			right['scale'] = 4000
+
+			# Main loop
+			targetAngles = updateTargetAngles(speed, left, right)
 			currentAngles = readCurrentAngles(sensors)
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
-			
-			if hit == True:
-				motorSpeeds[0] = motorSpeeds[0] / 8
-				motorSpeeds[1] = motorSpeeds[1] / 8
-			sendMotorSpeeds(sbus, motorSpeeds, arm)
 
 			# Calculate how much the motor has moved in the last 100ms
 			if time.time()*1000 > lastCheck + 100:
@@ -94,11 +98,20 @@ def main():
 				lastLastMotorSpeeds[0] = lastMotorSpeeds[0]
 				lastMotorSpeeds[0] = motorSpeeds[0]
 
+				# Did we hit something?
 				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
 				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
 					print( "OW!" )
 					hit = True
+
+			# Slow if leg hit something			
+			if hit == True:
+				motorSpeeds[0] = motorSpeeds[0] / 8
+				motorSpeeds[1] = motorSpeeds[1] / 8
+
+			# Move
+			sendMotorSpeeds(sbus, motorSpeeds, arm)
 				
 
 	except:
@@ -113,23 +126,24 @@ def main():
 # Functions
 
 t = 0
-import math
-def updateTargetAngles( stepStages ):
+targetAngles = [0] * 8
+def updateTargetAngles( speed, left, right ):
 	global targetAngles, t, hit
-	targetAngles[0] = int( math.sin( t * math.pi / 70 ) * 4000 + 6000 )
-	targetAngles[1] = int( math.sin( t * math.pi / 70 + (0.5*math.pi)) * 4000 + 9000 )
+	targetAngles[0] = int( math.sin( speed * t * math.pi / 500 + (left['timeOffset']*math.pi)) * left['scale'] + 6000 + left['offset'] )
+	targetAngles[1] = int( math.sin( speed * t * math.pi / 500 + (right['timeOffset']*math.pi)) * right['scale'] + 9000 + right['offset'] )
 	t += 1
-	if( t > 70*2 ):
+	if( t > 500 * 2 / speed ):
 		t = 0
 		hit = False
-	return stepStages, targetAngles
-
-targetAngles = [0] * 8
+	return targetAngles
 
 def readCurrentAngles(sensors):
 	currentAngles = [0] * 8
-	for i in range(4):
-		currentAngles[i] = sensors.getAngle(i+1)
+	try:
+		for i in range(4):
+			currentAngles[i] = sensors.getAngle(i+1)
+	except:
+		return currentAngles
 	return currentAngles
 
 def clampMotorSpeeds( motorSpeeds ):
@@ -157,13 +171,18 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 # SBUS
 
 def openSBUS():
-	return serial.Serial(
-		port='/dev/serial0',
-		baudrate = 115200, # Must rebuild and flash betaflight to listen at this rate, not 100,000 as per normal SBUS.
-		parity=serial.PARITY_EVEN,
-		stopbits=serial.STOPBITS_TWO,
-		bytesize=serial.EIGHTBITS,
-		timeout=10)
+	try:
+		import serial
+		return serial.Serial(
+			port='/dev/serial0',
+			baudrate = 115200, # Must rebuild and flash betaflight to listen at this rate, not 100,000 as per normal SBUS.
+			parity=serial.PARITY_EVEN,
+			stopbits=serial.STOPBITS_TWO,
+			bytesize=serial.EIGHTBITS,
+			timeout=10)
+	except:
+		print( "Serial not available" )
+
 
 def sendSBUSPacket(sbus, channelValues):
 
@@ -196,7 +215,10 @@ def sendSBUSPacket(sbus, channelValues):
 			ch = ch + 1
 
 	# Send
-	sbus.write( array.array('B', sbus_data).tostring() ) 
+	try:
+		sbus.write( array.array('B', sbus_data).tostring() )
+	except:
+		pass
 
 
 if __name__=="__main__":
