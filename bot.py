@@ -97,13 +97,13 @@ def main():
 				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
 				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
-					print "OW!"
+					print( "OW!" )
 					hit = True
 				
 
 	except:
 		
-		print "DONE" 
+		print( "DONE" )
 		arm = 500
 		sendMotorSpeeds(sbus, motorSpeeds, arm)
 		sleep(0.5)

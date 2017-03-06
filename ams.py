@@ -1,4 +1,4 @@
-import smbus
+#import smbus
 import time
 
 class AMS():
@@ -37,8 +37,7 @@ class AMS():
     	res = self.bus.read_byte_data(address, register)
     except IOError:
         #print "Oop"
-        res = 0
-    #time.sleep(0.002)
+      res = 0
     return res
 
   def getAngle(self, sensorNum):
