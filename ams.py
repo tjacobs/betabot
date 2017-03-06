@@ -3,8 +3,10 @@ import time
 
 class AMS():
   def __init__(self):
-    self.address = 0x40
-    self.address2 = 0x42
+    self.address1 = 0x42
+    self.address2 = 0x41
+    self.address3 = 0x40
+    self.address4 = 0x43
     self.angleReadReg1 = 0xFE
     self.angleReadReg2 = 0xFF
     self.magnitudeReadReg1 = 0xFC
@@ -24,14 +26,19 @@ class AMS():
 
   def readAndWait(self, register, sensorNum):
     res = False
-    address = self.address
+    address = self.address1
     if( sensorNum == 2 ):
         address = self.address2
+    if( sensorNum == 3 ):
+        address = self.address3
+    if( sensorNum == 4 ):
+        address = self.address4
     try: 
     	res = self.bus.read_byte_data(address, register)
     except IOError:
-        print "Oop"
-    time.sleep(0.02)
+        #print "Oop"
+        res = 0
+    #time.sleep(0.002)
     return res
 
   def getAngle(self, sensorNum):
