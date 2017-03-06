@@ -96,7 +96,7 @@ def main():
 
 				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
-				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.7 and hit == False):
+				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
 					print "OW!"
 					hit = True
 				
@@ -117,7 +117,7 @@ import math
 def updateTargetAngles( stepStages ):
 	global targetAngles, t, hit
 	targetAngles[0] = int( math.sin( t * math.pi / 70 ) * 4000 + 6000 )
-	targetAngles[1] = int( math.sin( t * math.pi / 70 + (0.5*math.pi)) * 4000 + 10000 )
+	targetAngles[1] = int( math.sin( t * math.pi / 70 + (0.5*math.pi)) * 4000 + 9000 )
 	t += 1
 	if( t > 70*2 ):
 		t = 0
@@ -125,39 +125,6 @@ def updateTargetAngles( stepStages ):
 	return stepStages, targetAngles
 
 targetAngles = [0] * 8
-timeThen = time.time()*1000
-def updateTargetAnglesOld( stepStages ):
-	global hit
-	global targetAngles
-	# int( math.cos(ch1)*2000)
-	# Every 2 seconds
-	global timeThen
-	if( time.time()*1000 > timeThen + 500 ):
-		timeThen = time.time()*1000
-		for i in range(len(stepStages)):
-			stage = stepStages[i]
-			if stage == 1:
-				stage = 2
-				targetAngles[i*2] = 7000
-				targetAngles[i*2 +1] = 7000
-			elif stage == 2:
-				stage = 3
-				targetAngles[i*2] = 5000
-				targetAngles[i*2 +1] = 5000
-			elif stage == 3:
-				stage = 4
-				targetAngles[i*2] = 3000
-				targetAngles[i*2 +1] = 8000
-			elif stage == 4:
-				stage = 1
-				targetAngles[i*2] = 6000
-				targetAngles[i*2 +1] = 11000
-				if i == 0 and hit == True:
-					hit = False
-					print( "ok again" )
-			stepStages[i] = stage
-
-	return stepStages, targetAngles
 
 def readCurrentAngles(sensors):
 	currentAngles = [0] * 8
