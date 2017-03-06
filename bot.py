@@ -38,72 +38,86 @@ armTime = time.time()*1000
 
 # Go
 def main():
-	# Talk to motor angle sensors via I2C
-	sensors = AMS()
-	connected = sensors.connect(1)
-	if connected < 0:
-		print( "Warning: Can not read all motor sensors" )
+	try:
+		# Talk to motor angle sensors via I2C
+		sensors = AMS()
+		connected = sensors.connect(1)
+		if connected < 0:
+			print( "Warning: Can not read all motor sensors" )
 
-	# Talk to motor controller via serial UART SBUS
-	sbus = openSBUS()
+		# Talk to motor controller via serial UART SBUS
+		sbus = openSBUS()
 
-	# Which part of the step is each leg in?
-	stepStages = [1, 3, 1, 3]
+		# Which part of the step is each leg in?
+		stepStages = [1, 3, 1, 3]
 
-	# What speed is each motor at?
-	motorSpeeds = [0] * 8
-	lastAngles = [0] * 8
+		# What speed is each motor at?
+		motorSpeeds = [0] * 8
+		lastAngles = [0] * 8
+		lastMotorSpeeds = [0] * 8
+		lastLastMotorSpeeds = [0] * 8
 
-	lastCheck = time.time()*1000
+		lastCheck = time.time()*1000
 
-	# Loop
-	global hit
-	while True:
-		# Arm mode
+		# Loop
+		global hit
+		while True:
+			
+			# Arm mode
+			arm = 500
+			if time.time()*1000 > armTime + 1000:
+				arm = 1000
+
+			stepStages, targetAngles = updateTargetAngles(stepStages)
+			currentAngles = readCurrentAngles(sensors)
+			Ps = calculatePs(currentAngles, targetAngles)
+			motorSpeeds = clampMotorSpeeds(Ps)
+
+	#		if hit:
+	#			motorSpeeds[0] = 0
+			motorSpeeds[0] = 100
+			if hit == True:
+				motorSpeeds[0] = 0
+			motorSpeeds[1] = 0
+			sendMotorSpeeds(sbus, motorSpeeds, arm)
+
+			# Calculate how much the motor has moved in the last 100ms
+			if time.time()*1000 > lastCheck + 100:
+				lastCheck = time.time()*1000
+				moved = currentAngles[0] - lastAngles[0]
+				if( moved > 16384 - 5000 ):
+					moved = moved - 16384
+				if( moved < -(16384 - 5000) ):
+					moved = moved + 16384
+					
+				# Calculate the percentage of lost motor power. 
+				# Calculated as: percentage of motor speed applied right now, from 0 to 1, 
+				# subtract the amount of angle moved as a percentage of what we'd expect at that motor speed.
+				# This should be < 0.05 when no resistance, > 0.5 when pushing load, and if > 0.9, it's stuck.
+				motorRate = abs(lastLastMotorSpeeds[0]) / 100.0
+				
+				# Record values for next check
+				lastAngles[0] = currentAngles[0]
+				lastLastMotorSpeeds[0] = lastMotorSpeeds[0]
+				lastMotorSpeeds[0] = motorSpeeds[0]
+
+				#print "moved: " + str( moved )
+				#print "motorRate: " + str( motorRate )
+				# (motor power applied)  - (angle moved * motorPower)
+				resistance = ( motorRate - (abs(moved) * motorRate / 1200.0 ) )
+				# 1000.0 is the angle expected to move in 100ms with motor at full power (rate 1.0)
+				if resistance > 0.3:
+					print "Resistance: " + str( resistance )
+				if( motorRate > 0.1 and resistance > 0.4 and hit == False):
+					hit = True
+					print( "Ouchie" )
+
+
+	except:
+		
+		print "DONE"
 		arm = 500
-		if time.time()*1000 > armTime + 1000:
-			arm = 1000
-
-		stepStages, targetAngles = updateTargetAngles(stepStages)
-		currentAngles = readCurrentAngles(sensors)
-		Ps = calculatePs(currentAngles, targetAngles)
-		motorSpeeds = clampMotorSpeeds(Ps)
-
-#		if hit:
-#			motorSpeeds[0] = 0 
 		sendMotorSpeeds(sbus, motorSpeeds, arm)
-		print( "Current " + str( currentAngles ) )
-		print( "Target  " + str( targetAngles ) )
-		print( "Motor   " + str( motorSpeeds ) )
-
-		# Calculate how much the motor has moved in the last 100ms
-		if time.time()*1000 > lastCheck + 100:
-			lastCheck = time.time()*1000
-			moved = currentAngles[0] - lastAngles[0]
-#			print( "Moved: " + str( moved ) )
-			lastAngles[0] = currentAngles[0]
-
-			# See if any resistance to movement
-			#if motorSpeeds[0] > 10:
-			#	if moved < 10:
-			#		print( "Ouch" )
-			#		hit = True
-			#if motorSpeeds[0] < -10:
-			#	if moved > -10:
-			#		print( "Ow" )
-			#		hit = True
-
-			# Calculate the percentage of lost motor power. 
-			# Calculated as: percentage of motor speed applied right now, from 0 to 1, 
-			# subtract the amount of angle moved as a percentage of what we'd expect at that motor speed.
-			# This should be < 0.05 when no resistance, > 0.5 when pushing load, and if > 0.9, it's stuck.
-			motorRate = abs(motorSpeeds[0]) / 100.0
-			# (motor power applied)  - (angle moved * motorPower)
-			resistance = ( motorRate - (abs(moved) * motorRate / 1000.0 ) )
-			# 1000.0 is the angle expected to move in 100ms with motor at full power (rate 1.0)
-#			if( motorRate > 0.1 and resistance > 0.5 ):
-#				print( "Ouchie" )
-
 
 # -------------
 # Functions
@@ -136,7 +150,7 @@ def updateTargetAngles( stepStages ):
 				stage = 1
 				targetAngles[i*2] = 6000
 				targetAngles[i*2 +1] = 11000
-				if i == 0:
+				if i == 0 and hit == True:
 					hit = False
 					print( "ok again" )
 			stepStages[i] = stage
@@ -168,7 +182,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 	middle = 995
-	sendSBUSPacket( sbus, [motorSpeeds[0]+middle, motorSpeeds[1]+middle, motorSpeeds[2]+middle, motorSpeeds[3]+middle, arm] )
+	sendSBUSPacket( sbus, [motorSpeeds[0]*2+middle, motorSpeeds[1]*2+middle, motorSpeeds[2]*2+middle, motorSpeeds[3]*2+middle, arm] )
 
 # ----------
 # SBUS
@@ -188,7 +202,7 @@ def sendSBUSPacket(sbus, channelValues):
 	channels = [100]*16
 	for j in range(len(channelValues)):
 		channels[j] = int(channelValues[j])
-	print( channels )
+
 	# SBUS start byte
 	sbus_data = [0]*25
 	sbus_data[0] = 0x0F
