@@ -31,29 +31,31 @@ from time import sleep
 import time
 import math
 import array
-import tensorflow as tf
+#import tensorflow as tf
 
 hit = False
 armTime = time.time()*1000
 
 n_legs = 1
 n_params = 6
-sess = tf.Session()
 
 def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
-def network(x):
-
-	# Fully Connected.
-    fc_W  = tf.Variable(tf.truncated_normal(shape=(n_legs, n_params), mean = 0, stddev = 0.1))
-    fc_b  = tf.Variable(tf.zeros(n_params))
-    output = tf.matmul(x, fc_W) + fc_b
-    return tf.sigmoid( output )
+#~ sess = tf.Session()
+#~ def network(x):
+#~ 
+	#~ # Fully Connected.
+    #~ fc_W  = tf.Variable(tf.truncated_normal(shape=(n_legs, n_params), mean = 0, stddev = 0.1))
+    #~ fc_b  = tf.Variable(tf.zeros(n_params))
+    #~ output = tf.matmul(x, fc_W) + fc_b
+    #~ return tf.sigmoid( output )
 
 
 # Go
+test = 0.0
+testa = 0.0
 def main():
-#	try:
+	try:
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
 		connected = sensors.connect(1)
@@ -72,13 +74,13 @@ def main():
 		lastAngles = [0] * 8
 		lastCheck = time.time()*1000
 
-		x_in = [[1]]
-		x = tf.placeholder(tf.float32, (1, 1))
-		input = network(x)
-		sess.run(tf.global_variables_initializer())
+		#~ x_in = [[1]]
+		#~ x = tf.placeholder(tf.float32, (1, 1))
+		#~ input = network(x)
+		#~ sess.run(tf.global_variables_initializer())
 
 		# Loop
-		global hit
+		global hit, testa
 		while True:
 			
 			# Arm after a second
@@ -86,19 +88,27 @@ def main():
 			if time.time()*1000 > armTime + 1000:
 				arm = 1000
     
-			x_in[0][0] = x_in[0][0] + 0.1
-		    # What does our brain say to do?
-			output = sess.run(input, feed_dict={x:x_in})
-			print( output )
-			speed = 10
+			#~ x_in[0][0] = x_in[0][0] + 0.1
+		    #~ # What does our brain say to do?
+			#~ output = sess.run(input, feed_dict={x:x_in})
+			#~ print( output )
+			testa = testa + 1.0
+			
+			height = math.sin(testa/50.0) /2  + 0.5
+
+			# Slow if leg hit something			
+			if hit == True:
+				height = 1
+			
+			speed = 1
 			left = {}
-			left['offset'] =     clamp( output[0][0], 0.0, 1.0) * 1000.0
-			left['timeOffset'] = clamp( output[0][1], 0.0, 1.0) * 1.0
-			left['scale'] =      clamp( output[0][2], 0.0, 1.0) * 4000.0
+			left['offset'] =     clamp( 0.5, 0.0, 1.0) * 5000.0
+			left['timeOffset'] = clamp( 0, 0.0, 1.0) * 1.0
+			left['scale'] =      clamp( 0.5, 0.0, 1.0) * 5000.0
 			right = {}
-			right['offset'] = 0
-			right['timeOffset'] = 0.5 # Quarter turn
-			right['scale'] = 4000
+			right['offset'] =    clamp( 0.5, 0.0, 1.0) * 6000.0
+			right['timeOffset'] =clamp( height, 0.0, 1.0) * 1.0
+			right['scale'] =     clamp( 0.5, 0.0, 1.0) * 5000.0
 
 			# Main loop
 			targetAngles = updateTargetAngles(speed, left, right)
@@ -125,26 +135,21 @@ def main():
 				# Did we hit something?
 				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
-				if( percentagePower > 40 and motorSpeeds[0] > 40 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
+				if( percentagePower > 30 and motorSpeeds[0] > 30 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
 					print( "OW!" )
 					hit = True
-
-			# Slow if leg hit something			
-			if hit == True:
-				motorSpeeds[0] = motorSpeeds[0] / 8
-				motorSpeeds[1] = motorSpeeds[1] / 8
 
 			# Move
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
 				
 
-	# except:
+	except:
 		
-	# 	print( "DONE" )
-	# 	arm = 500
-	# 	sendMotorSpeeds(sbus, motorSpeeds, arm)
-	# 	sleep(0.5)
-	# 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+	 	print( "DONE" )
+	 	arm = 500
+	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+	 	sleep(0.5)
+	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
 
 # -------------
 # Functions
@@ -153,12 +158,14 @@ t = 0
 targetAngles = [0] * 8
 def updateTargetAngles( speed, left, right ):
 	global targetAngles, t, hit
-	targetAngles[0] = int( math.sin( speed * t * math.pi / 500 + (left['timeOffset']*math.pi)) * left['scale'] + 6000 + left['offset'] )
-	targetAngles[1] = int( math.sin( speed * t * math.pi / 500 + (right['timeOffset']*math.pi)) * right['scale'] + 9000 + right['offset'] )
+	targetAngles[0] = int( math.sin( speed * t * math.pi / 500 + (left['timeOffset']*math.pi)) * left['scale'] + 3000 + left['offset'] )
+	targetAngles[1] = int( math.sin( speed * t * math.pi / 500 + (right['timeOffset']*math.pi)) * right['scale'] + 7000 + right['offset'] )
 	t += 1
 	if( t > 500 * 2 / speed ):
 		t = 0
-		hit = False
+		if hit == True:
+			hit = False
+			print "OK again"
 	return targetAngles
 
 def readCurrentAngles(sensors):
