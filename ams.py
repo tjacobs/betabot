@@ -1,4 +1,4 @@
-#import smbus
+import smbus
 import time
 
 class AMS():
