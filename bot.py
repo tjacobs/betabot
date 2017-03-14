@@ -94,28 +94,38 @@ def main():
 			#~ print( output )
 			testa = testa + 1.0
 			
-			height = math.sin(testa/50.0) /2  + 0.5
+			height = 0.9# math.sin(testa/50.0) /2  + 0.5
 
 			# Slow if leg hit something			
-			if hit == True:
-				height = 1
+			#if hit == True:
+		#		height = 1
 			
-			speed = 1
-			left = {}
-			left['offset'] =     clamp( 0.5, 0.0, 1.0) * 5000.0
-			left['timeOffset'] = clamp( 0, 0.0, 1.0) * 1.0
-			left['scale'] =      clamp( 0.5, 0.0, 1.0) * 5000.0
-			right = {}
-			right['offset'] =    clamp( 0.5, 0.0, 1.0) * 6000.0
-			right['timeOffset'] =clamp( height, 0.0, 1.0) * 1.0
-			right['scale'] =     clamp( 0.5, 0.0, 1.0) * 5000.0
+			speed = 5.0
+			leftLeg = {}
+			leftLeg['a_offset'] =     clamp( height, 0.0, 1.0) * 5000.0
+			leftLeg['a_timeOffset'] = clamp( 0,      0.0, 1.0) * 1.0
+			leftLeg['a_scale'] =      clamp( 0.8,      0.0, 1.0) * 5000.0
+			leftLeg['b_offset'] =     clamp( height, 0.0, 1.0) * 5000.0
+			leftLeg['b_timeOffset'] = clamp( 0.5,      0.0, 1.0) * 1.0
+			leftLeg['b_scale'] =      clamp( 0.8,      0.0, 1.0) * 5000.0
+			rightLeg = {}
+			rightLeg['a_offset'] =    clamp( height, 0.0, 1.0) * 5000.0
+			rightLeg['a_timeOffset'] =clamp( 0,      0.0, 1.0) * 1.0
+			rightLeg['a_scale'] =     clamp( 0.8,      0.0, 1.0) * 5000.0
+			rightLeg['b_offset'] =    clamp( height, 0.0, 1.0) * 5000.0
+			rightLeg['b_timeOffset'] =clamp( 0.5,      0.0, 1.0) * 1.0
+			rightLeg['b_scale'] =     clamp( 0.1,      0.0, 1.0) * 5000.0
 
 			# Main loop
-			targetAngles = updateTargetAngles(speed, left, right)
+			targetAngles = updateTargetAngles(speed, leftLeg, rightLeg)
 			currentAngles = readCurrentAngles(sensors)
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
-
+			print( currentAngles[0] / 100, currentAngles[1] / 100, currentAngles[2] / 100, currentAngles[3]/100 )
+			
+			motorSpeeds[2] = 0
+			#motorSpeeds[3] = 0
+			
 			# Calculate how much the motor has moved in the last 100ms
 			if time.time()*1000 > lastCheck + 100:
 				lastCheck = time.time()*1000
@@ -135,9 +145,9 @@ def main():
 				# Did we hit something?
 				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
-				if( percentagePower > 30 and motorSpeeds[0] > 30 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
-					print( "OW!" )
-					hit = True
+#				if( percentagePower > 30 and motorSpeeds[0] > 30 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
+#					print( "OW!" )
+#					hit = True
 
 			# Move
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
@@ -158,14 +168,16 @@ t = 0
 targetAngles = [0] * 8
 def updateTargetAngles( speed, left, right ):
 	global targetAngles, t, hit
-	targetAngles[0] = int( math.sin( speed * t * math.pi / 500 + (left['timeOffset']*math.pi)) * left['scale'] + 3000 + left['offset'] )
-	targetAngles[1] = int( math.sin( speed * t * math.pi / 500 + (right['timeOffset']*math.pi)) * right['scale'] + 7000 + right['offset'] )
+	targetAngles[0] = int( math.sin( speed * t * math.pi / 500.0 + (left['a_timeOffset']*math.pi)) * left['a_scale'] + 3000 + left['a_offset'] )
+	targetAngles[1] = int( math.sin( speed * t * math.pi / 500.0 + (left['b_timeOffset']*math.pi)) * left['b_scale'] + 7000 + left['b_offset'] )
+	targetAngles[2] = int( math.sin( speed * t * math.pi / 500.0 + (right['a_timeOffset']*math.pi)) * right['a_scale'] + 1000 + right['a_offset'] )
+	targetAngles[3] = int( math.sin( speed * t * math.pi / 500.0 + (right['b_timeOffset']*math.pi)) * right['b_scale'] + 7000 + right['b_offset'] )
 	t += 1
-	if( t > 500 * 2 / speed ):
-		t = 0
-		if hit == True:
-			hit = False
-			print "OK again"
+#	if( t > 500 * 2 / speed ):
+#		t = 0
+#		if hit == True:
+#			hit = False
+#			print "OK again"
 	return targetAngles
 
 def readCurrentAngles(sensors):
@@ -196,7 +208,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 	middle = 995
-	sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*2+middle, motorSpeeds[3]*2+middle, arm] )
+	sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 
 # ----------
 # SBUS
