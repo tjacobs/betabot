@@ -25,6 +25,12 @@
 # Loss function = difference of targetAngles to [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
 
 
+# Read FrSky telemetry, get acc_smoothedX,Y,Z.
+# Use that to balance on wheels
+
+# Picamera[array] - openCV videoinput into TF.
+
+
 
 from ams import AMS
 from time import sleep
@@ -83,6 +89,8 @@ def main():
 		global hit, testa
 		while True:
 			
+			accelX, accelY, accelZ = readTelemetryPackets(sbus)
+
 			# Arm after a second
 			arm = 500
 			if time.time()*1000 > armTime + 1000:
@@ -225,6 +233,36 @@ def openSBUS():
 			timeout=10)
 	except:
 		print( "Serial not available" )
+
+
+PROTOCOL_HEADER      = 0x5E
+PROTOCOL_TAIL        = 0x5E
+ID_ACC_X             = 0x24
+ID_ACC_Y             = 0x25
+ID_ACC_Z             = 0x26
+
+def read16( serial ):
+	v1 = serial.read( )
+	v2 = serial.read( )
+	print( v1, v2 )
+	value = v1 + v2 << 8
+	return value	
+
+def readTelemetryPackets( serial ):
+
+	accelX, accelY, accelZ = 0, 0, 0
+	while( serial.inWaiting() > 0 ):
+		x = serial.read( )
+		if( x == PROTOCOL_HEADER ):
+			packet = serial.read( )
+			print( packet )
+			if( packet == ID_ACC_X ):
+				accelX = read16( serial )
+			if( packet == ID_ACC_Y ):
+				accelY = read16( serial )
+			if( packet == ID_ACC_Z ):
+				accelZ = read16( serial )
+	return accelX, accelY, accelZ
 
 
 def sendSBUSPacket(sbus, channelValues):
