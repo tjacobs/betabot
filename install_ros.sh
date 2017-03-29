@@ -7,6 +7,7 @@ sudo apt-get update
 sudo apt-get upgrade
 
 sudo apt-get install -y python-rosdep python-rosinstall-generator python-wstool python-rosinstall build-essential cmake
+sudo apt-get install -y python-catkin-tools
 
 sudo rosdep init
 rosdep update
