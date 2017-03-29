@@ -89,7 +89,7 @@ def main():
 		global hit, testa
 		while True:
 			
-			accelX, accelY, accelZ = readTelemetryPackets(sbus)
+#			accelX, accelY, accelZ = readTelemetryPackets(sbus)
 
 			# Arm after a second
 			arm = 500
@@ -130,8 +130,9 @@ def main():
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
 			print( currentAngles[0] / 100, currentAngles[1] / 100, currentAngles[2] / 100, currentAngles[3]/100 )
+			print( motorSpeeds[0], motorSpeeds[1] )
 			
-			motorSpeeds[2] = 0
+#			motorSpeeds[2] = 0
 			#motorSpeeds[3] = 0
 			
 			# Calculate how much the motor has moved in the last 100ms
@@ -177,7 +178,7 @@ targetAngles = [0] * 8
 def updateTargetAngles( speed, left, right ):
 	global targetAngles, t, hit
 	targetAngles[0] = int( math.sin( speed * t * math.pi / 500.0 + (left['a_timeOffset']*math.pi)) * left['a_scale'] + 3000 + left['a_offset'] )
-	targetAngles[1] = int( math.sin( speed * t * math.pi / 500.0 + (left['b_timeOffset']*math.pi)) * left['b_scale'] + 7000 + left['b_offset'] )
+	targetAngles[1] = int( math.sin( speed * t * math.pi / 500.0) * 1000 + 1000  )
 	targetAngles[2] = int( math.sin( speed * t * math.pi / 500.0 + (right['a_timeOffset']*math.pi)) * right['a_scale'] + 1000 + right['a_offset'] )
 	targetAngles[3] = int( math.sin( speed * t * math.pi / 500.0 + (right['b_timeOffset']*math.pi)) * right['b_scale'] + 7000 + right['b_offset'] )
 	t += 1
