@@ -2,33 +2,29 @@
 # Code: https://github.com/tjacobs/betabot
 # by Tom Jacobs
 
-# Neural Network: LSTM.
-# 
+# Neural Network
 
 # Inputs are:
-# IMU X, Y angles (2) ( 0 - 1, 0.5, 0.5 is flat level )
-# CurrentAngles (8) ( 0 - 1, from 20 to 160 degrees, 0 being knees all straight up in the air, flipped for backwards motors )
-# Resistances (8) ( 0 - 1, amount of resistance each motor is currently experiencing )
-# MotorSpeeds (8) ( 0 - 1, current motor speeds from calculated from PID loop from output params )
+# IMU X, Y angles (2) ( values 0 - 1. 0.5, 0.5 is flat level )
+# CurrentAngles (8) ( values 0 - 1. from 0 to 2pi radians)
+# Resistances (8) ( 0 - 1. amount of resistance each motor is currently experiencing )
+# MotorSpeeds (8) ( 0 - 1. current motor speeds )
 # Sin(t) (1) ( 0 - 1, sin of t, where t is increasing with time )
 # Cos(t) (1) ( 0 - 1, cos of t, where t is increasing with time )
 
 # Outputs are:
-# TargetAngles (8) ( 0 - 1, from 20 to 160 degrees. Flipped for every backwards motor, so 0 is always up. )
-# P_rate (8) (0 - 1, from off to max_p_rate) (add later, fix to resonable default to start with)
-
-# How it works
-# Robot starts standing, all legs almost knees sraight up.
-# CurrentAngles = [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
-
-# 1. Train the network to stay like that.
-# Loss function = difference of targetAngles to [ 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 ]
+# TargetAngles (8) ( 0 - 1. )
+# P_rate (8) (0 - 1, from off to max_p_rate)
 
 
-# Read FrSky telemetry, get acc_smoothedX,Y,Z.
-# Use that to balance on wheels
+# First task:
 
-# Picamera[array] - openCV videoinput into TF.
+# Read FrSky telemetry, get acc_smoothed X,Y,Z.
+# Use that to balance on wheels/
+
+# Second task:
+
+# Install Picamera[array] - openCV videoinput into TF.
 
 
 
@@ -39,11 +35,7 @@ import math
 import array
 #import tensorflow as tf
 
-hit = False
 armTime = time.time()*1000
-
-n_legs = 1
-n_params = 6
 
 def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
@@ -58,10 +50,8 @@ def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 
 # Go
-test = 0.0
-testa = 0.0
 def main():
-	try:
+#	try:
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
 		connected = sensors.connect(1)
@@ -86,55 +76,34 @@ def main():
 		#~ sess.run(tf.global_variables_initializer())
 
 		# Loop
-		global hit, testa
 		while True:
 			
-#			accelX, accelY, accelZ = readTelemetryPackets(sbus)
+			# Read accel X, Y, Z.
+			accelX, accelY, accelZ = readTelemetryPackets(sbus)
 
-			# Arm after a second
+			# Arm after one second
 			arm = 500
 			if time.time()*1000 > armTime + 1000:
 				arm = 1000
     
-			#~ x_in[0][0] = x_in[0][0] + 0.1
 		    #~ # What does our brain say to do?
+			#~ x_in[0][0] = x_in[0][0] + 0.1
 			#~ output = sess.run(input, feed_dict={x:x_in})
 			#~ print( output )
-			testa = testa + 1.0
-			
-			height = 0.9# math.sin(testa/50.0) /2  + 0.5
 
-			# Slow if leg hit something			
-			#if hit == True:
-		#		height = 1
-			
-			speed = 5.0
-			leftLeg = {}
-			leftLeg['a_offset'] =     clamp( height, 0.0, 1.0) * 5000.0
-			leftLeg['a_timeOffset'] = clamp( 0,      0.0, 1.0) * 1.0
-			leftLeg['a_scale'] =      clamp( 0.8,      0.0, 1.0) * 5000.0
-			leftLeg['b_offset'] =     clamp( height, 0.0, 1.0) * 5000.0
-			leftLeg['b_timeOffset'] = clamp( 0.5,      0.0, 1.0) * 1.0
-			leftLeg['b_scale'] =      clamp( 0.8,      0.0, 1.0) * 5000.0
-			rightLeg = {}
-			rightLeg['a_offset'] =    clamp( height, 0.0, 1.0) * 5000.0
-			rightLeg['a_timeOffset'] =clamp( 0,      0.0, 1.0) * 1.0
-			rightLeg['a_scale'] =     clamp( 0.8,      0.0, 1.0) * 5000.0
-			rightLeg['b_offset'] =    clamp( height, 0.0, 1.0) * 5000.0
-			rightLeg['b_timeOffset'] =clamp( 0.5,      0.0, 1.0) * 1.0
-			rightLeg['b_scale'] =     clamp( 0.1,      0.0, 1.0) * 5000.0
+			v = 1.0
+			heading = math.pi
 
+			vel_left = v
+			vel_right = v
+			
 			# Main loop
-			targetAngles = updateTargetAngles(speed, leftLeg, rightLeg)
+			targetAngles = updateTargetAngles(vel_left, vel_right)
 			currentAngles = readCurrentAngles(sensors)
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
-			print( currentAngles[0] / 100, currentAngles[1] / 100, currentAngles[2] / 100, currentAngles[3]/100 )
-			print( motorSpeeds[0], motorSpeeds[1] )
-			
-#			motorSpeeds[2] = 0
-			#motorSpeeds[3] = 0
-			
+			print( currentAngles[0] / 100, currentAngles[1] / 100, motorSpeeds[0], motorSpeeds[1] )
+
 			# Calculate how much the motor has moved in the last 100ms
 			if time.time()*1000 > lastCheck + 100:
 				lastCheck = time.time()*1000
@@ -152,7 +121,7 @@ def main():
 				lastMotorSpeeds[0] = motorSpeeds[0]
 
 				# Did we hit something?
-				percentageExpectedMoved = percentagePower
+#				percentageExpectedMoved = percentagePower
 				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
 #				if( percentagePower > 30 and motorSpeeds[0] > 30 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
 #					print( "OW!" )
@@ -162,31 +131,24 @@ def main():
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
 				
 
-	except:
-		
-	 	print( "DONE" )
-	 	arm = 500
-	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
-	 	sleep(0.5)
-	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+#	except:
+#		
+#	 	print( "DONE" )
+#	 	arm = 500
+#	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+#	 	sleep(0.5)
+#	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
 
 # -------------
 # Functions
 
-t = 0
+t = 0.0
 targetAngles = [0] * 8
-def updateTargetAngles( speed, left, right ):
-	global targetAngles, t, hit
-	targetAngles[0] = int( math.sin( speed * t * math.pi / 500.0 + (left['a_timeOffset']*math.pi)) * left['a_scale'] + 3000 + left['a_offset'] )
-	targetAngles[1] = int( math.sin( speed * t * math.pi / 500.0) * 1000 + 1000  )
-	targetAngles[2] = int( math.sin( speed * t * math.pi / 500.0 + (right['a_timeOffset']*math.pi)) * right['a_scale'] + 1000 + right['a_offset'] )
-	targetAngles[3] = int( math.sin( speed * t * math.pi / 500.0 + (right['b_timeOffset']*math.pi)) * right['b_scale'] + 7000 + right['b_offset'] )
-	t += 1
-#	if( t > 500 * 2 / speed ):
-#		t = 0
-#		if hit == True:
-#			hit = False
-#			print "OK again"
+def updateTargetAngles( vel_left, vel_right ):
+	global targetAngles, t
+	targetAngles[0] = int( (t * 16384.0 / 100.0) % 16384 )
+	targetAngles[1] = int( (t * 16384.0 / 100.0) % 16384 )
+	t += 1.0
 	return targetAngles
 
 def readCurrentAngles(sensors):
