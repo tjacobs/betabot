@@ -83,7 +83,7 @@ def main():
 
 			# Arm after one second
 			arm = 500
-			if time.time()*1000 > armTime + 1000:
+			if time.time()*1000 > armTime + 2000:
 				arm = 1000
     
 		    #~ # What does our brain say to do?
@@ -127,6 +127,8 @@ def main():
 #					print( "OW!" )
 #					hit = True
 
+			motorSpeeds[2] = -150
+
 			# Move
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
 				
@@ -146,8 +148,8 @@ t = 0.0
 targetAngles = [0] * 8
 def updateTargetAngles( vel_left, vel_right ):
 	global targetAngles, t
-	targetAngles[0] = int( (t * 16384.0 / 100.0) % 16384 )
-	targetAngles[1] = int( (t * 16384.0 / 100.0) % 16384 )
+	targetAngles[0] = int( (t * 16384.0 / 1000.0) % 16384 )
+	targetAngles[1] = int( (t * 16384.0 / 1000.0) % 16384 )
 	t += 1.0
 	return targetAngles
 
@@ -214,11 +216,13 @@ def read16( serial ):
 def readTelemetryPackets( serial ):
 
 	accelX, accelY, accelZ = 0, 0, 0
+	print( ",,," + str( serial.inWaiting() ) )
 	while( serial.inWaiting() > 0 ):
 		x = serial.read( )
-		if( x == PROTOCOL_HEADER ):
+		#if( x == PROTOCOL_HEADER ):
+		if( True ):
 			packet = serial.read( )
-			print( packet )
+			print( str( ord( packet ) ) )
 			if( packet == ID_ACC_X ):
 				accelX = read16( serial )
 			if( packet == ID_ACC_Y ):
@@ -261,6 +265,7 @@ def sendSBUSPacket(sbus, channelValues):
 	# Send
 	try:
 		sbus.write( array.array('B', sbus_data).tostring() )
+		time.sleep( 0.001 )
 	except:
 		pass
 
