@@ -79,7 +79,7 @@ def main():
 		while True:
 			
 			# Read accel X, Y, Z.
-			accelX, accelY, accelZ = readTelemetryPackets(sbus)
+#			accelX, accelY, accelZ = readTelemetryPackets(sbus)
 
 			# Arm after one second
 			arm = 500
@@ -214,11 +214,13 @@ def read16( serial ):
 def readTelemetryPackets( serial ):
 
 	accelX, accelY, accelZ = 0, 0, 0
+	print( "" )
 	while( serial.inWaiting() > 0 ):
 		x = serial.read( )
-		if( x == PROTOCOL_HEADER ):
+#		if( x == PROTOCOL_HEADER ):
+		if( True ):
 			packet = serial.read( )
-			print( packet )
+			print( str( ord( packet ) ) )
 			if( packet == ID_ACC_X ):
 				accelX = read16( serial )
 			if( packet == ID_ACC_Y ):
