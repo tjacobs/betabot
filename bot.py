@@ -100,6 +100,7 @@ def main():
 			# Main loop
 			targetAngles = updateTargetAngles(vel_left, vel_right)
 			currentAngles = readCurrentAngles(sensors)
+			currentAngles[1] = 16384 - currentAngles[1]
 			Ps = calculatePs(currentAngles, targetAngles)
 			motorSpeeds = clampMotorSpeeds(Ps)
 			print( currentAngles[0] / 100, currentAngles[1] / 100, motorSpeeds[0], motorSpeeds[1] )
@@ -127,6 +128,10 @@ def main():
 #					print( "OW!" )
 #					hit = True
 
+#			motorSpeeds[0] = 10
+#			motorSpeeds[1] = -motorSpeeds[1]
+
+			# Throttle off to enable arming
 			motorSpeeds[2] = -150
 
 			# Move
@@ -148,8 +153,8 @@ t = 0.0
 targetAngles = [0] * 8
 def updateTargetAngles( vel_left, vel_right ):
 	global targetAngles, t
-	targetAngles[0] = int( (t * 16384.0 / 1000.0) % 16384 )
-	targetAngles[1] = int( (t * 16384.0 / 1000.0) % 16384 )
+	targetAngles[0] = int( (t * 16384.0 / 2000.0) % 16384 )
+	targetAngles[1] = int( (t * 16384.0 / 2000.0) % 16384 )
 	t += 1.0
 	return targetAngles
 
