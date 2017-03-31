@@ -17,6 +17,8 @@ if [ "$_IP" ]; then
   printf "My IP address is %s\n" "$_IP"
 fi
 
-python /home/pi/betabot/bot.py
+sudo python /home/pi/betabot/bot.py 2> /home/pi/betabot/error_log.txt > /home/pi/betabot/log.txt &
+
+#vncserver &
 
 exit 0

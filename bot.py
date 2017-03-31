@@ -37,7 +37,6 @@ import array
 import curses
 import datetime
 import thread
-from pynput import keyboard
 
 armTime = time.time()*1000
 
@@ -51,6 +50,7 @@ right_key_pressed = False
 
 def on_press(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
+	from pynput import keyboard
 	if( key == keyboard.Key.up ): up_key_pressed = True
 	if( key == keyboard.Key.down ): down_key_pressed = True
 	if( key == keyboard.Key.left ): left_key_pressed = True
@@ -58,17 +58,24 @@ def on_press(key):
 
 def on_release(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
+	from pynput import keyboard
 	if( key == keyboard.Key.up ): up_key_pressed = False
 	if( key == keyboard.Key.down ): down_key_pressed = False
 	if( key == keyboard.Key.left ): left_key_pressed = False
 	if( key == keyboard.Key.right ): right_key_pressed = False
 
 def keyboard_listener():
+	sleep( 10 )
 	# Collect events until released
-	with keyboard.Listener(
-			on_press=on_press,
-			on_release=on_release) as listener:
-		listener.join()
+	print "Starting keyboard listening" 
+	try:
+		from pynput import keyboard
+		with keyboard.Listener(
+				on_press=on_press,
+				on_release=on_release) as listener:
+			listener.join()
+	except:
+		print "Error starting keyboard listener. Probably no display yet." 
 
 thread.start_new_thread( keyboard_listener, () )
 
@@ -140,7 +147,7 @@ def main():
 			motorSpeeds[0] = vel_left
 			motorSpeeds[1] = vel_right
 			motorSpeeds = clampMotorSpeeds(motorSpeeds)
-			print( currentAngles[0] / 100, currentAngles[1] / 100, round( motorSpeeds[0] ), round( motorSpeeds[1]) )
+			#print( currentAngles[0] / 100, currentAngles[1] / 100, round( motorSpeeds[0] ), round( motorSpeeds[1]) )
 
 			# Throttle off to enable arming
 			motorSpeeds[2] = -150
