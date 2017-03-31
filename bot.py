@@ -46,7 +46,7 @@ def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 # Keyboard handling
 up_key_pressed = False
 down_key_pressed = False
-left_ley_pressed = False
+left_key_pressed = False
 right_key_pressed = False
 
 def on_press(key):
@@ -93,7 +93,9 @@ def main():
 		lastAngles = [0] * 8
 		lastCheck = time.time()*1000
 		
-		v = 0.1
+		v = 0.0
+		vel_left = 0.0
+		vel_right = 0.0
 		heading = 0.0
 
 		# Loop
@@ -107,20 +109,27 @@ def main():
 			if time.time()*1000 > armTime + 2000:
 				arm = 1000
 
-			if( up_key_pressed == True ): v = v + 0.1
+			if( up_key_pressed == True ): v = 1.5#v + 0.1
+			if( down_key_pressed == True ): v = -1.5#v - 0.1
 			
-			v = clamp( v, 0.0, 5.0 )
-			v = v * 0.98
+			v = clamp( v, -1.5, 1.5 )
+			v = v * 0.99
 			
-			print( round( v, 2 ) )
-
 			heading = math.pi
 
 			# Calculate left and right wheel velocities based on velocity and heading
 			R = 0.1 # Radius of wheels
 			L = 0.1 # Linear distance between wheels
-			vel_left = v #(2.0 * v - heading * L ) / 2.0 * R
-			vel_right = v #(2.0 * v + heading * L ) / 2.0 * R
+			vel_left += v #(2.0 * v - heading * L ) / 2.0 * R
+			vel_right += v #(2.0 * v + heading * L ) / 2.0 * R
+			
+			if( left_key_pressed == True ): vel_right += 2
+			if( right_key_pressed == True ): vel_left += 2
+
+			vel_left = clamp( vel_left, -100.0, 100.0 )
+			vel_right = clamp( vel_right, -100.0, 100.0 )
+			vel_left *= 0.98
+			vel_right *= 0.98
 			
 			# Main loop
 #			targetAngles = updateTargetAngles(vel_left, vel_right)
@@ -128,8 +137,8 @@ def main():
 #			currentAngles[1] = 16384 - currentAngles[1]
 #			Ps = calculatePs(currentAngles, targetAngles)
 
-			motorSpeeds[0] = v * 20
-			motorSpeeds[1] = v * 20
+			motorSpeeds[0] = vel_left
+			motorSpeeds[1] = vel_right
 			motorSpeeds = clampMotorSpeeds(motorSpeeds)
 			print( currentAngles[0] / 100, currentAngles[1] / 100, round( motorSpeeds[0] ), round( motorSpeeds[1]) )
 
