@@ -20,7 +20,7 @@
 # First task:
 
 # Read FrSky telemetry, get acc_smoothed X,Y,Z.
-# Use that to balance on wheels/
+# Use that to balance on wheels
 
 # Second task:
 
@@ -34,20 +34,43 @@ import time
 import math
 import array
 #import tensorflow as tf
+import curses
+import datetime
+import thread
+from pynput import keyboard
 
 armTime = time.time()*1000
 
 def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
-#~ sess = tf.Session()
-#~ def network(x):
-#~ 
-	#~ # Fully Connected.
-    #~ fc_W  = tf.Variable(tf.truncated_normal(shape=(n_legs, n_params), mean = 0, stddev = 0.1))
-    #~ fc_b  = tf.Variable(tf.zeros(n_params))
-    #~ output = tf.matmul(x, fc_W) + fc_b
-    #~ return tf.sigmoid( output )
+# Keyboard handling
+up_key_pressed = False
+down_key_pressed = False
+left_ley_pressed = False
+right_key_pressed = False
 
+def on_press(key):
+	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
+	if( key == keyboard.Key.up ): up_key_pressed = True
+	if( key == keyboard.Key.down ): down_key_pressed = True
+	if( key == keyboard.Key.left ): left_key_pressed = True
+	if( key == keyboard.Key.right ): right_key_pressed = True
+
+def on_release(key):
+	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
+	if( key == keyboard.Key.up ): up_key_pressed = False
+	if( key == keyboard.Key.down ): down_key_pressed = False
+	if( key == keyboard.Key.left ): left_key_pressed = False
+	if( key == keyboard.Key.right ): right_key_pressed = False
+
+def keyboard_listener():
+	# Collect events until released
+	with keyboard.Listener(
+			on_press=on_press,
+			on_release=on_release) as listener:
+		listener.join()
+
+thread.start_new_thread( keyboard_listener, () )
 
 # Go
 def main():
@@ -69,74 +92,53 @@ def main():
 		# Last loop values
 		lastAngles = [0] * 8
 		lastCheck = time.time()*1000
-
-		#~ x_in = [[1]]
-		#~ x = tf.placeholder(tf.float32, (1, 1))
-		#~ input = network(x)
-		#~ sess.run(tf.global_variables_initializer())
+		
+		v = 0.1
+		heading = 0.0
 
 		# Loop
-		while True:
-			
+		while True:			
+
 			# Read accel X, Y, Z.
-#			accelX, accelY, accelZ = readTelemetryPackets(sbus)
+#				accelX, accelY, accelZ = readTelemetryPackets(sbus)
 
 			# Arm after one second
 			arm = 500
 			if time.time()*1000 > armTime + 2000:
 				arm = 1000
-    
-		    #~ # What does our brain say to do?
-			#~ x_in[0][0] = x_in[0][0] + 0.1
-			#~ output = sess.run(input, feed_dict={x:x_in})
-			#~ print( output )
 
-			v = 1.0
+			if( up_key_pressed == True ): v = v + 0.1
+			
+			v = clamp( v, 0.0, 5.0 )
+			v = v * 0.98
+			
+			print( round( v, 2 ) )
+
 			heading = math.pi
 
-			vel_left = v
-			vel_right = v
+			# Calculate left and right wheel velocities based on velocity and heading
+			R = 0.1 # Radius of wheels
+			L = 0.1 # Linear distance between wheels
+			vel_left = v #(2.0 * v - heading * L ) / 2.0 * R
+			vel_right = v #(2.0 * v + heading * L ) / 2.0 * R
 			
 			# Main loop
-			targetAngles = updateTargetAngles(vel_left, vel_right)
+#			targetAngles = updateTargetAngles(vel_left, vel_right)
 			currentAngles = readCurrentAngles(sensors)
-			currentAngles[1] = 16384 - currentAngles[1]
-			Ps = calculatePs(currentAngles, targetAngles)
-			motorSpeeds = clampMotorSpeeds(Ps)
-			print( currentAngles[0] / 100, currentAngles[1] / 100, motorSpeeds[0], motorSpeeds[1] )
+#			currentAngles[1] = 16384 - currentAngles[1]
+#			Ps = calculatePs(currentAngles, targetAngles)
 
-			# Calculate how much the motor has moved in the last 100ms
-			if time.time()*1000 > lastCheck + 100:
-				lastCheck = time.time()*1000
-				moved = currentAngles[0] - lastAngles[0]
-				if( moved > 16384 - 5000 ):
-					moved = moved - 16384
-				if( moved < -(16384 - 5000) ):
-					moved = moved + 16384
-				percentageMoved = abs( moved / 30.0 )				
-				percentagePower = abs(lastLastMotorSpeeds[0])
-				
-				# Record values for next check
-				lastAngles[0] = currentAngles[0]
-				lastLastMotorSpeeds[0] = lastMotorSpeeds[0]
-				lastMotorSpeeds[0] = motorSpeeds[0]
-
-				# Did we hit something?
-#				percentageExpectedMoved = percentagePower
-				#print "MOVED " + str( int( percentageMoved)) + "   POWER " + str( int(percentageExpectedMoved))
-#				if( percentagePower > 30 and motorSpeeds[0] > 30 and percentageMoved < percentageExpectedMoved * 0.6 and hit == False):
-#					print( "OW!" )
-#					hit = True
-
-#			motorSpeeds[0] = 10
-#			motorSpeeds[1] = -motorSpeeds[1]
+			motorSpeeds[0] = v * 20
+			motorSpeeds[1] = v * 20
+			motorSpeeds = clampMotorSpeeds(motorSpeeds)
+			print( currentAngles[0] / 100, currentAngles[1] / 100, round( motorSpeeds[0] ), round( motorSpeeds[1]) )
 
 			# Throttle off to enable arming
 			motorSpeeds[2] = -150
 
 			# Move
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
-				
+			
 
 #	except:
 #		
@@ -158,6 +160,17 @@ def updateTargetAngles( vel_left, vel_right ):
 	t += 1.0
 	return targetAngles
 
+def calculatePs( currentAngles, targetAngles ):
+	Ps = [0] * len( targetAngles )
+	P_rate = 0.05
+	for i in range(len(targetAngles)):
+		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
+	return Ps
+	
+	
+# -------------
+# Betabot functions
+
 def readCurrentAngles(sensors):
 	currentAngles = [0] * 8
 	try:
@@ -174,13 +187,6 @@ def clampMotorSpeeds( motorSpeeds ):
 		motorSpeeds[i] = max(min(motorSpeeds[i], maxSpeed), minSpeed)
 	return motorSpeeds
 
-def calculatePs( currentAngles, targetAngles ):
-	Ps = [0] * len( targetAngles )
-	P_rate = 0.05
-	for i in range(len(targetAngles)):
-		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
-	return Ps
-
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	motorSpeeds = [0] * 8
 	for i in range(len(motorSpeedsIn)):
@@ -189,7 +195,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 
 # ----------
-# SBUS
+# SBUS functions
 
 def openSBUS():
 	try:
@@ -203,39 +209,6 @@ def openSBUS():
 			timeout=10)
 	except:
 		print( "Serial not available" )
-
-
-PROTOCOL_HEADER      = 0x5E
-PROTOCOL_TAIL        = 0x5E
-ID_ACC_X             = 0x24
-ID_ACC_Y             = 0x25
-ID_ACC_Z             = 0x26
-
-def read16( serial ):
-	v1 = serial.read( )
-	v2 = serial.read( )
-	print( v1, v2 )
-	value = v1 + v2 << 8
-	return value	
-
-def readTelemetryPackets( serial ):
-
-	accelX, accelY, accelZ = 0, 0, 0
-	print( "..." + str( serial.inWaiting() ) )
-	while( serial.inWaiting() > 0 ):
-		x = serial.read( )
-#		if( x == PROTOCOL_HEADER ):
-		if( True ):
-			packet = serial.read( )
-			print( str( ord( packet ) ) )
-			if( packet == ID_ACC_X ):
-				accelX = read16( serial )
-			if( packet == ID_ACC_Y ):
-				accelY = read16( serial )
-			if( packet == ID_ACC_Z ):
-				accelZ = read16( serial )
-	return accelX, accelY, accelZ
-
 
 def sendSBUSPacket(sbus, channelValues):
 
@@ -275,5 +248,42 @@ def sendSBUSPacket(sbus, channelValues):
 		pass
 
 
+# ----------
+# Serial telemetry functions
+
+PROTOCOL_HEADER      = 0x5E
+PROTOCOL_TAIL        = 0x5E
+ID_ACC_X             = 0x24
+ID_ACC_Y             = 0x25
+ID_ACC_Z             = 0x26
+
+def read16( serial ):
+	v1 = serial.read( )
+	v2 = serial.read( )
+	print( v1, v2 )
+	value = v1 + v2 << 8
+	return value	
+
+def readTelemetryPackets( serial ):
+
+	accelX, accelY, accelZ = 0, 0, 0
+	print( "..." + str( serial.inWaiting() ) )
+	while( serial.inWaiting() > 0 ):
+		x = serial.read( )
+#		if( x == PROTOCOL_HEADER ):
+		if( True ):
+			packet = serial.read( )
+			print( str( ord( packet ) ) )
+			if( packet == ID_ACC_X ):
+				accelX = read16( serial )
+			if( packet == ID_ACC_Y ):
+				accelY = read16( serial )
+			if( packet == ID_ACC_Z ):
+				accelZ = read16( serial )
+	return accelX, accelY, accelZ
+
+
+
+# Go
 if __name__=="__main__":
    main()
