@@ -1,6 +1,6 @@
 # **Betabot**
 
-##A robot for deep learning.
+### A robot for deep learning.
 
 **Includes:** 3D printable model, hardware parts list, build instructions, easy to use simulator, and downloadable pre-built software images.
 
@@ -24,4 +24,8 @@ And inside, with just the battery. You can see where the Pi goes, at the top, wi
 The physics simulator. The robots are having a conference:
 
 ![image](shot2.png)
+
+Or a dance party.
+
+![image](betabot.gif)
 
