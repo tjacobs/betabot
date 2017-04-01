@@ -58,6 +58,34 @@
     </visual>
   </link>
 
+  <link name='top'>
+    <pose>0 0 0 0 0 0</pose>
+    <inertial>
+      <mass value="5.0"/>
+      <origin xyz="0.0 0 0" rpy=" 0 0 0"/>
+      <inertia
+          ixx="0.1" ixy="0" ixz="0"
+          iyy="0.1" iyz="0"
+          izz="0.1"
+      />
+    </inertial>
+    <collision name='top_collision'>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="top.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+    <visual name='top_visual'>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="top.stl" scale="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.8 0.8 0.8 1"/>
+      </material>
+    </visual>
+  </link>
+
   <link name="left_wheel">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -109,6 +137,15 @@
         izz=".1"/>
     </inertial>
   </link>
+
+  <joint type="continuous" name="top_hinge">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <child link="top"/>
+    <parent link="chassis"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10000" velocity="1000"/>
+    <joint_properties damping="0.0" friction="0.0"/>
+  </joint>
 
   <joint type="continuous" name="battery_hinge">
     <origin xyz="0 0 0" rpy="0 0 0"/>

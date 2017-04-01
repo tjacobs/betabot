@@ -1,14 +1,27 @@
-# Betabot
+# **Betabot**
 
-Work in progress for a walking robot.
+##A robot for deep learning.
 
-[See here.](https://www.instagram.com/p/BRC_-dfhfe6/?taken-by=tomjacobs83)
+**Includes:** 3D printable model, hardware parts list, build instructions, easy to use simulator, and downloadable pre-built software images.
 
-Example code:
+*All open source.*
+
+**Consists of:** Raspberry Pi 3, TensorFlow, PID and differential drive controller, drone flight controller for IMU & PWM, gimbal motors, LiPo battery, power management boards, magnetic rotational sensors, and a tail.
+
+**Pre-built hardware:** AU$299.
 
 
-		stepStages, targetAngles = updateTargetAngles(stepStages)
-		currentAngles = readCurrentAngles()
-		P = calculateP(currentAngles, targetAngles)
-		motorSpeeds = clampMotorSpeeds(P)
-		sendMotorSpeeds(sbus, motorSpeeds, arm)
+The 3D model:
+
+![image](betabot1.png)
+
+
+And inside, with just the battery. You can see where the Pi goes, at the top, with the 3cm x 3cm flight controller board behind it.
+
+![image](betabot2.png)
+
+
+The physics simulator. The robots are having a conference:
+
+![image](shot2.png)
+
