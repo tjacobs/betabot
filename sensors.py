@@ -1,4 +1,3 @@
-import smbus
 import time
 
 class AMS():
@@ -14,6 +13,7 @@ class AMS():
 
   def connect(self, bus):
     try:
+      import smbus
       self.bus = smbus.SMBus(bus)
       time.sleep(0.5)
       return 0

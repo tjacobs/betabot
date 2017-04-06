@@ -28,15 +28,13 @@
 
 
 
-from ams import AMS
+from sensors import AMS
 from time import sleep
 import time
 import math
 import array
-#import tensorflow as tf
 import curses
 import datetime
-import thread
 
 armTime = time.time()*1000
 
@@ -67,7 +65,7 @@ def on_release(key):
 def keyboard_listener():
 	sleep( 10 )
 	# Collect events until released
-	print "Starting keyboard listening" 
+	print( "Starting keyboard listening" )
 	try:
 		from pynput import keyboard
 		with keyboard.Listener(
@@ -75,9 +73,13 @@ def keyboard_listener():
 				on_release=on_release) as listener:
 			listener.join()
 	except:
-		print "Error starting keyboard listener. Probably no display yet." 
+		print( "Error: Cannot start keyboard listener. Please run with linux desktop running." )
 
-thread.start_new_thread( keyboard_listener, () )
+try:
+	import thread
+	thread.start_new_thread( keyboard_listener, () )
+except:
+	print( "Error: Cannot start keyboard listener. Please install python threads." )
 
 # Go
 def main():
@@ -86,10 +88,12 @@ def main():
 		sensors = AMS()
 		connected = sensors.connect(1)
 		if connected < 0:
-			print( "Warning: Can not read all motor sensors" )
+			print( "Error: Cannot read motor sensors. Please enable I2C in raspi-config." )
 
 		# Talk to motor controller via serial UART SBUS
 		sbus = openSBUS()
+
+		print( "Starting Betabot." )
 
 		# What speed is each motor at, and one step back, two steps back?
 		motorSpeeds = [0] * 8
@@ -224,7 +228,7 @@ def openSBUS():
 			bytesize=serial.EIGHTBITS,
 			timeout=10)
 	except:
-		print( "Serial not available" )
+		print( "Error: Cannot read serial. Please enable serial in raspi-config." )
 
 def sendSBUSPacket(sbus, channelValues):
 
