@@ -156,7 +156,7 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="continuous" name="left_wheel_hinge">
+  <joint type="continuous" name="left_wheel_joint">
     <origin xyz="0 0 0.0" rpy="0 0 0"/>
     <child link="left_wheel"/>
     <parent link="chassis"/>
@@ -165,7 +165,7 @@
     <joint_properties damping="0.0" friction="0.0"/>
   </joint>
 
-  <joint type="continuous" name="right_wheel_hinge">
+  <joint type="continuous" name="right_wheel_joint">
     <origin xyz="0 0 0.0" rpy="0 0 0"/>
     <child link="right_wheel"/>
     <parent link="chassis"/>
