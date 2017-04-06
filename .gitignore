@@ -2,3 +2,5 @@ betabot_ws/logs
 *.pyc
 
 betabot.gz
+
+sim/0_VRDemoSettings.txt
