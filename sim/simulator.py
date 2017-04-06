@@ -30,10 +30,10 @@ p.setTimeStep(fixedTimeStep)
 p.setRealTimeSimulation(0)
 
 # Load the ground
-p.loadURDF("plane.urdf",0,0,0)
+p.loadURDF("data/plane.urdf", 0, 0, 0)
 
 # Load model
-betabot = p.loadURDF("../betabot_ws/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0,0,.4]), useFixedBase=False)
+betabot = p.loadURDF("../betabot_ws/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
 
 # Map joint names to ids
 nJoints = p.getNumJoints(betabot)
