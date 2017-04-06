@@ -88,13 +88,13 @@
 
   <link name="left_wheel">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
       <geometry>
         <mesh filename="left_wheel.stl" scale="0.01 0.01 0.01" name="left_wheel" />
       </geometry>
     </collision>
     <visual name="left_wheel_visual">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
       <geometry>
         <mesh filename="left_wheel.stl" scale="0.01 0.01 0.01" name="left_wheel" />
       </geometry>
@@ -115,13 +115,13 @@
 
   <link name="right_wheel">
     <collision name="collision">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
       <geometry>
         <mesh filename="right_wheel.stl" scale="0.01 0.01 0.01" name="right_wheel" />
       </geometry>
     </collision>
     <visual name="right_wheel_visual">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0 0 -0.7" rpy="0 0 0"/>
       <geometry>
         <mesh filename="right_wheel.stl" scale="0.01 0.01 0.01" name="right_wheel" />
       </geometry>
@@ -157,7 +157,7 @@
   </joint>
 
   <joint type="continuous" name="left_wheel_joint">
-    <origin xyz="0 0 0.0" rpy="0 0 0"/>
+    <origin xyz="0 0 0.7" rpy="0 0 0"/>
     <child link="left_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -166,7 +166,7 @@
   </joint>
 
   <joint type="continuous" name="right_wheel_joint">
-    <origin xyz="0 0 0.0" rpy="0 0 0"/>
+    <origin xyz="0 0 0.7" rpy="0 0 0"/>
     <child link="right_wheel"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>

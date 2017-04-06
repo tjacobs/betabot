@@ -5,15 +5,15 @@ import math
 # Simulator constants
 useRealTime = 0
 fixedTimeStep = 0.01
-speed = 5
+speed = 10
 
 # Tunable Betabot behaviour
-maxForce = 30.0
-kp = 1.0
+maxForce = 50.0
+kp = 2.0
 kd = 0.1
 
 # Motor directions
-motordir=[-1, -1]
+motordir=[1, 1]
 
 # Useful for quarter turns
 halfpi = 1.57079632679
@@ -31,6 +31,9 @@ p.setRealTimeSimulation(0)
 
 # Load the ground
 p.loadURDF("data/plane.urdf", 0, 0, 0)
+
+# Load some rocks
+#p.loadURDF("data/rock.urdf", 0, 0, 0)
 
 # Load model
 betabot = p.loadURDF("../betabot_ws/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
@@ -53,7 +56,7 @@ p.setJointMotorControl(betabot, right_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 p.setJointMotorControl(betabot, left_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 
 # Gravity go! (a moon)
-p.setGravity(0, 0, -9.8 / 10)
+p.setGravity(0, 0, -9.8 / 1.0)
     
 # Real time?
 p.setRealTimeSimulation(useRealTime)
@@ -73,10 +76,11 @@ try:
 			t = t + fixedTimeStep
 
 		# Move joints
-		target = t * speed * 10.0;
+		target_left = t * speed * 10.0;
+		target_right = t * speed * 0.1;
 #		print( target )
-		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=right_wheel_joint, controlMode=p.POSITION_CONTROL, targetPosition=motordir[0]*target, positionGain=kp, velocityGain=kd, force=maxForce)
-		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=left_wheel_joint,  controlMode=p.POSITION_CONTROL, targetPosition=motordir[1]*target, positionGain=kp, velocityGain=kd, force=maxForce)
+		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=right_wheel_joint, controlMode=p.POSITION_CONTROL, targetPosition=motordir[0]*target_left, positionGain=kp, velocityGain=kd, force=maxForce)
+		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=left_wheel_joint,  controlMode=p.POSITION_CONTROL, targetPosition=motordir[1]*target_right, positionGain=kp, velocityGain=kd, force=maxForce)
 
 		# Step if not real time
 		if (useRealTime==0):
