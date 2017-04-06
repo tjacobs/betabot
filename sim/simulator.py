@@ -8,7 +8,7 @@ fixedTimeStep = 0.01
 speed = 5
 
 # Tunable Betabot behaviour
-maxForce = 3.5
+maxForce = 30.0
 kp = 1.0
 kd = 0.1
 
@@ -52,8 +52,8 @@ p.resetJointState(betabot, left_wheel_joint, motordir[1] * halfpi)
 p.setJointMotorControl(betabot, right_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 p.setJointMotorControl(betabot, left_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 
-# Gravity go!
-p.setGravity(0, 0, -10)
+# Gravity go! (a moon)
+p.setGravity(0, 0, -9.8 / 10)
     
 # Real time?
 p.setRealTimeSimulation(useRealTime)
@@ -73,9 +73,10 @@ try:
 			t = t + fixedTimeStep
 
 		# Move joints
-		target = math.sin(t * speed) * 300.0;
+		target = t * speed * 10.0;
+#		print( target )
 		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=right_wheel_joint, controlMode=p.POSITION_CONTROL, targetPosition=motordir[0]*target, positionGain=kp, velocityGain=kd, force=maxForce)
-		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=left_wheel_joint, controlMode=p.POSITION_CONTROL, targetPosition=motordir[1]*target, positionGain=kp, velocityGain=kd, force=maxForce)
+		p.setJointMotorControl2(bodyIndex=betabot, jointIndex=left_wheel_joint,  controlMode=p.POSITION_CONTROL, targetPosition=motordir[1]*target, positionGain=kp, velocityGain=kd, force=maxForce)
 
 		# Step if not real time
 		if (useRealTime==0):
