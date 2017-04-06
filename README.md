@@ -29,4 +29,8 @@ Or a dance party.
 
 ![image](docs/betabot.gif)
 
+And ducking about.
+
+![image](docs/duck.gif)
+
 [See it in action here](https://twitter.com/TomPJacobs/status/848138218755170305).
