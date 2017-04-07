@@ -35,7 +35,7 @@ And ducking about.
 
 [See it in action here](https://twitter.com/TomPJacobs/status/848138218755170305).
 
-#How to build
+## How to build
 
 Take the 3D printed case, two motors, and 6 screws. Make sure the small magnets are still affixed to back of motor axels. Place one motor on the side with cables running through the hole in the case. Rotate until screw holes line up, and screw 3 screws in half way.
 
