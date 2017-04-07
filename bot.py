@@ -2,43 +2,19 @@
 # Code: https://github.com/tjacobs/betabot
 # by Tom Jacobs
 
-# Neural Network
-
-# Inputs are:
-# IMU X, Y angles (2) ( values 0 - 1. 0.5, 0.5 is flat level )
-# CurrentAngles (8) ( values 0 - 1. from 0 to 2pi radians)
-# Resistances (8) ( 0 - 1. amount of resistance each motor is currently experiencing )
-# MotorSpeeds (8) ( 0 - 1. current motor speeds )
-# Sin(t) (1) ( 0 - 1, sin of t, where t is increasing with time )
-# Cos(t) (1) ( 0 - 1, cos of t, where t is increasing with time )
-
-# Outputs are:
-# TargetAngles (8) ( 0 - 1. )
-# P_rate (8) (0 - 1, from off to max_p_rate)
-
-
-# First task:
-
-# Read FrSky telemetry, get acc_smoothed X,Y,Z.
-# Use that to balance on wheels
-
-# Second task:
-
-# Install Picamera[array] - openCV videoinput into TF.
-
-
+import sys
+sys.path.append( 'sim' )
 
 from sensors import AMS
-from time import sleep
+from simulator import Simulator
+from sbus import SBUS
+
+import keyboard
 import time
 import math
 import array
 import curses
 import datetime
-
-armTime = time.time()*1000
-
-def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 # Keyboard handling
 up_key_pressed = False
@@ -46,64 +22,31 @@ down_key_pressed = False
 left_key_pressed = False
 right_key_pressed = False
 
-def on_press(key):
-	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
-	from pynput import keyboard
-	if( key == keyboard.Key.up ): up_key_pressed = True
-	if( key == keyboard.Key.down ): down_key_pressed = True
-	if( key == keyboard.Key.left ): left_key_pressed = True
-	if( key == keyboard.Key.right ): right_key_pressed = True
+armTime = time.time()*1000
 
-def on_release(key):
-	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
-	from pynput import keyboard
-	if( key == keyboard.Key.up ): up_key_pressed = False
-	if( key == keyboard.Key.down ): down_key_pressed = False
-	if( key == keyboard.Key.left ): left_key_pressed = False
-	if( key == keyboard.Key.right ): right_key_pressed = False
+sbus = 0
 
-def keyboard_listener():
-	sleep( 10 )
-	# Collect events until released
-	print( "Starting keyboard listening" )
-	try:
-		from pynput import keyboard
-		with keyboard.Listener(
-				on_press=on_press,
-				on_release=on_release) as listener:
-			listener.join()
-	except:
-		print( "Error: Cannot start keyboard listener. Please run with linux desktop running." )
+motorSpeeds = [0] * 8
 
-try:
-	import thread
-	thread.start_new_thread( keyboard_listener, () )
-except:
-	print( "Error: Cannot start keyboard listener. Please install python threads." )
+def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 # Go
 def main():
-#	try:
+		global motorSpeeds
+		print( "Starting Betabot." )
+
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
 		connected = sensors.connect(1)
-		if connected < 0:
-			print( "Error: Cannot read motor sensors. Please enable I2C in raspi-config." )
 
 		# Talk to motor controller via serial UART SBUS
-		sbus = openSBUS()
+		sbus = SBUS()
+		sbus.connect()
 
-		print( "Starting Betabot." )
+		# Start simulator
+		simulator = Simulator()
 
-		# What speed is each motor at, and one step back, two steps back?
-		motorSpeeds = [0] * 8
-		lastMotorSpeeds = [0] * 8
-		lastLastMotorSpeeds = [0] * 8
-
-		# Last loop values
-		lastAngles = [0] * 8
-		lastCheck = time.time()*1000
-		
+		# Motor speeds
 		v = 0.0
 		vel_left = 0.0
 		vel_right = 0.0
@@ -143,10 +86,7 @@ def main():
 			vel_right *= 0.98
 			
 			# Main loop
-#			targetAngles = updateTargetAngles(vel_left, vel_right)
-			currentAngles = readCurrentAngles(sensors)
-#			currentAngles[1] = 16384 - currentAngles[1]
-#			Ps = calculatePs(currentAngles, targetAngles)
+#			currentAngles = readCurrentAngles(sensors)
 
 			motorSpeeds[0] = vel_left
 			motorSpeeds[1] = vel_right
@@ -158,15 +98,8 @@ def main():
 
 			# Move
 			sendMotorSpeeds(sbus, motorSpeeds, arm)
-			
 
-#	except:
-#		
-#	 	print( "DONE" )
-#	 	arm = 500
-#	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
-#	 	sleep(0.5)
-#	 	sendMotorSpeeds(sbus, motorSpeeds, arm)
+			simulator.simStep( motorSpeeds )
 
 # -------------
 # Functions
@@ -191,14 +124,14 @@ def calculatePs( currentAngles, targetAngles ):
 # -------------
 # Betabot functions
 
-def readCurrentAngles(sensors):
-	currentAngles = [0] * 8
-	try:
-		for i in range(4):
-			currentAngles[i] = sensors.getAngle(i+1)
-	except:
-		return currentAngles
-	return currentAngles
+# def readCurrentAngles(sensors):
+# 	currentAngles = [0] * 8
+# 	try:
+# 		for i in range(4):
+# 			currentAngles[i] = sensors.getAngle(i+1)
+# 	except:
+# 		return currentAngles
+# 	return currentAngles
 
 def clampMotorSpeeds( motorSpeeds ):
 	minSpeed = -100
@@ -212,96 +145,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 	middle = 995
-	sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
-
-# ----------
-# SBUS functions
-
-def openSBUS():
-	try:
-		import serial
-		return serial.Serial(
-			port='/dev/serial0',
-			baudrate = 115200, # Must rebuild and flash betaflight to listen at this rate, not 100,000 as per normal SBUS.
-			parity=serial.PARITY_EVEN,
-			stopbits=serial.STOPBITS_TWO,
-			bytesize=serial.EIGHTBITS,
-			timeout=10)
-	except:
-		print( "Error: Cannot read serial. Please enable serial in raspi-config." )
-
-def sendSBUSPacket(sbus, channelValues):
-
-	# 16 blank channels, copy as many channels as given
-	channels = [100]*16
-	for j in range(len(channelValues)):
-		channels[j] = int(channelValues[j])
-
-	# SBUS start byte
-	sbus_data = [0]*25
-	sbus_data[0] = 0x0F
-
-	# SBUS channel bytes. 11 bits per channel.
-	ch = 0
-	bit_in_channel = 0
-	byte_in_sbus = 1
-	bit_in_sbus = 0
-   
-	# For 16ch * 11bits = 176 bits 
-	for i in range(1, 176):
-		if channels[ch] & (1<<bit_in_channel):
-			sbus_data[byte_in_sbus] |= (1<<bit_in_sbus)
-		bit_in_sbus = bit_in_sbus + 1
-		bit_in_channel = bit_in_channel + 1
-		if bit_in_sbus == 8:
-			bit_in_sbus = 0
-			byte_in_sbus = byte_in_sbus + 1
-		if bit_in_channel == 11:
-			bit_in_channel = 0
-			ch = ch + 1
-
-	# Send
-	try:
-		sbus.write( array.array('B', sbus_data).tostring() )
-		time.sleep( 0.001 )
-	except:
-		pass
-
-
-# ----------
-# Serial telemetry functions
-
-PROTOCOL_HEADER      = 0x5E
-PROTOCOL_TAIL        = 0x5E
-ID_ACC_X             = 0x24
-ID_ACC_Y             = 0x25
-ID_ACC_Z             = 0x26
-
-def read16( serial ):
-	v1 = serial.read( )
-	v2 = serial.read( )
-	print( v1, v2 )
-	value = v1 + v2 << 8
-	return value	
-
-def readTelemetryPackets( serial ):
-
-	accelX, accelY, accelZ = 0, 0, 0
-	print( "..." + str( serial.inWaiting() ) )
-	while( serial.inWaiting() > 0 ):
-		x = serial.read( )
-#		if( x == PROTOCOL_HEADER ):
-		if( True ):
-			packet = serial.read( )
-			print( str( ord( packet ) ) )
-			if( packet == ID_ACC_X ):
-				accelX = read16( serial )
-			if( packet == ID_ACC_Y ):
-				accelY = read16( serial )
-			if( packet == ID_ACC_Z ):
-				accelZ = read16( serial )
-	return accelX, accelY, accelZ
-
+	#sendSBUSPacket( sbus, [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 
 
 # Go

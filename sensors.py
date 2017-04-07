@@ -18,6 +18,7 @@ class AMS():
       time.sleep(0.5)
       return 0
     except:
+      print( "Error: Cannot read motor sensors. Please enable I2C in raspi-config." )
       return -1
 
   def writeAndWait(self, register, value):
