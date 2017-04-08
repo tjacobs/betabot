@@ -1,6 +1,10 @@
 import time
 
 # Keyboard handling
+up_key_pressed = False
+down_key_pressed = False
+left_key_pressed = False
+right_key_pressed = False
 
 def on_press(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
@@ -19,11 +23,11 @@ def on_release(key):
 	if( key == keyboard.Key.right ): right_key_pressed = False
 
 def keyboard_listener():
-	time.sleep( 10 )
+	time.sleep( 1 )
 	# Collect events until released
-	print( "Starting keyboard listening" )
+	from pynput import keyboard
+	print( "Starting keyboard listening." )
 	try:
-		from pynput import keyboard
 		with keyboard.Listener(
 				on_press=on_press,
 				on_release=on_release) as listener:

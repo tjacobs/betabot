@@ -51,10 +51,13 @@ class SBUS():
 
 		# Send
 		try:
+			import serial
+			import array
+			import time
 			self.sbus.write( array.array('B', sbus_data).tostring() )
 			time.sleep( 0.001 )
 		except:
-			pass
+			print( "Error sending sbus" )
 
 
 # ----------
