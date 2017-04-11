@@ -1,15 +1,15 @@
 # Betabot
-# Code: https://github.com/tjacobs/betabot
+# https://github.com/tjacobs/betabot
 # by Tom Jacobs
 
-import keyboard
 import time
 import math
 import array
-import curses
 import datetime
 
 # Import Betabot I/O
+#import keyboard
+import brain
 from sensors import AMS
 from sbus import SBUS
 
@@ -67,8 +67,8 @@ def main():
 			if time.time()*1000 > armTime + 2000:
 				arm = 1000
 
-			if( keyboard.up_key_pressed == True ):   v = 1.5
-			if( keyboard.down_key_pressed == True ): v = -1.5
+			if( brain.up_key_pressed == True ):   v = 1.5
+			if( brain.down_key_pressed == True ): v = -1.5
 			
 			v = clamp( v, -1.5, 1.5 )
 			v = v * 0.99
@@ -81,8 +81,8 @@ def main():
 			vel_left += v #(2.0 * v - heading * L ) / 2.0 * R
 			vel_right += v #(2.0 * v + heading * L ) / 2.0 * R
 			
-			if( keyboard.left_key_pressed == True ): vel_right += 2
-			if( keyboard.right_key_pressed == True ): vel_left += 2
+			if( brain.left_key_pressed == True ): vel_right += 2
+			if( brain.right_key_pressed == True ): vel_left += 2
 
 			vel_left = clamp( vel_left, -100.0, 100.0 )
 			vel_right = clamp( vel_right, -100.0, 100.0 )
