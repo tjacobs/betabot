@@ -24,16 +24,15 @@ def on_release(key):
 
 def keyboard_listener():
 	time.sleep( 1 )
-	# Collect events until released
-	from pynput import keyboard
 	print( "Starting keyboard listening." )
 	try:
+		from pynput import keyboard
 		with keyboard.Listener(
 				on_press=on_press,
 				on_release=on_release) as listener:
 			listener.join()
 	except:
-		print( "Error: Cannot start keyboard listener. Please run with linux desktop running." )
+		print( "Error: Cannot start keyboard listener. Please install pynput and run with linux desktop running." )
 
 try:
 	import thread

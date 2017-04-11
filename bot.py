@@ -100,7 +100,8 @@ def main():
 			motorSpeeds[2] = -150
 
 			# Move
-			sendMotorSpeeds(motorSpeeds, arm)
+			if( sbus.sbus != 0 ):
+				sendMotorSpeeds(motorSpeeds, arm)
 
 			# Update simulator if present
 			if( simulator ):
