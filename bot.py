@@ -24,6 +24,7 @@ except:
 # Variables
 armTime = time.time()*1000
 motorSpeeds = [0] * 8
+motorEnablePin = 4 # Broadcom pin 4 (P1 pin 7)
 
 # I/O
 sbus = 0
@@ -35,6 +36,15 @@ def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 def main():
 		global motorSpeeds, simulator, sbus
 		print( "Starting Betabot." )
+
+		# Motor enable pin
+		try:
+			import RPi.GPIO as GPIO
+			GPIO.setmode(GPIO.BCM)
+			GPIO.setup(motorEnablePin, GPIO.OUT)
+			GPIO.output(motorEnablePin, GPIO.LOW)
+		except:
+			print( "Error: No Raspberry Pi GPIO available." )
 
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
@@ -107,6 +117,9 @@ def main():
 			if( simulator ):
 				simulator.simStep( motorSpeeds )
 
+		GPIO.cleanup()
+
+
 # -------------
 # Functions
 
@@ -147,9 +160,21 @@ def clampMotorSpeeds( motorSpeeds ):
 	return motorSpeeds
 
 def sendMotorSpeeds( motorSpeedsIn, arm ):
+
 	motorSpeeds = [0] * 8
+	go = False
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
+		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
+			go = True
+	try:
+		if( go ):
+			GPIO.output(motorEnablePin, GPIO.HIGH)
+		else:
+			GPIO.output(motorEnablePin, GPIO.LOW)
+	except NameError:
+		pass
+
 	middle = 995
 	sbus.sendSBUSPacket( [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 
