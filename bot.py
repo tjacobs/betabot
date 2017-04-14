@@ -5,7 +5,7 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = True
+ENABLE_SIMULATOR = False
 ENABLE_BRAIN = True
 ENABLE_KEYBOARD = True
 
@@ -23,7 +23,7 @@ from sensors import AMS
 from sbus import SBUS
 if ENABLE_KEYBOARD:
 	import keyboard
-if ENABLE_BRAIN
+if ENABLE_BRAIN:
 	import brain
 
 # Import simulator
@@ -41,8 +41,6 @@ if ENABLE_SIMULATOR:
 armTime = time.time()*1000
 motorSpeeds = [0] * 8
 motorEnablePin = 4 # Broadcom pin 4 (P1 pin 7)
-
-def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 # Go
 def main():
@@ -93,7 +91,7 @@ def main():
 			if( brain and brain.up_key_pressed == True ):   v = 1.5
 			if( brain and brain.down_key_pressed == True ): v = -1.5
 			
-			v = clamp( v, -1.5, 1.5 )
+			v = functions.clamp( v, -1.5, 1.5 )
 			v = v * 0.99
 			
 			heading = math.pi
@@ -107,8 +105,8 @@ def main():
 			if( brain and brain.left_key_pressed == True ): vel_right += 2
 			if( brain and brain.right_key_pressed == True ): vel_left += 2
 
-			vel_left = clamp( vel_left, -100.0, 100.0 )
-			vel_right = clamp( vel_right, -100.0, 100.0 )
+			vel_left = functions.clamp( vel_left, -100.0, 100.0 )
+			vel_right = functions.clamp( vel_right, -100.0, 100.0 )
 			vel_left *= 0.98
 			vel_right *= 0.98
 			

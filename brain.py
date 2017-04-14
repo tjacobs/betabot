@@ -1,4 +1,5 @@
 import time
+import sys
 
 # Keyboard handling
 up_key_pressed = False
@@ -35,4 +36,4 @@ try:
 	thread.start_new_thread( brain, () )
 except:
 	print( "Error: Cannot start brain. That's a problem." )
-	print( sys.exc_info )
+	print( sys.exc_info() )
