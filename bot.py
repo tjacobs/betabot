@@ -2,44 +2,56 @@
 # https://github.com/tjacobs/betabot
 # by Tom Jacobs
 
+print( "Starting Betabot." )
+
+# What shall we enable?
+ENABLE_SIMULATOR = True
+ENABLE_BRAIN = True
+ENABLE_KEYBOARD = True
+
+# Imports
 import time
 import math
 import array
 import datetime
+import functions
 
 # Import Betabot I/O
-#import keyboard
-import brain
+sbus = 0
+brain = 0
 from sensors import AMS
 from sbus import SBUS
+if ENABLE_KEYBOARD:
+	import keyboard
+if ENABLE_BRAIN
+	import brain
 
 # Import simulator
-import sys
-sys.path.append( 'sim' )
-try:
-	from simulator import Simulator
-except:
-	print( "Simulator unavailable." )
+simulator = 0
+if ENABLE_SIMULATOR:
+	try:
+		import sys
+		sys.path.append( 'sim' )
+		from simulator import Simulator
+	except:
+		print( "Simulator unavailable." )
+		print( sys.exc_info() )
 
 # Variables
 armTime = time.time()*1000
 motorSpeeds = [0] * 8
 motorEnablePin = 4 # Broadcom pin 4 (P1 pin 7)
 
-# I/O
-sbus = 0
-simulator = 0
-
 def clamp(n, smallest, largest): return max(smallest, min(n, largest))
 
 # Go
 def main():
 		global motorSpeeds, simulator, sbus
-		print( "Starting Betabot." )
 
 		# Motor enable pin
 		try:
 			import RPi.GPIO as GPIO
+			GPIO.setwarnings(false)
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(motorEnablePin, GPIO.OUT)
 			GPIO.output(motorEnablePin, GPIO.LOW)
@@ -68,6 +80,7 @@ def main():
 
 		# Loop
 		while True:			
+			time.sleep( 0.1 )
 
 			# Read accel X, Y, Z.
 #				accelX, accelY, accelZ = readTelemetryPackets(sbus)
@@ -77,8 +90,8 @@ def main():
 			if time.time()*1000 > armTime + 2000:
 				arm = 1000
 
-			if( brain.up_key_pressed == True ):   v = 1.5
-			if( brain.down_key_pressed == True ): v = -1.5
+			if( brain and brain.up_key_pressed == True ):   v = 1.5
+			if( brain and brain.down_key_pressed == True ): v = -1.5
 			
 			v = clamp( v, -1.5, 1.5 )
 			v = v * 0.99
@@ -91,8 +104,8 @@ def main():
 			vel_left += v #(2.0 * v - heading * L ) / 2.0 * R
 			vel_right += v #(2.0 * v + heading * L ) / 2.0 * R
 			
-			if( brain.left_key_pressed == True ): vel_right += 2
-			if( brain.right_key_pressed == True ): vel_left += 2
+			if( brain and brain.left_key_pressed == True ): vel_right += 2
+			if( brain and brain.right_key_pressed == True ): vel_left += 2
 
 			vel_left = clamp( vel_left, -100.0, 100.0 )
 			vel_right = clamp( vel_right, -100.0, 100.0 )
