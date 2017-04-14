@@ -1,7 +1,12 @@
 #!/bin/bash
 
+echo "Stopping Betabot."
 sudo killall -9 betabot 2> /dev/null
 sudo killall -9 python 2> /dev/null
 sudo killall -9 python2.7 2> /dev/null
 sudo killall -9 python3 2> /dev/null
-ps aux | grep python
+if pgrep python; then
+echo "Error stopping Betabot, python is still running."
+else	
+echo "Stopped."
+fi
