@@ -25,6 +25,7 @@ echo ""
 echo "Installing system scripts."
 sudo ln /home/pi/betabot/betabot /bin/betabot -fs
 sudo ln /home/pi/betabot/install/go /bin/go -fs
+sudo ln /home/pi/betabot/install/web /bin/web -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 echo "Done."
 
