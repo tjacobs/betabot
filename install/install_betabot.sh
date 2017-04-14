@@ -12,8 +12,8 @@ sudo apt-get install -y git
 git config --global push.default simple
 
 # Install pynput for keyboard listening
-sudo pip install -y python_Xlib
-sudo pip install -y pynput
+sudo pip install python_Xlib
+sudo pip install pynput
 
 # Install the global Betabot script link
 sudo ln /home/pi/betabot/betabot /bin/betabot -fs
@@ -25,5 +25,5 @@ sudo ln /home/pi/betabot/install/go /bin/go -fs
 sudo cp rc.local /etc/rc.local 
 
 # Disable Bluetooth. Raspberry Pi 3 needs its Bluetooth disabling, because Bluetooth uses the serial line and breaks it. 
-echo "dtoverlay=pi3-disable-bt" >> /boot/config.txt
+sudo echo "dtoverlay=pi3-disable-bt" >> /boot/config.txt
 
