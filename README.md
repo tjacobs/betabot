@@ -1,14 +1,16 @@
 # **Betabot**
 
-### A robot for deep learning.
+### The deep learning robot.
 
-**Includes:** 3D printable model, hardware parts list, build instructions, easy to use simulator, and downloadable pre-built software images.
+**Consists of:** 3D printable body, Raspberry Pi 3, motor controller board with an IMU, three gimbal motors, rotation sensors, battery, power management boards, and a tail.
+
+**Software:** TensorFlow, ROS, Bullet physics simulator, Python, controller board C build system.  
+
+**Includes:** Hardware parts list, build instructions, and downloadable pre-built software images.
 
 *All open source.*
 
-**Consists of:** Raspberry Pi 3, TensorFlow, PID and differential drive controller, drone flight controller for IMU & PWM, gimbal motors, LiPo battery, power management boards, magnetic rotational sensors, and a tail.
-
-**Pre-built hardware:** AU$399.
+**Pre-built hardware:** Available for US$399.
 
 
 The 3D model:
