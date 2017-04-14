@@ -7,7 +7,7 @@ print( "Starting Betabot." )
 # What shall we enable?
 ENABLE_SIMULATOR = False
 ENABLE_BRAIN = True
-ENABLE_KEYBOARD = True
+ENABLE_KEYBOARD = False
 
 # Imports
 import time

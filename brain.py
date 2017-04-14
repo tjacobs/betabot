@@ -24,10 +24,9 @@ def brain():
 		print( "Right" )
 		right_key_pressed = True
 		left_key_pressed = False
-
 		time.sleep( 1 )
 
-		print( "Off" )
+		print( "Stop" )
 		right_key_pressed = False
 		time.sleep( 3 )
 
