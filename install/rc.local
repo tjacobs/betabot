@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /home/pi/betabot
+./betabot 2> /home/pi/betabot/error.log > /home/pi/betabot/log.log &

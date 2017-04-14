@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sudo killall -9 betabot.sh 2> /dev/null
+sudo killall -9 python3 2> /dev/null

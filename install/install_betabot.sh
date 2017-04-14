@@ -1,19 +1,29 @@
 #!/bin/bash
 
+# Install Betabot.
+# Installs the things needed for Betabot to run on a Raspberry Pi 3.
+
+# Update
 sudo apt-get update
 sudo apt-get upgrade
 
+# Install git
 sudo apt-get install -y git
+git config --global push.default simple
 
-sudo pip install python_Xlib
-sudo pip install pynput
+# Install pynput for keyboard listening
+sudo pip install -y python_Xlib
+sudo pip install -y pynput
 
-# Start on startup (insert before the last line of "exit 0") 
-sudo sed -i '$i' "$(cat rc.local.line)" /etc/rc.local
+# Install the global Betabot script link
+sudo ln /home/pi/betabot/betabot /bin/betabot -fs
 
-# Pi 3 needs its bluetooth disabling, so it uses read UART for SBUS
+# Install the global convenience script link
+sudo ln /home/pi/betabot/install/go /bin/go -fs
+
+# Start Betabot on system startup (overrides rc.local)
+sudo cp rc.local /etc/rc.local 
+
+# Disable Bluetooth. Raspberry Pi 3 needs its Bluetooth disabling, because Bluetooth uses the serial line and breaks it. 
 echo "dtoverlay=pi3-disable-bt" >> /boot/config.txt
-
-# Install convenience script
-cp go.sh ~
 

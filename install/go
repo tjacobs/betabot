@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Kill any running Betabot
+sudo killall -9 python 2> /dev/null
+sudo killall -9 python3 2> /dev/null
+
+# Start editing
+cd /home/pi/betabot
+geany bot.py &
+
+

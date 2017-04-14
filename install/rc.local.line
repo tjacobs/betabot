@@ -1,1 +1,0 @@
-sudo python /home/pi/betabot/bot.py 2> /home/pi/betabot/error_log.txt > /home/pi/betabot/log.txt &
