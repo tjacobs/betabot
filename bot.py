@@ -10,6 +10,7 @@ ENABLE_BRAIN = True
 ENABLE_KEYBOARD = False
 
 # Imports
+import sys
 import time
 import math
 import array
@@ -76,6 +77,9 @@ def main():
 		vel_right = 0.0
 		heading = 0.0
 
+		# Output
+		sys.stdout.flush()
+
 		# Loop
 		while True:			
 			time.sleep( 0.1 )
@@ -127,7 +131,11 @@ def main():
 			# Update simulator if present
 			if( simulator ):
 				simulator.simStep( motorSpeeds )
+			
+			# Output 
+			sys.stdout.flush()
 
+		# Finish
 		GPIO.cleanup()
 
 
