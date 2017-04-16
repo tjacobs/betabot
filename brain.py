@@ -6,29 +6,22 @@ up_key_pressed = False
 down_key_pressed = False
 left_key_pressed = False
 right_key_pressed = False
+esc_key_pressed = False
 
 def brain():
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
-	time.sleep( 0.1 )
+	
+	# Start
 	print( "Starting brain." )
+	time.sleep( 4 )
 	while True:
-		print( "Up" )
+		print( "\nUp" )
 		up_key_pressed = True
-		time.sleep( 3 )
+		time.sleep( 15 )
 
-		print( "Left" )
+		print( "\nStop" )
 		up_key_pressed = False
-		left_key_pressed = True
-		time.sleep( 1 )
-
-		print( "Right" )
-		right_key_pressed = True
-		left_key_pressed = False
-		time.sleep( 1 )
-
-		print( "Stop" )
-		right_key_pressed = False
-		time.sleep( 3 )
+		time.sleep( 10 )
 
 try:
 	import thread

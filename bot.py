@@ -41,7 +41,7 @@ if ENABLE_SIMULATOR:
 # Variables
 armTime = time.time()*1000
 motorSpeeds = [0] * 8
-motorEnablePin = 4 # Broadcom pin 4 (P1 pin 7)
+motorEnablePin = 18 # Broadcom pin 18
 
 # Go
 def main():
@@ -50,12 +50,25 @@ def main():
 		# Motor enable pin
 		try:
 			import RPi.GPIO as GPIO
-			GPIO.setwarnings(false)
+			GPIO.setwarnings(False)
 			GPIO.setmode(GPIO.BCM)
 			GPIO.setup(motorEnablePin, GPIO.OUT)
 			GPIO.output(motorEnablePin, GPIO.LOW)
+
+			# Test
+			if( True ):
+				time.sleep( 0.2 )
+				sys.stdout.write("\r\x1b[KTest: Motors on." )
+				GPIO.output(motorEnablePin, GPIO.HIGH)
+				time.sleep( 2 )
+				sys.stdout.write("\r\x1b[KTest: Motors off." )
+				GPIO.output(motorEnablePin, GPIO.LOW)
+				time.sleep( 1 )
+				sys.stdout.write("\n" )
+
 		except:
 			print( "Error: No Raspberry Pi GPIO available." )
+			print( sys.exc_info() )
 
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
@@ -71,73 +84,73 @@ def main():
 		except:
 			pass
 
-		# Motor speeds
-		v = 0.0
-		vel_left = 0.0
-		vel_right = 0.0
-		heading = 0.0
+		# Init motor speeds
+		velocity = 0.0
+		velocity_left = 0.0
+		velocity_right = 0.0
 
-		# Output
+		# Flush output for file logging
 		sys.stdout.flush()
 
 		# Loop
-		while True:			
-			time.sleep( 0.1 )
+		while not brain.esc_key_pressed:
 
-			# Read accel X, Y, Z.
-#				accelX, accelY, accelZ = readTelemetryPackets(sbus)
+			# Read current IMU accelerometer X, Y, Z values.
+			accelX, accelY, accelZ = sbus.readIMU()
 
 			# Arm after one second
+			# TODO: Let controller always arm
 			arm = 500
 			if time.time()*1000 > armTime + 2000:
 				arm = 1000
 
-			if( brain and brain.up_key_pressed == True ):   v = 1.5
-			if( brain and brain.down_key_pressed == True ): v = -1.5
-			
-			v = functions.clamp( v, -1.5, 1.5 )
-			v = v * 0.99
-			
-			heading = math.pi
+			# Keyboard/brain moving forward, left, or right?
+			if( brain ):
+				if( brain.up_key_pressed == True ):   velocity += 0.15
+				if( brain.down_key_pressed == True ): velocity -= 0.15
+				if( brain.left_key_pressed == True ): velocity_right += 0.3
+				if( brain.right_key_pressed == True ): velocity_left += 0.3
 
-			# Calculate left and right wheel velocities based on velocity and heading
+			
+			# Calculate left and right wheel velocities
 			R = 0.1 # Radius of wheels
 			L = 0.1 # Linear distance between wheels
-			vel_left += v #(2.0 * v - heading * L ) / 2.0 * R
-			vel_right += v #(2.0 * v + heading * L ) / 2.0 * R
-			
-			if( brain and brain.left_key_pressed == True ): vel_right += 2
-			if( brain and brain.right_key_pressed == True ): vel_left += 2
+			#(2.0 * velocity - heading * L ) / 2.0 * R
+			#(2.0 * velocity + heading * L ) / 2.0 * R
 
-			vel_left = functions.clamp( vel_left, -100.0, 100.0 )
-			vel_right = functions.clamp( vel_right, -100.0, 100.0 )
-			vel_left *= 0.98
-			vel_right *= 0.98
-			
+			# Update velocity
+			velocity = functions.clamp( velocity, -100.0, 100.0 )
+			velocity = velocity * 0.998
+
+			# Update left and right velocities
+			velocity_left = functions.clamp( velocity_left, -100.0, 100.0 )
+			velocity_right = functions.clamp( velocity_right, -100.0, 100.0 )
+			velocity_left *= 0.998
+			velocity_right *= 0.998
+
+			# Read current wheel rotational angles
 			currentAngles = readCurrentAngles(sensors)
 
-			motorSpeeds[0] = vel_left
-			motorSpeeds[1] = vel_right
+			# Send motor speeds
+			motorSpeeds[0] = velocity + velocity_left
+			motorSpeeds[1] = velocity + velocity_right
 			motorSpeeds = clampMotorSpeeds(motorSpeeds)
-			#print( currentAngles[0] / 100, currentAngles[1] / 100, round( motorSpeeds[0] ), round( motorSpeeds[1]) )
-
-			# Throttle off to enable arming
-			motorSpeeds[2] = -150
-
-			# Move
+			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
 			if( sbus.sbus != 0 ):
 				sendMotorSpeeds(motorSpeeds, arm)
 
-			# Update simulator if present
+ 			# Update simulator
 			if( simulator ):
 				simulator.simStep( motorSpeeds )
 			
-			# Output 
+			# Display wheel angles and speeds
+			sys.stdout.write("\r\x1b[KAngles: %3d, %3d, Speeds: %3d, %3d" % 
+				(currentAngles[0] / 100, currentAngles[1] / 100, motorSpeeds[0], motorSpeeds[1] ) )
 			sys.stdout.flush()
+			
 
-		# Finish
+		# Finish up
 		GPIO.cleanup()
-
 
 # -------------
 # Functions
@@ -187,6 +200,8 @@ def sendMotorSpeeds( motorSpeedsIn, arm ):
 		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
 			go = True
 	try:
+		import RPi.GPIO as GPIO
+		global motorEnablePin
 		if( go ):
 			GPIO.output(motorEnablePin, GPIO.HIGH)
 		else:
