@@ -1,4 +1,5 @@
 #!/bin/bash
 
 chromium-browser 2> /dev/null > /dev/null &
+echo "Starting web browser..."
 
