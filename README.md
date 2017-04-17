@@ -31,7 +31,7 @@ Edit and print the 3D parts here.
 
 [Editable 3D design](https://www.tinkercad.com/things/afFL2ZvOf82-betabot)
 
-[STL file for 3D printing](3D/betabot.stl)
+[STL file for 3D printing](3D/Betabot.stl)
 
 ## Videos
 
