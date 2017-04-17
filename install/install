@@ -36,6 +36,9 @@ echo "Enabling serial bus."
 sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
 echo "Done."
 
+# Install Raspicam to capture video from C
+./install_camera
+
 # Install hdf5 for large model saving
 echo ""
 echo "Installing hdf5. This takes nearly 30 minutes on the pi."

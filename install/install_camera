@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "Installing Raspicam."
+
+# Install Raspicam to capture video from C
+git clone https://github.com/cedricve/raspicam &&
+cd raspicam && 
+mkdir build &&
+cd build &&
+cmake .. &&
+make &&
+sudo make install &&
+sudo ldconfig &&
+cd .. &&
+cd ..
+
+# Done
+echo "Done."
+
