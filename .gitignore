@@ -5,3 +5,4 @@ sim/0_VRDemoSettings.txt
 0_VRDemoSettings.txt
 install/tensorflow*
 *.log
+install/raspicam/
