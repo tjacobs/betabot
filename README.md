@@ -25,6 +25,24 @@ And here is the physics simulator. The Betabots are having a conference:
 
 ![image](docs/shot2.png)
 
+## 3D body
+
+Edit and print the 3D parts here.
+
+[Editable 3D design](https://www.tinkercad.com/things/afFL2ZvOf82-betabot)
+
+[STL file for 3D printing](3D/Betabot.stl)
+
+## Videos
+
+Work in progress...
+
+[Moving](https://www.instagram.com/p/BSNbtOvhLsf/?taken-by=tomjacobs83)
+
+[Upright](https://twitter.com/TomPJacobs/status/848138218755170305)
+
+[Inside](https://twitter.com/TomPJacobs/status/848136720797192192)
+
 ## How to build
 
 Take the 3D printed case, two motors, and six screws. Make sure the small magnets are still affixed to back of motor axels. Place one motor on the side with cables running through the hole in the case. Rotate until screw holes line up, and screw three screws in half way.
@@ -48,5 +66,4 @@ Take the battery charger board and slide it in over the top of the battery facin
 Take the top 3D printed cover and place it over the top of the body. Align the screw holes and screw the long screws in to affix the top. It should open freely to 120 degrees and close completely.
 
 Switch Betabot on. Betabot should wake up after a minute and come to life.
-
 
