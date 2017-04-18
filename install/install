@@ -18,6 +18,7 @@ sudo apt-get install -y git
 git config --global push.default simple
 sudo pip install -q python_Xlib
 sudo pip install -q pynput
+sudo pip3 install -q pynput
 echo "Done."
 
 # Install the global Betabot script link
@@ -40,10 +41,8 @@ echo "Done."
 ./install_camera
 
 # Install hdf5 for large model saving
-echo ""
-echo "Installing hdf5. This takes nearly 30 minutes on the pi."
-sudo apt-get install -y hdf5-tools libhdf5-serial-dev
-sudo pip install h5py
+# This takes about half an hour.
+./install_hdf5
 
 # Done
 echo ""
