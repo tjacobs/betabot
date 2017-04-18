@@ -93,7 +93,7 @@ def main():
 		sys.stdout.flush()
 
 		# Loop
-		while not brain.esc_key_pressed:
+		while not keyboard.esc_key_pressed:
 
 			# Read current IMU accelerometer X, Y, Z values.
 			accelX, accelY, accelZ = sbus.readIMU()
@@ -107,9 +107,14 @@ def main():
 			# Keyboard/brain moving forward, left, or right?
 			if( brain ):
 				if( brain.up_key_pressed == True ):   velocity += 0.15
-				if( brain.down_key_pressed == True ): velocity -= 0.15
+#				if( brain.down_key_pressed == True ): velocity -= 0.15
 				if( brain.left_key_pressed == True ): velocity_right += 0.3
 				if( brain.right_key_pressed == True ): velocity_left += 0.3
+			if( keyboard ):
+				if( keyboard.up_key_pressed == True ):   velocity += 0.5
+#				if( keyboard.down_key_pressed == True ): velocity -= 0.5
+				if( keyboard.left_key_pressed == True ): velocity_right += 0.5
+				if( keyboard.right_key_pressed == True ): velocity_left += 0.5
 
 			# Calculate left and right wheel velocities
 			#R = 0.1 # Radius of wheels
@@ -118,23 +123,24 @@ def main():
 			#(2.0 * velocity + heading * L ) / 2.0 * R
 
 			# Update velocity
-			velocity = functions.clamp( velocity, -100.0, 100.0 )
-			velocity = velocity * 0.998
+			velocity = functions.clamp( velocity, -40.0, 40.0 )
+			velocity = velocity * 0.95
 
 			# Update left and right velocities
-			velocity_left = functions.clamp( velocity_left, -100.0, 100.0 )
-			velocity_right = functions.clamp( velocity_right, -100.0, 100.0 )
-			velocity_left *= 0.998
-			velocity_right *= 0.998
+			velocity_left = functions.clamp( velocity_left, -40.0, 40.0 )
+			velocity_right = functions.clamp( velocity_right, -40.0, 40.0 )
+			velocity_left *= 0.95
+			velocity_right *= 0.95
 
 			# Read current wheel rotational angles
 			currentAngles = functions.readCurrentAngles(sensors)
 
 			# Send motor speeds
-			motorSpeeds[0] = velocity + velocity_left
-			motorSpeeds[1] = velocity + velocity_right
-			motorSpeeds[3] = 10
-			if( velocity > 50 ): motorSpeeds[3] = -10
+			motorSpeeds[0] = -( velocity + velocity_right )
+			motorSpeeds[1] = -( velocity + velocity_left )
+#			motorSpeeds[3] = 0
+#			if( velocity > 50 ): motorSpeeds[3] = 30
+#			if( velocity < -50 ): motorSpeeds[3] = -30
 			motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
 			if( sbus.sbus ):
