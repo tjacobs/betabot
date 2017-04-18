@@ -7,7 +7,7 @@ print( "Starting Betabot." )
 # What shall we enable?
 ENABLE_SIMULATOR = False
 ENABLE_BRAIN = True
-ENABLE_KEYBOARD = False
+ENABLE_KEYBOARD = True
 
 # Imports
 import sys
@@ -111,10 +111,9 @@ def main():
 				if( brain.left_key_pressed == True ): velocity_right += 0.3
 				if( brain.right_key_pressed == True ): velocity_left += 0.3
 
-			
 			# Calculate left and right wheel velocities
-			R = 0.1 # Radius of wheels
-			L = 0.1 # Linear distance between wheels
+			#R = 0.1 # Radius of wheels
+			#L = 0.1 # Linear distance between wheels
 			#(2.0 * velocity - heading * L ) / 2.0 * R
 			#(2.0 * velocity + heading * L ) / 2.0 * R
 
@@ -129,15 +128,17 @@ def main():
 			velocity_right *= 0.998
 
 			# Read current wheel rotational angles
-			currentAngles = readCurrentAngles(sensors)
+			currentAngles = functions.readCurrentAngles(sensors)
 
 			# Send motor speeds
 			motorSpeeds[0] = velocity + velocity_left
 			motorSpeeds[1] = velocity + velocity_right
-			motorSpeeds = clampMotorSpeeds(motorSpeeds)
+			motorSpeeds[3] = 10
+			if( velocity > 50 ): motorSpeeds[3] = -10
+			motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
-			if( sbus.sbus != 0 ):
-				sendMotorSpeeds(motorSpeeds, arm)
+			if( sbus.sbus ):
+				functions.sendMotorSpeeds(sbus, motorSpeeds, arm)
 
  			# Update simulator
 			if( simulator ):
@@ -152,65 +153,6 @@ def main():
 		# Finish up
 		GPIO.cleanup()
 
-# -------------
-# Functions
-
-t = 0.0
-targetAngles = [0] * 8
-def updateTargetAngles( vel_left, vel_right ):
-	global targetAngles, t
-	targetAngles[0] = int( (t * 16384.0 / 2000.0) % 16384 )
-	targetAngles[1] = int( (t * 16384.0 / 2000.0) % 16384 )
-	t += 1.0
-	return targetAngles
-
-def calculatePs( currentAngles, targetAngles ):
-	Ps = [0] * len( targetAngles )
-	P_rate = 0.05
-	for i in range(len(targetAngles)):
-		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
-	return Ps
-	
-	
-# -------------
-# Betabot functions
-
-def readCurrentAngles(sensors):
-	currentAngles = [0] * 8
-	try:
-		for i in range(4):
-			currentAngles[i] = sensors.getAngle(i+1)
-	except:
-		return currentAngles
-	return currentAngles
-
-def clampMotorSpeeds( motorSpeeds ):
-	minSpeed = -100
-	maxSpeed = 100
-	for i in range(len(motorSpeeds)):
-		motorSpeeds[i] = max(min(motorSpeeds[i], maxSpeed), minSpeed)
-	return motorSpeeds
-
-def sendMotorSpeeds( motorSpeedsIn, arm ):
-
-	motorSpeeds = [0] * 8
-	go = False
-	for i in range(len(motorSpeedsIn)):
-		motorSpeeds[i] = int(motorSpeedsIn[i])
-		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
-			go = True
-	try:
-		import RPi.GPIO as GPIO
-		global motorEnablePin
-		if( go ):
-			GPIO.output(motorEnablePin, GPIO.HIGH)
-		else:
-			GPIO.output(motorEnablePin, GPIO.LOW)
-	except NameError:
-		pass
-
-	middle = 995
-	sbus.sendSBUSPacket( [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 
 # Go
 if __name__=="__main__":

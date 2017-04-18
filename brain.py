@@ -15,13 +15,21 @@ def brain():
 	print( "Starting brain." )
 	time.sleep( 4 )
 	while True:
-		print( "\nUp" )
+		print( "\nForward" )
 		up_key_pressed = True
-		time.sleep( 15 )
+		time.sleep( 5 )
 
 		print( "\nStop" )
 		up_key_pressed = False
-		time.sleep( 10 )
+		time.sleep( 1 )
+
+		print( "\nTurn right" )
+		right_key_pressed = True
+		time.sleep( 1 )
+
+		print( "\nStop" )
+		right_key_pressed = False
+		time.sleep( 1 )
 
 try:
 	import thread
