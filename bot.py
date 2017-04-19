@@ -41,7 +41,6 @@ if ENABLE_SIMULATOR:
 # Variables
 armTime = time.time()*1000
 motorSpeeds = [0] * 8
-motorEnablePin = 18 # Broadcom pin 18
 
 # Go
 def main():
@@ -52,17 +51,17 @@ def main():
 			import RPi.GPIO as GPIO
 			GPIO.setwarnings(False)
 			GPIO.setmode(GPIO.BCM)
-			GPIO.setup(motorEnablePin, GPIO.OUT)
-			GPIO.output(motorEnablePin, GPIO.LOW)
+			GPIO.setup(functions.motorEnablePin, GPIO.OUT)
+			GPIO.output(functions.motorEnablePin, GPIO.LOW)
 
 			# Test
-			if( True ):
+			if( False ):
 				time.sleep( 0.2 )
 				sys.stdout.write("\r\x1b[KTest: Motors on." )
-				GPIO.output(motorEnablePin, GPIO.HIGH)
+				GPIO.output(functions.motorEnablePin, GPIO.HIGH)
 				time.sleep( 2 )
 				sys.stdout.write("\r\x1b[KTest: Motors off." )
-				GPIO.output(motorEnablePin, GPIO.LOW)
+				GPIO.output(functions.motorEnablePin, GPIO.LOW)
 				time.sleep( 1 )
 				sys.stdout.write("\n" )
 
@@ -97,6 +96,7 @@ def main():
 
 			# Read current IMU accelerometer X, Y, Z values.
 			accelX, accelY, accelZ = sbus.readIMU()
+#			print( "\n X:" + str( accelX ) )
 
 			# Arm after one second
 			# TODO: Let controller always arm
@@ -107,14 +107,22 @@ def main():
 			# Keyboard/brain moving forward, left, or right?
 			if( brain ):
 				if( brain.up_key_pressed == True ):   velocity += 0.15
-#				if( brain.down_key_pressed == True ): velocity -= 0.15
-				if( brain.left_key_pressed == True ): velocity_right += 0.3
-				if( brain.right_key_pressed == True ): velocity_left += 0.3
+				if( brain.down_key_pressed == True ): velocity -= 0.15
+				if( brain.left_key_pressed == True ):
+					velocity_right += 0.3
+					velocity_left -= 0.3
+				if( brain.right_key_pressed == True ):
+					velocity_left += 0.3
+					velocity_right -= 0.3
 			if( keyboard ):
-				if( keyboard.up_key_pressed == True ):   velocity += 0.5
-#				if( keyboard.down_key_pressed == True ): velocity -= 0.5
-				if( keyboard.left_key_pressed == True ): velocity_right += 0.5
-				if( keyboard.right_key_pressed == True ): velocity_left += 0.5
+				if( keyboard.up_key_pressed == True ):   velocity += 0.3
+				if( keyboard.down_key_pressed == True ): velocity -= 0.3
+				if( keyboard.left_key_pressed == True ): 
+					velocity_right += 0.5
+					velocity_left -= 0.5
+				if( keyboard.right_key_pressed == True ):
+					velocity_left += 0.5
+					velocity_right -= 0.5
 
 			# Calculate left and right wheel velocities
 			#R = 0.1 # Radius of wheels
@@ -123,12 +131,12 @@ def main():
 			#(2.0 * velocity + heading * L ) / 2.0 * R
 
 			# Update velocity
-			velocity = functions.clamp( velocity, -40.0, 40.0 )
-			velocity = velocity * 0.95
+			velocity = functions.clamp( velocity, -80.0, 80.0 )
+			velocity = velocity * 0.98
 
 			# Update left and right velocities
-			velocity_left = functions.clamp( velocity_left, -40.0, 40.0 )
-			velocity_right = functions.clamp( velocity_right, -40.0, 40.0 )
+			velocity_left = functions.clamp( velocity_left, -80.0, 80.0 )
+			velocity_right = functions.clamp( velocity_right, -80.0, 80.0 )
 			velocity_left *= 0.95
 			velocity_right *= 0.95
 
@@ -138,9 +146,6 @@ def main():
 			# Send motor speeds
 			motorSpeeds[0] = -( velocity + velocity_right )
 			motorSpeeds[1] = -( velocity + velocity_left )
-#			motorSpeeds[3] = 0
-#			if( velocity > 50 ): motorSpeeds[3] = 30
-#			if( velocity < -50 ): motorSpeeds[3] = -30
 			motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
 			if( sbus.sbus ):

@@ -24,6 +24,7 @@ def clampMotorSpeeds( motorSpeeds ):
 
 # Send the motor speeds to the motors
 # And enable the motors if any have any speed
+motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside of the Pi
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	motorSpeeds = [0] * 8
 	go = False
@@ -39,6 +40,8 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 		else:
 			GPIO.output(motorEnablePin, GPIO.LOW)
 	except NameError:
+		import sys
+		print( sys.exc_info() )
 		pass
 	middle = 995
 	sbus.sendSBUSPacket( [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
