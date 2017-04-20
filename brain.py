@@ -1,6 +1,11 @@
 import time
 import sys
+import cv2
 import keras
+import picamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
+import brain_model
 
 # This is how we output our will, for now
 up_key_pressed = False
@@ -12,21 +17,40 @@ right_velocity = 0
 
 def brain():
 	global left_velocity, right_velocity
+
+	model = brain_model.model()
 	
 	# Load our brain
 	model_path = "brain.model"
 	try:
 		model = keras.models.load_model( model_path )
 	except:
-		print( "Error loading brain. That could be a problem." )
-		print( sys.exc_info() )
+#		print( "Error loading brain. That could be a problem." )
+#		print( sys.exc_info() )
+		pass
 
 	# Brain loop
-	while True:
+	if True:
 		# What can we see?
-		image = []
+		camera = PiCamera()
+		rawCapture = PiRGBArray(camera)		
+		time.sleep(0.1)
+		camera.capture(rawCapture, format="bgr")
+		image = rawCapture.array
 		
-
+		#cv2.imshow( "Image", image )
+		#cv2.waitKey(0)
+		
+		# Get a camera image
+		#cap = cv2.VideoCapture(0)
+		#fps = cap.get(5)
+		#print( "FPS" + str( fps ) )
+		#ret, frame = cap.read()
+		#print( ret )
+		#print( frame )
+		#cv2.imshow( 'frame', frame )
+		#print( "Done" )
+		
 		# Use our brain
 		outputs = model.predict( image[None, :, :, :] )
 		left_v, right_v = outputs[0]

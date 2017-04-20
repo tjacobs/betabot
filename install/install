@@ -11,11 +11,14 @@ sudo apt-get update
 sudo apt-get upgrade
 echo "Done."
 
-# Install git
+# Install
 echo ""
 echo "Installing requirements."
 sudo apt-get install -y git
 git config --global push.default simple
+sudo apt-get install -y python-picamera python3-picamera
+sudo apt-get install -y python-opencv
+sudo pip install picamera[array]
 sudo pip install -q python_Xlib
 sudo pip install -q pynput
 sudo pip3 install -q pynput
@@ -30,6 +33,8 @@ echo ""
 echo "Installing system scripts."
 sudo ln /home/pi/betabot/betabot /bin/betabot -fs
 sudo ln /home/pi/betabot/install/go /bin/go -fs
+sudo ln /home/pi/betabot/reboot /bin/reboot -fs
+sudo ln /home/pi/betabot/off /bin/off -fs
 sudo ln /home/pi/betabot/install/web /bin/web -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 echo "Done."

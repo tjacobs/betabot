@@ -5,9 +5,9 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = True
+ENABLE_SIMULATOR = False
 ENABLE_BRAIN = True
-ENABLE_KEYBOARD = False
+ENABLE_KEYBOARD = True
 
 # Imports
 import sys

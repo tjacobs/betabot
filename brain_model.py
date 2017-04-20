@@ -35,4 +35,3 @@ def model():
 	model.compile(optimizer="adam", loss="mse")
 	return model
 
-model()
