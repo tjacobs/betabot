@@ -1,4 +1,5 @@
 import time
+import sys
 
 # Keyboard handling
 up_key_pressed = False
