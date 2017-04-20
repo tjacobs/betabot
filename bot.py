@@ -5,9 +5,9 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = False
+ENABLE_SIMULATOR = True
 ENABLE_BRAIN = True
-ENABLE_KEYBOARD = True
+ENABLE_KEYBOARD = False
 
 # Imports
 import sys
@@ -24,6 +24,8 @@ from sensors import AMS
 from sbus import SBUS
 if ENABLE_KEYBOARD:
 	import keyboard
+else:
+	keyboard = 0
 if ENABLE_BRAIN:
 	import brain
 
@@ -67,7 +69,7 @@ def main():
 
 		except:
 			print( "Error: No Raspberry Pi GPIO available." )
-			print( sys.exc_info() )
+#			print( sys.exc_info() )
 
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
@@ -92,7 +94,7 @@ def main():
 		sys.stdout.flush()
 
 		# Loop
-		while not keyboard.esc_key_pressed:
+		while not keyboard or not keyboard.esc_key_pressed:
 
 			# Read current IMU accelerometer X, Y, Z values.
 			accelX, accelY, accelZ = sbus.readIMU()

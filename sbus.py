@@ -73,7 +73,7 @@ class SBUS():
 		serial = self.sbus
 		accelX, accelY, accelZ = 0, 0, 0
 #		print( "Bytes waiting in serial input: " + str( serial.inWaiting() ) )
-		while( serial.inWaiting() > 0 ):
+		while( serial and serial.inWaiting() > 0 ):
 			x = serial.read( )
 	#		if( x == PROTOCOL_HEADER ):
 			if( True ):
