@@ -1,13 +1,43 @@
 import time
 import sys
+import keras
 
-# Keyboard handling
+# This is how we output our will, for now
 up_key_pressed = False
 down_key_pressed = False
 left_key_pressed = False
 right_key_pressed = False
+left_velocity = 0
+right_velocity = 0
 
 def brain():
+	global left_velocity, right_velocity
+	
+	# Load our brain
+	model_path = "brain.model"
+	try:
+		model = keras.models.load_model( model_path )
+	except:
+		print( "Error loading brain. That could be a problem." )
+		print( sys.exc_info() )
+
+	# Brain loop
+	while True:
+		# What can we see?
+		image = []
+		
+
+		# Use our brain
+		outputs = model.predict( image[None, :, :, :] )
+		left_v, right_v = outputs[0]
+		left_velocity = left_v * 10
+		right_velocity = right_v * 10
+		print( "Right: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
+		time.sleep( 0.1 )
+
+	
+# Rename this to brain() for some simple movement
+def old_brain():
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
 	
 	# Start
