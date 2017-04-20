@@ -72,13 +72,8 @@ class SBUS():
 	def readIMU( self ):
 		serial = self.sbus
 		accelX, accelY, accelZ = 0, 0, 0
-<<<<<<< Updated upstream
 #		print( "Bytes waiting in serial input: " + str( serial.inWaiting() ) )
-		while( serial.inWaiting() > 0 ):
-=======
-#		print( "..." + str( serial.inWaiting() ) )
 		while( serial and serial.inWaiting() > 0 ):
->>>>>>> Stashed changes
 			x = serial.read( )
 	#		if( x == PROTOCOL_HEADER ):
 			if( True ):
