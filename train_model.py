@@ -13,13 +13,20 @@ def load_training_data():
 
 	X = [] # Images
 	y = [] # (left velocity, right velocity)
-
+	
 	filenames = glob.glob( "memories/*.jpg" )
 	for filename in filenames:
 		image = Image.open( filename )
 		image_array = np.array( image )
 		X.append( image_array )
-		y.append( ( 2, 3 ) )	
+		y.append( ( 1, 3 ) )	
+
+	filenames = glob.glob( "memories2/*.jpg" )
+	for filename in filenames:
+		image = Image.open( filename )
+		image_array = np.array( image )
+		X.append( image_array )
+		y.append( ( 3, 1 ) )	
 
 	return np.array(X), np.array(y)
 
@@ -29,7 +36,7 @@ def train():
 
 	callbacks = [
 		keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0),
-		keras.callbacks.ModelCheckpoint("best_brain", monitor='val_loss', save_best_only=True, verbose=0)
+		keras.callbacks.ModelCheckpoint("best_brain.model", monitor='val_loss', save_best_only=True, verbose=0)
 	]
 
 	# Load training data
@@ -37,9 +44,9 @@ def train():
 	print( "Found %d memories" % len(X) )
 
 	# Train!
-	history = model.fit(X, y, epochs=10, batch_size=128, validation_split=0.2, callbacks=callbacks)
+	history = model.fit(X, y, epochs=20, batch_size=10, validation_split=0.2, callbacks=callbacks)
 
-	model.save( "brainy.model" )
+	model.save( "brain.model" )
 
 
 train()

@@ -16,15 +16,13 @@ right_velocity = 0
 def brain():
 	global left_velocity, right_velocity
 
-	model = brain_model.model()
-	
 	# Load our brain
 	model_path = "brain.model"
 	try:
 		model = keras.models.load_model( model_path )
 	except:
-#		print( "Error loading brain. That could be a problem." )
-#		print( sys.exc_info() )
+		print( "Error loading brain. That could be a problem." )
+		print( sys.exc_info() )
 		pass
 
 	# Brain loop
@@ -36,10 +34,9 @@ def brain():
 		# Use our brain
 		outputs = model.predict( frame[None, :, :, :] )
 		left_v, right_v = outputs[0]
-		left_velocity = left_v * 10
-		right_velocity = right_v * 10
+		left_velocity = left_v * 1.0
+		right_velocity = right_v * 1.0
 		print( "\nRight: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
-	#	time.sleep( 1 )
 	print( "Brain done" )
 
 	
