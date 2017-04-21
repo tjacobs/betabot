@@ -28,7 +28,7 @@ def on_release(key):
 
 def keyboard_listener():
 	time.sleep( 3 )
-	print( "\nStarting keyboard listening." )
+	print( "Using keyboard." )
 	try:
 		from pynput import keyboard
 		with keyboard.Listener(

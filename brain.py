@@ -2,9 +2,7 @@ import time
 import sys
 import cv2
 import keras
-import picamera
-from picamera.array import PiRGBArray
-from picamera import PiCamera
+import camera
 import brain_model
 
 # This is how we output our will, for now
@@ -30,34 +28,19 @@ def brain():
 		pass
 
 	# Brain loop
-	if True:
+	while True:
 		# What can we see?
-		camera = PiCamera()
-		rawCapture = PiRGBArray(camera)		
-		time.sleep(0.1)
-		camera.capture(rawCapture, format="bgr")
-		image = rawCapture.array
-		
-		#cv2.imshow( "Image", image )
-		#cv2.waitKey(0)
-		
-		# Get a camera image
-		#cap = cv2.VideoCapture(0)
-		#fps = cap.get(5)
-		#print( "FPS" + str( fps ) )
-		#ret, frame = cap.read()
-		#print( ret )
-		#print( frame )
-		#cv2.imshow( 'frame', frame )
-		#print( "Done" )
+		frame = camera.getFrame()
+		#camera.showFrame( frame )
 		
 		# Use our brain
-		outputs = model.predict( image[None, :, :, :] )
+		outputs = model.predict( frame[None, :, :, :] )
 		left_v, right_v = outputs[0]
 		left_velocity = left_v * 10
 		right_velocity = right_v * 10
-		print( "Right: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
-		time.sleep( 0.1 )
+		print( "\nRight: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
+	#	time.sleep( 1 )
+	print( "Brain done" )
 
 	
 # Rename this to brain() for some simple movement
