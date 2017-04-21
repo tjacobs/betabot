@@ -12,7 +12,7 @@ def startCamera():
 	global rawCapture, picamera
 	picamera = PiCamera()
 	picamera.resolution = (160, 128)
-	rawCapture = PiRGBArray(picamera, size=(160, 120))
+	rawCapture = PiRGBArray(picamera, size=(160, 128))
 	#time.sleep(2)
 
 def saveFrame(filepath):

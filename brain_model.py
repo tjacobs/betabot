@@ -4,7 +4,7 @@ from keras.layers import Convolution2D, Dense, Activation, Flatten, Lambda, ELU,
 
 def model():
 
-	row, col, ch = 160, 120, 3
+	row, col, ch = 160, 128, 3
 
 	# The model
 	model = Sequential()
