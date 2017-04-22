@@ -6,7 +6,7 @@ import camera
 def remember():
 	i = 1
 	while i < 11 :
-		camera.saveFrame( "memories/%05d.jpg" % i )
+		camera.saveFrame( "memories2/%05d.jpg" % i )
 		i += 1
 
 remember()	

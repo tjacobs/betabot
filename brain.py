@@ -36,7 +36,12 @@ def brain():
 		left_v, right_v = outputs[0]
 		left_velocity = left_v * 1.0
 		right_velocity = right_v * 1.0
-		print( "\nRight: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
+		#print( "\nRight: " + str( right_velocity ) + "  Left: " + str( left_velocity ) )
+		if right_v > left_v:
+			print( "Right. " )
+		else:
+			print( "Left. " )
+		
 	print( "Brain done" )
 
 	

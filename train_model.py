@@ -19,14 +19,14 @@ def load_training_data():
 		image = Image.open( filename )
 		image_array = np.array( image )
 		X.append( image_array )
-		y.append( ( 1, 3 ) )	
+		y.append( ( 0, 1 ) )	
 
 	filenames = glob.glob( "memories2/*.jpg" )
 	for filename in filenames:
 		image = Image.open( filename )
 		image_array = np.array( image )
 		X.append( image_array )
-		y.append( ( 3, 1 ) )	
+		y.append( ( 1, 0 ) )	
 
 	return np.array(X), np.array(y)
 
