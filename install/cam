@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/opt/vc/bin/raspivid -d 
+
