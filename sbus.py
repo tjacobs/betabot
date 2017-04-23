@@ -19,6 +19,29 @@ class SBUS():
 		except:
 			print( "Error: Cannot read serial. Please enable serial in raspi-config." )
 
+		# Motor enable pin
+		try:
+			import RPi.GPIO as GPIO
+			GPIO.setwarnings(False)
+			GPIO.setmode(GPIO.BCM)
+			GPIO.setup(functions.motorEnablePin, GPIO.OUT)
+			GPIO.output(functions.motorEnablePin, GPIO.LOW)
+
+			# Test
+			if( False ):
+				time.sleep( 0.2 )
+				sys.stdout.write("\r\x1b[KTest: Motors on." )
+				GPIO.output(functions.motorEnablePin, GPIO.HIGH)
+				time.sleep( 2 )
+				sys.stdout.write("\r\x1b[KTest: Motors off." )
+				GPIO.output(functions.motorEnablePin, GPIO.LOW)
+				time.sleep( 1 )
+				sys.stdout.write("\n" )
+
+		except:
+			print( "Error: Missing Raspberry Pi GPIO." )
+			
+
 	def sendSBUSPacket(self, channelValues):
 
 		# 16 blank channels, copy as many channels as given
