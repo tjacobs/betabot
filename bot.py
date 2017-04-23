@@ -6,8 +6,8 @@ print( "Starting Betabot." )
 
 # What shall we enable?
 ENABLE_SIMULATOR = False
-ENABLE_BRAIN = True
-ENABLE_KEYBOARD = True
+ENABLE_BRAIN = False
+ENABLE_KEYBOARD = False
 
 # Imports
 import sys
@@ -70,7 +70,7 @@ def main():
 				sys.stdout.write("\n" )
 
 		except:
-			print( "Error: No Raspberry Pi GPIO available." )
+			print( "Error: Missing Raspberry Pi GPIO." )
 
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()

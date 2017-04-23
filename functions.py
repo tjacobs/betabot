@@ -41,8 +41,6 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 			GPIO.output(motorEnablePin, GPIO.HIGH)
 		else:
 			GPIO.output(motorEnablePin, GPIO.LOW)
-	except NameError:
-		import sys
-		print( sys.exc_info() )
+	except:
 		pass
 

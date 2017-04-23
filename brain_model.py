@@ -1,6 +1,8 @@
-from keras.models import Sequential
-from keras.layers import Convolution2D, Dense, Activation, Flatten, Lambda, ELU, Dropout
-
+try:
+	from keras.models import Sequential
+	from keras.layers import Convolution2D, Dense, Activation, Flatten, Lambda, ELU, Dropout
+except:
+	pass
 
 def model():
 

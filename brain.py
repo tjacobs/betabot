@@ -1,7 +1,9 @@
 import time
 import sys
-import cv2
-import keras
+try:
+	import keras
+except:
+	print( "Error: Missing Keras for our brain." )
 import camera
 import brain_model
 
