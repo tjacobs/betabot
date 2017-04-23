@@ -36,6 +36,7 @@ sudo ln /home/pi/betabot/install/go /bin/go -fs
 sudo ln /home/pi/betabot/reboot /bin/reboot -fs
 sudo ln /home/pi/betabot/off /bin/off -fs
 sudo ln /home/pi/betabot/install/cam /bin/cam -fs
+sudo ln /home/pi/betabot/install/config /bin/config -fs
 sudo ln /home/pi/betabot/install/web /bin/web -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 echo "cd betabot" >> ~/.bashrc

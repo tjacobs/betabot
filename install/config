@@ -1,0 +1,5 @@
+#!/bin/bash
+
+/usr/bin/chromium-browser --profile-directory=Default --app-id=kdaghagfopacdngbohiknlhcocjccjao 2> /dev/null &
+echo "Starting controller configurator..."
+
