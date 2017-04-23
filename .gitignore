@@ -6,4 +6,4 @@ sim/0_VRDemoSettings.txt
 install/tensorflow*
 *.log
 install/raspicam/
-memories/
+memories*/

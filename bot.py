@@ -16,38 +16,40 @@ import math
 import array
 import datetime
 import functions
+import walk
+
 
 # Import Betabot I/O
-sbus = 0
-brain = 0
+sbus = None
+brain = None
+keyboard = None
 from sensors import AMS
 from sbus import SBUS
 if ENABLE_KEYBOARD:
 	import keyboard
-else:
-	keyboard = 0
 if ENABLE_BRAIN:
 	import brain
 
 # Import simulator
-simulator = 0
+simulator = None
 if ENABLE_SIMULATOR:
 	try:
-		import sys
 		sys.path.append( 'sim' )
 		from simulator import Simulator
+		simulator = Simulator()
 	except:
 		print( "Simulator unavailable." )
 		print( sys.exc_info() )
 
 # Variables
 armTime = time.time()*1000
-motorSpeeds = [0] * 8
+motorSpeeds = [0] * 4
 
 # Go
 def main():
 		global motorSpeeds, simulator, sbus
 
+		# TODO: MOve to motors.py
 		# Motor enable pin
 		try:
 			import RPi.GPIO as GPIO
@@ -69,7 +71,6 @@ def main():
 
 		except:
 			print( "Error: No Raspberry Pi GPIO available." )
-#			print( sys.exc_info() )
 
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
@@ -78,12 +79,6 @@ def main():
 		# Talk to motor controller via serial UART SBUS
 		sbus = SBUS()
 		sbus.connect()
-
-		# Start simulator if loaded
-		try:
-			simulator = Simulator()
-		except:
-			pass
 
 		# Init motor speeds
 		velocity = 0.0
@@ -144,22 +139,27 @@ def main():
 
 			# Read current wheel rotational angles
 			currentAngles = functions.readCurrentAngles(sensors)
+			
+			# Figure out where our hips should be
+			targetAngles = walk.updateTargetAngles( 10, 0 )
+			
+			# Run our PID controller
+			motorSpeeds = walk.calculateMovement( currentAngles, targetAngles )
 
 			# Send motor speeds
 			motorSpeeds[0] = -( velocity + velocity_right )
 			motorSpeeds[1] = -( velocity + velocity_left )
+			motorSpeeds[3] = 0
 			motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
-			if( sbus.sbus ):
-				functions.sendMotorSpeeds(sbus, motorSpeeds, arm)
+			functions.sendMotorSpeeds(sbus, motorSpeeds, arm)
 
  			# Update simulator
-			if( simulator ):
-				simulator.simStep( motorSpeeds )
+			if( simulator ): simulator.simStep( motorSpeeds )
 			
 			# Display wheel angles and speeds
-			sys.stdout.write("\r\x1b[KAngles: %3d, %3d, Speeds: %3d, %3d" % 
-				(currentAngles[0] / 100, currentAngles[1] / 100, motorSpeeds[0], motorSpeeds[1] ) )
+			sys.stdout.write("\r\x1b[KHip Angles: %3d, %3d, Hip targets: %3d, %3d, Speeds: %3d, %3d" % 
+				(currentAngles[0] / 100, currentAngles[1] / 100, targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 			sys.stdout.flush()
 			
 
