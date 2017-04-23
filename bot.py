@@ -5,7 +5,7 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = False
+ENABLE_SIMULATOR = True
 ENABLE_BRAIN = False
 ENABLE_KEYBOARD = False
 
