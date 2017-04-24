@@ -42,7 +42,7 @@ class Simulator():
 #		p.loadURDF("sim/data/duck.urdf", -2, 0, 0.5)
 
 		# Load model
-		self.betabot = p.loadURDF("betabot_ws/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
+		self.betabot = p.loadURDF("ros/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
 
 		# Map joint names to ids
 		nJoints = p.getNumJoints(self.betabot)
