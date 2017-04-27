@@ -5,9 +5,9 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = True
+ENABLE_SIMULATOR = False
 ENABLE_BRAIN = False
-ENABLE_KEYBOARD = False
+ENABLE_KEYBOARD = True
 
 # Imports
 import sys
@@ -144,7 +144,11 @@ def main():
 			
 
 		# Finish up
-		GPIO.cleanup()
+		try:
+			import RPi.GPIO as GPIO
+			GPIO.cleanup()
+		except:
+			pass
 
 
 # Go

@@ -27,7 +27,7 @@ def on_release(key):
 	if( key == keyboard.Key.esc ): esc_key_pressed = False
 
 def keyboard_listener():
-	time.sleep( 3 )
+	time.sleep( 0 )
 	print( "Using keyboard." )
 	try:
 		from pynput import keyboard

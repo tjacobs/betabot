@@ -1,5 +1,7 @@
 # ----------
 # SBUS functions
+import sys
+import functions
 
 class SBUS():
 	def __init__(self):
@@ -40,6 +42,7 @@ class SBUS():
 
 		except:
 			print( "Error: Missing Raspberry Pi GPIO." )
+			print( sys.exc_info() )
 			
 
 	def sendSBUSPacket(self, channelValues):
@@ -95,19 +98,24 @@ class SBUS():
 	def readIMU( self ):
 		serial = self.sbus
 		accelX, accelY, accelZ = 0, 0, 0
-#		print( "Bytes waiting in serial input: " + str( serial.inWaiting() ) )
-		while( serial and serial.inWaiting() > 0 ):
+		waiting = serial.inWaiting()
+		if( waiting > 0 ):
+			print( "Bytes waiting in serial input: " + str( waiting ) )
+		while( serial and waiting > 0 ):
 			x = serial.read( )
-	#		if( x == PROTOCOL_HEADER ):
-			if( True ):
+			print( ord( x ) )
+#	#		if( x == PROTOCOL_HEADER ):
+			if( False ):
 				packet = serial.read( )
-				#print( str( ord( packet ) ) )
+				print( packet )
+#				print( str( ord( packet ) ) )
 				if( packet == ID_ACC_X ):
 					accelX = read16( serial )
 				if( packet == ID_ACC_Y ):
 					accelY = read16( serial )
 				if( packet == ID_ACC_Z ):
 					accelZ = read16( serial )
+			waiting = serial.inWaiting()
 		return accelX, accelY, accelZ
 
 # ----------
