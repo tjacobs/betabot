@@ -13,12 +13,12 @@ except:
 rawCapture = None
 picamera = None
 
-def startCamera():
+def startCamera( resolution=(160, 128) ):
 	global rawCapture, picamera
 	try:
 		picamera = PiCamera()
-		picamera.resolution = (160, 128)
-		rawCapture = PiRGBArray(picamera, size=(160, 128))
+		picamera.resolution = resolution
+		rawCapture = PiRGBArray(picamera, size=resolution)
 	except:
 		picamera = None
 
@@ -31,12 +31,11 @@ def getFrame():
 	global rawCapture, picamera
 	if rawCapture:
 		rawCapture.truncate(0)
-		picamera.capture(rawCapture, format="rgb") #, resize=(640, 360))
+		picamera.capture(rawCapture, format="bgr") #, resize=(640, 360))
 		return rawCapture.array
 
 def showFrame(image):
 	cv2.imshow( "Image", image )
 	cv2.waitKey(0)
 
-startCamera()
 
