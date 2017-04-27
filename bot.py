@@ -5,9 +5,9 @@
 print( "Starting Betabot." )
 
 # What shall we enable?
-ENABLE_SIMULATOR = False
-ENABLE_BRAIN = True
-ENABLE_KEYBOARD = True
+ENABLE_SIMULATOR = True
+ENABLE_BRAIN = False
+ENABLE_KEYBOARD = False
 
 # Imports
 import sys
@@ -49,34 +49,11 @@ motorSpeeds = [0] * 4
 def main():
 		global motorSpeeds, simulator, sbus
 
-		# TODO: MOve to motors.py
-		# Motor enable pin
-		try:
-			import RPi.GPIO as GPIO
-			GPIO.setwarnings(False)
-			GPIO.setmode(GPIO.BCM)
-			GPIO.setup(functions.motorEnablePin, GPIO.OUT)
-			GPIO.output(functions.motorEnablePin, GPIO.LOW)
-
-			# Test
-			if( False ):
-				time.sleep( 0.2 )
-				sys.stdout.write("\r\x1b[KTest: Motors on." )
-				GPIO.output(functions.motorEnablePin, GPIO.HIGH)
-				time.sleep( 2 )
-				sys.stdout.write("\r\x1b[KTest: Motors off." )
-				GPIO.output(functions.motorEnablePin, GPIO.LOW)
-				time.sleep( 1 )
-				sys.stdout.write("\n" )
-
-		except:
-			print( "Error: No Raspberry Pi GPIO available." )
-
 		# Talk to motor angle sensors via I2C
 		sensors = AMS()
 		sensors.connect(1)
 
-		# Talk to motor controller via serial UART SBUS
+		# Talk to motors via serial UART SBUS
 		sbus = SBUS()
 		sbus.connect()
 

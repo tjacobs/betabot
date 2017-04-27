@@ -12,7 +12,7 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	hipTravel = 50 # Degrees of movement in hip joint for a step
 	leftHipAngle = math.sin( timeOffset ) * hipTravel
 	rightHipAngle = math.cos( timeOffset ) * hipTravel
-	timeOffset += 0.01
+	timeOffset += 0.0001
 
 	# Save
 	targetAngles[0] = int( rightHipAngle )
