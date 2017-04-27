@@ -16,6 +16,9 @@ right_velocity = 0
 def brain():
 	global left_velocity, right_velocity
 
+	# Turn off our brain for now
+	return False
+
 	# Load our brain
 	model_path = "brain.model"
 	try:

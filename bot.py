@@ -144,11 +144,14 @@ def main():
 			targetAngles = walk.updateTargetAngles( 10, 0 )
 			
 			# Run our PID controller
-			motorSpeeds = walk.calculateMovement( currentAngles, targetAngles )
+			movement = walk.calculateMovement( currentAngles, targetAngles )
+			motorSpeeds[0] = movement[0]
+			motorSpeeds[1] = 0
+#			print( movement )
 
 			# Send motor speeds
-			motorSpeeds[0] = -( velocity + velocity_right )
-			motorSpeeds[1] = -( velocity + velocity_left )
+#			motorSpeeds[0] += ( velocity + velocity_right )
+#			motorSpeeds[1] += ( velocity + velocity_left )
 			motorSpeeds[3] = 0
 			motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 			motorSpeeds[2] = -150 	# Throttle off to enable arming. TODO: Remove
@@ -158,8 +161,8 @@ def main():
 			if( simulator ): simulator.simStep( motorSpeeds )
 			
 			# Display wheel angles and speeds
-			sys.stdout.write("\r\x1b[KHip Angles: %3d, %3d, Hip targets: %3d, %3d, Speeds: %3d, %3d" % 
-				(currentAngles[0] / 100, currentAngles[1] / 100, targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Targets Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
+				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 			sys.stdout.flush()
 			
 
