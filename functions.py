@@ -1,5 +1,6 @@
 # -------------
 # Betabot functions
+import time
 
 def clamp(n, smallest, largest):
 	return max(smallest, min(n, largest))
@@ -25,14 +26,26 @@ def clampMotorSpeeds( motorSpeeds ):
 # Send the motor speeds to the motors
 # And enable the motors if any have any speed
 motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside of the Pi
+goTime = 0
+
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
+	global goTime
 	motorSpeeds = [0] * 4
-	go = False
+	
+	# Any motor speeds?
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
+			# Set used time as now
 			go = True
-	middle = 995
+			goTime = time.time()*1000
+			
+	# Motors been on for five seconds unused?
+	if time.time()*1000 > goTime + 5000:
+		go = False
+
+	# Send
+	middle = 992
 	sbus.sendSBUSPacket( [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
 	try:
 		import RPi.GPIO as GPIO

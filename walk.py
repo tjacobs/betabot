@@ -10,9 +10,9 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	
 	# Calculate desired hip angles
 	hipTravel = 50 # Degrees of movement in hip joint for a step
-	leftHipAngle = math.sin( timeOffset ) * hipTravel
-	rightHipAngle = math.cos( timeOffset ) * hipTravel
-	timeOffset += 0.001
+	leftHipAngle = math.sin( timeOffset ) * hipTravel + hipTravel 
+	rightHipAngle = math.cos( timeOffset ) * hipTravel + hipTravel + 200
+	timeOffset += 0.01
 
 	# Save
 	targetAngles[0] = int( rightHipAngle )
@@ -22,7 +22,7 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 def calculateMovement( currentAngles, targetAngles ):
 	# PID controller. Start with P.
 	Ps = [0] * len( targetAngles )
-	P_rate = 0.1
+	P_rate = 0.5
 	for i in range(len(targetAngles)):
 		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
 	return Ps

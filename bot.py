@@ -122,8 +122,8 @@ def main():
 			
 			# Run our PID controller
 			movement = walk.calculateMovement( currentAngles, targetAngles )
-			motorSpeeds[0] = movement[0]
-			motorSpeeds[1] = 0
+			motorSpeeds[0] = -movement[0]
+			motorSpeeds[1] = -movement[1]
 #			print( movement )
 
 			# Send motor speeds
