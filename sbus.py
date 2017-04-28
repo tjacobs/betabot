@@ -5,7 +5,7 @@ import functions
 
 class SBUS():
 	def __init__(self):
-		self.sbus = 0
+		self.sbus = None
 		pass
 
 	def connect(self):
@@ -97,6 +97,8 @@ class SBUS():
 
 	def readIMU( self ):
 		serial = self.sbus
+		if serial == None:
+			return 0, 0, 0
 		accelX, accelY, accelZ = 0, 0, 0
 		waiting = serial.inWaiting()
 		if( waiting > 0 ):
