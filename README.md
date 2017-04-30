@@ -2,15 +2,22 @@
 
 ### The deep learning robot.
 
-**What is it?:** 3D printed body, Raspberry Pi 3, motor controller board, motors, sensors, battery, power boards, and a camera.
+**What is it?** 3D printed body, Raspberry Pi 3, motor controller board, motors, sensors, battery, power boards, and a camera.
 
-**Software:** TensorFlow, Python, controller board software.
+**Software:** TensorFlow, OpenCV, Python, controller board software.
+
+**Why?** To help you test out deep learning techniques on robots.
 
 ![image](docs/bot.png)
+
+
+---
 
 ### 3D body
 
 [STL file for 3D printing](3d_models/betabot.stl)
+
+---
 
 ### Videos
 
@@ -22,7 +29,11 @@ Work in progress, old body shape...
 
 [Inside](https://twitter.com/TomPJacobs/status/848136720797192192)
 
-## How to build
+---
+
+### How to build it
+
+Looking to build it? I can help you order the parts.
 
 Take the 3D printed case, two motors, and six screws. Make sure the small magnets are still on the back of the motors. Place one motor on the side with cable running through the hole in the case. Rotate until screw holes line up, and screw three screws in half way.
 
