@@ -33,7 +33,7 @@ if ENABLE_BRAIN:
 simulator = None
 if ENABLE_SIMULATOR:
 	try:
-		sys.path.append( 'sim' )
+		sys.path.append( '../simulator' )
 		from simulator import Simulator
 		simulator = Simulator()
 	except:
@@ -140,7 +140,7 @@ def main():
 			if( simulator ): simulator.simStep( motorSpeeds )
 			
 			break
-			
+
 			# Display wheel angles and speeds
 			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
 				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
