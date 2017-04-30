@@ -1,5 +1,4 @@
 #!/bin/bash
 
 cd /home/pi/betabot
-#/usr/bin/python3 bot.py
-python bot.py
+python source/bot.py
