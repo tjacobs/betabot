@@ -27,9 +27,10 @@ def clampMotorSpeeds( motorSpeeds ):
 # And enable the motors if any have any speed
 motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside of the Pi
 goTime = 0
-
+from controller_board import MultiWii
+board = MultiWii("/dev/ttys000")
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
-	global goTime
+	global goTime, board
 	motorSpeeds = [0] * 4
 	
 	# Any motor speeds?
@@ -46,7 +47,14 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 
 	# Send
 	middle = 992
-	sbus.sendSBUSPacket( [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm] )
+	rcChannels = [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm, 1000, 1000, 1000]
+#	sbus.sendSBUSPacket( rcChannels )
+	try:
+		board.sendCMDreceiveATT(16, MultiWii.SET_RAW_RC, rcChannels)
+		print( board.attitude )
+	except Exception as error:
+		print( "Error: " + str(error) )
+
 	try:
 		import RPi.GPIO as GPIO
 		global motorEnablePin

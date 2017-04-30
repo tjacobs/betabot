@@ -41,8 +41,8 @@ class SBUS():
 				sys.stdout.write("\n" )
 
 		except:
-			print( "Error: Missing Raspberry Pi GPIO." )
-			print( sys.exc_info() )
+			print( "Error: Cannot access Raspberry Pi GPIO." )
+#			print( sys.exc_info() )
 			
 
 	def sendSBUSPacket(self, channelValues):
