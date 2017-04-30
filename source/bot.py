@@ -18,7 +18,6 @@ import datetime
 import functions
 import walk
 
-
 # Import Betabot I/O
 sbus = None
 brain = None
@@ -69,7 +68,7 @@ def main():
 		while not keyboard or not keyboard.esc_key_pressed:
 
 			# Read current IMU accelerometer X, Y, Z values.
-			accelX, accelY, accelZ = sbus.readIMU()
+#			accelX, accelY, accelZ = sbus.readIMU()
 #			print( "\n X:" + str( accelX ) )
 
 			# Arm after one second
@@ -117,14 +116,13 @@ def main():
 			# Read current wheel rotational angles
 			currentAngles = functions.readCurrentAngles(sensors)
 			
-			# Figure out where our hips should be
+			# Figure out what our angles should be
 			targetAngles = walk.updateTargetAngles( 10, 0 )
 			
-			# Run our PID controller
+			# Run our movement controller
 			movement = walk.calculateMovement( currentAngles, targetAngles )
 			motorSpeeds[0] = -movement[0]
 			motorSpeeds[1] = -movement[1]
-#			print( movement )
 
 			# Send motor speeds
 #			motorSpeeds[0] += ( velocity + velocity_right )
@@ -138,10 +136,9 @@ def main():
 			if( simulator ): simulator.simStep( motorSpeeds )
 			
 			# Display wheel angles and speeds
-			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Targets Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
+			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
 				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
-			sys.stdout.flush()
-			
+			sys.stdout.flush()			
 
 		# Finish up
 		try:
@@ -149,7 +146,6 @@ def main():
 			GPIO.cleanup()
 		except:
 			pass
-
 
 # Go
 if __name__=="__main__":
