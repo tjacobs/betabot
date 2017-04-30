@@ -20,6 +20,7 @@ git config --global push.default simple
 sudo pip install picamera[array]
 sudo pip install -q python_Xlib
 sudo pip install -q pynput
+sudo pip3 install -q pyserial
 sudo pip3 install -q pynput
 sudo pip3 install -q python_Xlib
 sudo pip3 install -q python_Xlib --upgrade

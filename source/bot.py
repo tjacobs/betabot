@@ -71,6 +71,10 @@ def main():
 #			accelX, accelY, accelZ = sbus.readIMU()
 #			print( "\n X:" + str( accelX ) )
 
+#           message = "ax = {:+.0f} \t ay = {:+.0f} \t az = {:+.0f} gx = {:+.0f} \t gy = {:+.0f} \t gz = {:+.0f} mx = {:+.0f} \t my = {:+.0f} \t mz = {:+.0f} \t elapsed = {:+.4f} \t" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']),float(board.attitude['elapsed']))
+#           stdout.write("\r%s" % message )
+#           stdout.flush()
+
 			# Arm after one second
 			# TODO: Let controller always arm
 			arm = 500
@@ -134,6 +138,8 @@ def main():
 
  			# Update simulator
 			if( simulator ): simulator.simStep( motorSpeeds )
+			
+			break
 			
 			# Display wheel angles and speeds
 			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
