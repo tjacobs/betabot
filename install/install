@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Install Betabot.
 # Installs the things needed for Betabot to run on a Raspberry Pi 3.
 echo "Installing Betabot."
 
@@ -14,10 +13,10 @@ echo "Done."
 # Install
 echo ""
 echo "Installing requirements."
-sudo apt-get install -y git
-git config --global push.default simple
 sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
+sudo apt-get install -y git
+git config --global push.default simple
 sudo pip install picamera[array]
 sudo pip install -q python_Xlib
 sudo pip install -q pynput
@@ -32,12 +31,13 @@ echo "Done."
 echo ""
 echo "Installing system scripts."
 sudo ln /home/pi/betabot/betabot /bin/betabot -fs
-sudo ln /home/pi/betabot/install/go /bin/go -fs
-sudo ln /home/pi/betabot/reboot /bin/reboot -fs
-sudo ln /home/pi/betabot/off /bin/off -fs
-sudo ln /home/pi/betabot/install/cam /bin/cam -fs
-sudo ln /home/pi/betabot/install/config /bin/config -fs
-sudo ln /home/pi/betabot/install/web /bin/web -fs
+sudo ln /home/pi/betabot/scripts/edit /bin/edit -fs
+sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
+sudo ln /home/pi/betabot/scripts/off /bin/off -fs
+sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
+sudo ln /home/pi/betabot/scripts/config /bin/config -fs
+sudo ln /home/pi/betabot/scripts/web /bin/web -fs
+sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 echo "cd betabot" >> ~/.bashrc
 echo "welcome" >> ~/.bashrc
@@ -45,13 +45,16 @@ echo "Done."
 
 # Disable Bluetooth. Raspberry Pi 3 needs its Bluetooth disabling.
 # Because Bluetooth uses the serial line and breaks it. 
-echo ""
-echo "Enabling serial bus."
-sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
-echo "Done."
+#echo ""
+#echo "Enabling serial bus."
+#sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
+#echo "Done."
 
 # Install Raspicam to capture video from C
 #./install_camera
+
+# Install TensorFlow
+#./install_tensorflow
 
 # Install hdf5 for large model saving
 # This takes about half an hour.
@@ -60,4 +63,3 @@ echo "Done."
 # Done
 echo ""
 echo "All done. Enjoy Betabot."
-
