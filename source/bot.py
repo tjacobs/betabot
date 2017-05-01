@@ -17,6 +17,7 @@ import array
 import datetime
 import functions
 import walk
+from sys import stdout
 
 # Import Betabot I/O
 sbus = None
@@ -64,18 +65,16 @@ def main():
 		# Flush output for file logging
 		sys.stdout.flush()
 
-		#functions.initMotors()
+		functions.initMotors()
 
 		# Loop
 		while not keyboard or not keyboard.esc_key_pressed:
 
 			# Read current IMU accelerometer X, Y, Z values.
-#			accelX, accelY, accelZ = sbus.readIMU()
-#			print( "\n X:" + str( accelX ) )
-
-#           message = "ax = {:+.0f} \t ay = {:+.0f} \t az = {:+.0f} gx = {:+.0f} \t gy = {:+.0f} \t gz = {:+.0f} mx = {:+.0f} \t my = {:+.0f} \t mz = {:+.0f} \t elapsed = {:+.4f} \t" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']),float(board.attitude['elapsed']))
-#           stdout.write("\r%s" % message )
-#           stdout.flush()
+			board = functions.readIMU()
+			message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
+			stdout.write("\r%s" % message )
+			stdout.flush()
 
 			# Arm after one second
 			# TODO: Let controller always arm
@@ -142,9 +141,9 @@ def main():
 			if( simulator ): simulator.simStep( motorSpeeds )
 			
 			# Display wheel angles and speeds
-			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
-				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
-			sys.stdout.flush()			
+#			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
+#				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+#			sys.stdout.flush()			
 
 		# Finish up
 		try:

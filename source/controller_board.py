@@ -51,7 +51,7 @@ class MultiWii:
         self.temp = ();
         self.temp2 = ();
         self.elapsed = 0
-        self.PRINT = 1
+        self.PRINT = 0
 
         self.ser = serial.Serial()
         self.ser.port = serPort
@@ -66,7 +66,7 @@ class MultiWii:
         self.ser.writeTimeout = 2
 
         """Time to wait until the board becomes operational"""
-        wakeup = 2
+        wakeup = 0
         try:
             self.ser.open()
             if self.PRINT:
@@ -85,7 +85,7 @@ class MultiWii:
         checksum = 0
         total_data = ['$', 'M', '<', data_length, code] + data
         for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-            checksum = checksum #^ i
+            checksum = checksum ^ ord(i)
         total_data.append(checksum)
         try:
             b = None
@@ -110,7 +110,7 @@ class MultiWii:
         checksum = 0
         total_data = ['$', 'M', '<', data_length, code] + data
         for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-            checksum = checksum #^ i
+            checksum = checksum ^ ord(i)
         total_data.append(checksum)
         try:
             start = time.time()

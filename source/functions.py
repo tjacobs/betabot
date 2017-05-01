@@ -1,6 +1,7 @@
 # -------------
 # Betabot functions
 import time
+from sys import stdout
 
 def clamp(n, smallest, largest):
 	return max(smallest, min(n, largest))
@@ -29,9 +30,16 @@ motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside
 goTime = 0
 from controller_board import MultiWii
 board = None
+
+	
 def initMotors():
 	global board
-	board = MultiWii("/dev/serial0")
+	board = MultiWii("/dev/ttyUSB0")
+def readIMU():
+	global board
+	board.getData(MultiWii.RAW_IMU)
+	return board
+
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	global goTime, board
 	motorSpeeds = [0] * 4
@@ -41,7 +49,7 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
 		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
 			# Set used time as now
-			go = True
+#			go = True
 			goTime = time.time()*1000
 			
 	# Motors been on for five seconds unused?
@@ -53,10 +61,11 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	rcChannels = [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm, 1000, 1000, 1000]
 #	sbus.sendSBUSPacket( rcChannels )
 	try:
-		board.sendCMDreceiveATT(16, MultiWii.SET_RAW_RC, rcChannels)
-		print( board.attitude )
+#		board.sendCMD(16, MultiWii.SET_RAW_RC, rcChannels)
+		pass
+
 	except Exception as error:
-		#print( "Error: " + str(error) )
+		print( "Error: " + str(error) )
 		pass
 
 	try:
