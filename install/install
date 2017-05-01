@@ -5,10 +5,10 @@ echo "Installing Betabot."
 
 # Update
 echo ""
-echo "Updating system."
-sudo apt-get update
-sudo apt-get upgrade
-echo "Done."
+#echo "Updating system."
+#sudo apt-get update
+#sudo apt-get upgrade
+#echo "Done."
 
 # Install
 echo ""
@@ -32,7 +32,7 @@ echo "Done."
 echo ""
 echo "Installing system scripts."
 sudo ln /home/pi/betabot/betabot /bin/betabot -fs
-sudo ln /home/pi/betabot/scripts/edit /bin/edit -fs
+sudo ln /home/pi/betabot/scripts/work /bin/work -fs
 sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
 sudo ln /home/pi/betabot/scripts/off /bin/off -fs
 sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
