@@ -71,10 +71,7 @@ def main():
 		while not keyboard or not keyboard.esc_key_pressed:
 
 			# Read current IMU accelerometer X, Y, Z values.
-			board = functions.readIMU()
-			message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
-			stdout.write("\r%s" % message )
-			stdout.flush()
+#			board = functions.readIMU()
 
 			# Arm after one second
 			# TODO: Let controller always arm
@@ -144,6 +141,10 @@ def main():
 #			sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
 #				(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 #			sys.stdout.flush()			
+
+#			message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
+#			stdout.write("\r%s" % message )
+#			stdout.flush()
 
 		# Finish up
 		try:
