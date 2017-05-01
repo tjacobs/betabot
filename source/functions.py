@@ -57,12 +57,12 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 		go = False
 
 	# Send
-	middle = 992
-	rcChannels = [motorSpeeds[0]*6+middle, motorSpeeds[1]*6+middle, motorSpeeds[2]*6+middle, motorSpeeds[3]*6+middle, arm, 1000, 1000, 1000]
-#	sbus.sendSBUSPacket( rcChannels )
+	middle = 992 + 500
+	scale = 5
+	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, arm, 1000, 1000, 1000]
 	try:
+#		print( rcChannels )
 		board.sendCMD(16, MultiWii.SET_RAW_RC, rcChannels)
-		pass
 
 	except Exception as error:
 		print( "Error sending: " + str(error) )

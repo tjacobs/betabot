@@ -80,6 +80,10 @@ class MultiWii:
 		except Exception as error:
 			print( "\n\nError opening "+self.ser.port+" port.\n"+str(error)+"\n\n" )
 
+	def close(self):
+		self.ser.close()
+		print( "\nClosed" )
+
 	"""Function for sending a command to the board"""
 	def sendCMD(self, data_length, code, data):
 		checksum = 0
@@ -90,7 +94,6 @@ class MultiWii:
 		try:
 			b = None
 			b = self.ser.write(struct.pack('<3c2B%dHB' % len(data), *total_data))
-			time.sleep( 0.1 )
 			return
 		except Exception as error:
 			print( "\n\nError in sendCMD...." )
