@@ -85,7 +85,7 @@ class MultiWii:
         checksum = 0
         total_data = ['$', 'M', '<', data_length, code] + data
         for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-            checksum = checksum ^ i
+            checksum = checksum #^ i
         total_data.append(checksum)
         try:
             b = None
@@ -110,7 +110,7 @@ class MultiWii:
         checksum = 0
         total_data = ['$', 'M', '<', data_length, code] + data
         for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-            checksum = checksum ^ i
+            checksum = checksum #^ i
         total_data.append(checksum)
         try:
             start = time.time()

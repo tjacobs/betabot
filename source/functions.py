@@ -28,7 +28,10 @@ def clampMotorSpeeds( motorSpeeds ):
 motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside of the Pi
 goTime = 0
 from controller_board import MultiWii
-board = MultiWii("/dev/ttys000")
+board = None
+def initMotors():
+	global board
+	board = MultiWii("/dev/serial0")
 def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	global goTime, board
 	motorSpeeds = [0] * 4
@@ -53,7 +56,8 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 		board.sendCMDreceiveATT(16, MultiWii.SET_RAW_RC, rcChannels)
 		print( board.attitude )
 	except Exception as error:
-		print( "Error: " + str(error) )
+		#print( "Error: " + str(error) )
+		pass
 
 	try:
 		import RPi.GPIO as GPIO
