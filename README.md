@@ -10,6 +10,42 @@
 
 ![image](docs/bot.png)
 
+---
+
+### Getting started
+
+
+Check out the main file: [bot.py](source/bot.py)
+
+Check out the installer: [install](install/install)
+
+Check out the startup help: [welcome](scripts/welcome)
+
+Write disk image using [sd_restore](scripts/sd_restore) and pop it into a [Raspberry Pi 3](https://www.adafruit.com/product/3055).
+
+Disk image coming soon.
+
+
+### Parts
+---
+
+| Part | $US |
+|--:|--:|
+|[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $39 |
+|[XRacer 2.1](https://www.fpvmodel.com/x-racer-f303-flight-controller_g1106.html)| $18 |
+|[Gimbal Motor x2](https://hobbyking.com/en_us/turnigy-hd-5208-brushless-gimbal-motor-bldc.html)| $84 |
+|[BGMC x2]()| $ |
+|[Charger]()| $ |
+|[1.3A Lipo Battery]()| $ |
+|[Pi Fisheye Cam]()| $ |
+|[5V Voltage Regulator]()| $ |
+|[12V Voltage Regulator]()| $ |
+|[2 Transistors, 2 Resistors]()| $ |
+|[Switch, Wire, Heatshrink]()| $ |
+|[Filament]()| $ |
+|[MicroUSB cable]()| $ |
+|Total| $ |
+
 
 ---
 
