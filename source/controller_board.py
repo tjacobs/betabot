@@ -78,7 +78,7 @@ class MultiWii:
 				else:
 					time.sleep(1)
 		except Exception as error:
-			print( "\n\nError opening "+self.ser.port+" port.\n"+str(error)+"\n\n" )
+			print( "Error opening "+self.ser.port+" port.\n"+str(error)+"" )
 
 	def close(self):
 		self.ser.close()

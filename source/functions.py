@@ -17,7 +17,7 @@ def readCurrentAngles( sensors ):
 	return currentAngles
 
 # Motor speeds can go from -100 to 100
-def clampMotorSpeeds( motorSpeeds ):
+def clampMotorSpeeds(motorSpeeds):
 	minSpeed = -100
 	maxSpeed = 100
 	for i in range(len(motorSpeeds)):
@@ -28,19 +28,50 @@ def clampMotorSpeeds( motorSpeeds ):
 # And enable the motors if any have any speed
 motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside of the Pi
 goTime = 0
-from controller_board import MultiWii
+MultiWii = None
+try:
+	from controller_board import MultiWii
+except:
+	pass
 board = None
 
 def initMotors():
 	global board
-	board = MultiWii("/dev/ttyUSB0")
+	try:
+		board = MultiWii("/dev/ttyUSB0")
+	except:
+		print( "Error: Cannot access motors." )
+
+	# Motor enable pin
+	try:
+		import RPi.GPIO as GPIO
+		GPIO.setwarnings(False)
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(functions.motorEnablePin, GPIO.OUT)
+		GPIO.output(functions.motorEnablePin, GPIO.LOW)
+
+		# Test
+		if( False ):
+			time.sleep( 0.2 )
+			sys.stdout.write("\r\x1b[KTest: Motors on." )
+			GPIO.output(functions.motorEnablePin, GPIO.HIGH)
+			time.sleep( 2 )
+			sys.stdout.write("\r\x1b[KTest: Motors off." )
+			GPIO.output(functions.motorEnablePin, GPIO.LOW)
+			time.sleep( 1 )
+			sys.stdout.write("\n" )
+
+	except:
+		print( "Error: Cannot access Raspberry Pi GPIO." )
+#			print( sys.exc_info() )
+
 
 def readIMU():
 	global board
 	board.getData(MultiWii.RAW_IMU)
 	return board
 
-def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
+def sendMotorSpeeds(motorSpeedsIn):
 	global goTime, board
 	motorSpeeds = [0] * 4
 	
@@ -59,13 +90,13 @@ def sendMotorSpeeds( sbus, motorSpeedsIn, arm ):
 	# Send
 	middle = 992 + 500
 	scale = 5
-	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, arm, 1000, 1000, 1000]
+	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
 	try:
 #		print( rcChannels )
 		board.sendCMD(16, MultiWii.SET_RAW_RC, rcChannels)
 
 	except Exception as error:
-		print( "Error sending: " + str(error) )
+#		print( "Error sending: " + str(error) )
 		pass
 
 	try:
