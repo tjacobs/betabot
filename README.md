@@ -32,7 +32,7 @@ To get started, write the [disk image](https://s3-ap-southeast-2.amazonaws.com/b
 |[BGMC Speed Controller (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 |
 |[Gimbal Motor (x2)](https://hobbyking.com/en_us/turnigy-hd-5208-brushless-gimbal-motor-bldc.html)| $84 |
 |[Rotary Encoder (x2)](http://au.mouser.com/Search/ProductDetail.aspx?qs=Rt6VE0PE%2fOduJIB%252bRfeBZQ%3d%3d)| $40 |
-|[Wireless Keyboard and Mouse](http://support.logitech.com/en_us/product/wireless-combo-mk220)| $40 |
+|[Wireless Keyboard and Mouse](https://www.logitech.com/en-au/product/wireless-combo-mk220)| $40 |
 |[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $39 |
 |[12V Power Supply](https://hobbyking.com/en_us/ac-dc-adapter-12v-8a-mini-fabrikator-indiv-power-supply-big-power-8-in-1.html)| $27 |
 |[Filament](https://hobbyking.com/en_us/esun-3d-printer-filament-gold-1-75mm-pla-1kg-roll.html)| $20 |
@@ -40,16 +40,16 @@ To get started, write the [disk image](https://s3-ap-southeast-2.amazonaws.com/b
 |[16GB Memory Card](https://www.adafruit.com/product/2693)| $20 |
 |[XRacer 2.1](https://www.fpvmodel.com/x-racer-f303-flight-controller_g1106.html)| $18 |
 |[Pi Fisheye Cam](https://www.aliexpress.com/store/product/Raspberry-Pi-wide-angle-fish-eye-camera-module-5-megapixel-160-degree-lens/1181118_32305170854.html)| $17 |
-|[5V Voltage Regulator](https://www.pololu.com/product/2574)| $15 |
-|[12V Voltage Regulator](https://www.pololu.com/product/2572)| $15 |
-|[Charger](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 |
+|[12V Variable Voltage Regulator](https://www.pololu.com/product/2572)| $15 |
+|[5V Voltage Regulator](https://www.readymaderc.com/store/index.php?main_page=product_info&products_id=4066)| $7 |
+|[Charger Board](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 |
 |[Switch, Wire, Heatshrink, Screws]()| $5 |
 |[MicroUSB cable](https://www.adafruit.com/product/898)| $3 |
-|[2 Transistors, 2 Resistors]()| $2 |
+|[2 Transistors BDX53C, BDX54C, 2 Resistors]()| $2 |
 |[Heatsink](https://www.adafruit.com/product/3084)| $1 |
-|Total| $475 |
+|Total| $467 |
 
-You'll also need an HDMI cable and a monitor.
+You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
 
 
