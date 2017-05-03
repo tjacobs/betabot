@@ -31,8 +31,9 @@ Disk image coming soon.
 
 | Part | $US |
 |--:|--:|
-|[BGMC Speed (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 |
+|[BGMC Speed Controller (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 |
 |[Gimbal Motor (x2)](https://hobbyking.com/en_us/turnigy-hd-5208-brushless-gimbal-motor-bldc.html)| $84 |
+|[Rotary Encoder (x2)](http://au.mouser.com/Search/ProductDetail.aspx?qs=Rt6VE0PE%2fOduJIB%252bRfeBZQ%3d%3d)| $40 |
 |[Wireless Keyboard and Mouse](http://support.logitech.com/en_us/product/wireless-combo-mk220)| $40 |
 |[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $39 |
 |[12V Power Supply](https://hobbyking.com/en_us/ac-dc-adapter-12v-8a-mini-fabrikator-indiv-power-supply-big-power-8-in-1.html)| $27 |
@@ -48,7 +49,7 @@ Disk image coming soon.
 |[MicroUSB cable](https://www.adafruit.com/product/898)| $3 |
 |[2 Transistors, 2 Resistors]()| $2 |
 |[Heatsink](https://www.adafruit.com/product/3084)| $1 |
-|Total| $435 |
+|Total| $475 |
 
 You'll also need an HDMI cable and a monitor.
 
