@@ -4,11 +4,13 @@
 echo "Installing Betabot."
 
 # Update
-echo ""
-#echo "Updating system."
-#sudo apt-get update
-#sudo apt-get upgrade
-#echo "Done."
+if [ "$1" -ne "quick" ]
+	echo ""
+	echo "Updating system."
+	sudo apt-get update
+	sudo apt-get upgrade
+	echo "Done."
+fi
 
 # Install
 echo ""
@@ -40,12 +42,14 @@ sudo ln /home/pi/betabot/scripts/config /bin/config -fs
 sudo ln /home/pi/betabot/scripts/web /bin/web -fs
 sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
-echo "cd betabot" >> ~/.bashrc
-echo "welcome" >> ~/.bashrc
+if [ "$1" -ne "quick" ]
+	echo "cd betabot" >> ~/.bashrc
+	echo "welcome" >> ~/.bashrc
+fi
 echo "Done."
 
-# Disable Bluetooth. Raspberry Pi 3 needs its Bluetooth disabling.
-# Because Bluetooth uses the serial line and breaks it. 
+# Raspberry Pi 3 has broken UART serial output pins because Bluetooth uses the serial line and breaks it. 
+# If you need to use it, you can disable Bluetooth by uncommenting these lines and running install.
 #echo ""
 #echo "Enabling serial bus."
 #sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
