@@ -2,11 +2,11 @@
 
 ### The deep learning robot.
 
-**What is it?** 3D printed body, Raspberry Pi 3, motor controller board, motors, sensors, battery, power boards, and a camera.
+**What is it?** 3D printed body, Raspberry Pi 3, motor controller, motors, sensors, battery, power boards, and camera.
 
-**Software:** TensorFlow, OpenCV, Python, controller board software.
+**Software:** TensorFlow, OpenCV, Python, controller software.
 
-**Why?** To help you test out deep learning techniques on robots.
+**Why?** To help you test out deep learning computer vision techniques on a real robot.
 
 ![image](docs/bot.png)
 
@@ -21,9 +21,7 @@ Check out the installer: [install](install/install)
 
 Check out the startup help: [welcome](scripts/welcome)
 
-Write disk image using [sd_restore](scripts/sd_restore) and pop it into a [Raspberry Pi 3](https://www.adafruit.com/product/3055).
-
-Disk image coming soon.
+To get started, write the [disk image](https://s3-ap-southeast-2.amazonaws.com/betabot/bot.png) using [sd_restore](scripts/sd_restore) and pop it into a [Raspberry Pi 3](https://www.adafruit.com/product/3055).
 
 
 ### Parts
