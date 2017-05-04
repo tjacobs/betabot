@@ -110,8 +110,8 @@ def main():
 #			motorSpeeds[1] = -movement[1]
 
 		# Send motor speeds
-		motorSpeeds[0] += (velocity + velocity_right)
-		motorSpeeds[1] += (velocity + velocity_left)
+		motorSpeeds[0] = (velocity + velocity_right)
+		motorSpeeds[1] = (velocity + velocity_left)
 		motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
 		functions.sendMotorSpeeds(motorSpeeds)
 

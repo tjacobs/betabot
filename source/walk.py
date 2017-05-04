@@ -2,17 +2,24 @@
 
 # We're were going, we're gonna need some serious math
 import math
+import time
 
 timeOffset = 0.0
 targetAngles = [0] * 4
+oldTime = time.time()
 def updateTargetAngles( velocity, inverseTurningRadius ):
-	global targetAngles, timeOffset
+	global targetAngles, timeOffset, oldTime
 	
 	# Calculate desired hip angles
 	hipTravel = 50 # Degrees of movement in hip joint for a step
 	leftHipAngle = math.sin( timeOffset ) * hipTravel + hipTravel 
-	rightHipAngle = math.cos( timeOffset ) * hipTravel + hipTravel + 200
-	timeOffset += 0.01
+	rightHipAngle = math.cos( timeOffset ) * hipTravel + hipTravel
+
+	# Move forward in time
+	timeJump = time.time() - oldTime
+	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
+	timeOffset += timeJump
+	oldTime = time.time()
 
 	# Save
 	targetAngles[0] = int( rightHipAngle )
