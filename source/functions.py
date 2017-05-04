@@ -1,7 +1,7 @@
 # -------------
 # Betabot functions
 import time
-from sys import stdout
+import sys
 
 def clamp(n, smallest, largest):
 	return max(smallest, min(n, largest))
@@ -47,23 +47,23 @@ def initMotors():
 		import RPi.GPIO as GPIO
 		GPIO.setwarnings(False)
 		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(functions.motorEnablePin, GPIO.OUT)
-		GPIO.output(functions.motorEnablePin, GPIO.LOW)
+		GPIO.setup(motorEnablePin, GPIO.OUT)
+		GPIO.output(motorEnablePin, GPIO.LOW)
 
 		# Test
 		if( False ):
 			time.sleep( 0.2 )
 			sys.stdout.write("\r\x1b[KTest: Motors on." )
-			GPIO.output(functions.motorEnablePin, GPIO.HIGH)
+			GPIO.output(motorEnablePin, GPIO.HIGH)
 			time.sleep( 2 )
 			sys.stdout.write("\r\x1b[KTest: Motors off." )
-			GPIO.output(functions.motorEnablePin, GPIO.LOW)
+			GPIO.output(motorEnablePin, GPIO.LOW)
 			time.sleep( 1 )
 			sys.stdout.write("\n" )
 
 	except:
 		print( "Error: Cannot access Raspberry Pi GPIO." )
-#			print( sys.exc_info() )
+		print( sys.exc_info() )
 
 
 def readIMU():
@@ -84,7 +84,7 @@ def sendMotorSpeeds(motorSpeedsIn):
 			goTime = time.time()*1000
 			
 	# Motors been on for five seconds unused?
-	if time.time()*1000 > goTime + 5000:
+	if time.time()*1000 > goTime + 2000:
 		go = False
 
 	# Send

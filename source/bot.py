@@ -73,14 +73,14 @@ def main():
 				velocity_left += 0.3
 				velocity_right -= 0.3
 		if( keyboard ):
-			if( keyboard.up_key_pressed == True ):   velocity += 0.3
-			if( keyboard.down_key_pressed == True ): velocity -= 0.3
+			if( keyboard.up_key_pressed == True ):   velocity += 2.3
+			if( keyboard.down_key_pressed == True ): velocity -= 2.3
 			if( keyboard.left_key_pressed == True ): 
-				velocity_right += 0.5
-				velocity_left -= 0.5
+				velocity_right += 1.5
+				velocity_left -= 1.5
 			if( keyboard.right_key_pressed == True ):
-				velocity_left += 0.5
-				velocity_right -= 0.5
+				velocity_left += 1.5
+				velocity_right -= 1.5
 
 		# Calculate left and right wheel velocities
 		#R = 0.1 # Radius of wheels
