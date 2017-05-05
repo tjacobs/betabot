@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/opt/vc/bin/raspivid -d 
+/opt/vc/bin/raspivid -d -t 20000 
 
