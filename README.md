@@ -83,9 +83,9 @@ Take one motor sensor board, and slide it into position under the three screws, 
 
 Take the motor controller board and place it into the mounting square in the case, plug in the microUSB. Screw it down with four screws.
 
-Place the power board next to the controller board and screw it into place. Run the power cable into the battery compartment.
+Place the power boards at the back of Betabot and screw them into place. Run the power cable into the battery compartment.
 
-Take the two speed controller boards and plug the motors into them. Place them down into the front area of the body.
+Take the two speed controller boards and plug the motors into them. Place them down into the front sides of the body.
 
 Take the on switch and push it into position.
 
