@@ -14,8 +14,8 @@ import functions
 import walk
 
 # What shall we enable?
-ENABLE_KEYBOARD = True
-ENABLE_BRAIN = False
+ENABLE_KEYBOARD = False
+ENABLE_BRAIN = True
 ENABLE_SIMULATOR = False
 
 # Import Betabot parts
@@ -64,14 +64,14 @@ def main():
 
 		# Keyboard/brain moving forward, left, or right?
 		if( brain ):
-			if( brain.up_key_pressed == True ):   velocity += 0.15
-			if( brain.down_key_pressed == True ): velocity -= 0.15
+			if( brain.up_key_pressed == True ):   velocity += 2.3
+			if( brain.down_key_pressed == True ): velocity -= 2.3
 			if( brain.left_key_pressed == True ):
-				velocity_right += 0.3
-				velocity_left -= 0.3
+				velocity_right += 1.5
+				velocity_left -= 1.5
 			if( brain.right_key_pressed == True ):
-				velocity_left += 0.3
-				velocity_right -= 0.3
+				velocity_left += 1.5
+				velocity_right -= 1.5
 		if( keyboard ):
 			if( keyboard.up_key_pressed == True ):   velocity += 2.3
 			if( keyboard.down_key_pressed == True ): velocity -= 2.3

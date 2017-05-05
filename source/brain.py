@@ -15,7 +15,7 @@ right_key_pressed = False
 left_velocity = 0
 right_velocity = 0
 
-def brain():
+def abrain():
 	global left_velocity, right_velocity
 
 	# Turn off our brain for now
@@ -51,7 +51,7 @@ def brain():
 
 	
 # Rename this to brain() for some simple movement
-def old_brain():
+def brain():
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed
 	
 	# Start
