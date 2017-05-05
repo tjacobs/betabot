@@ -4,7 +4,7 @@
 echo "Installing Betabot."
 
 # Update
-if [ "$1" -ne "quick" ]
+if [ "$1" != "quick" ]; then
 	echo ""
 	echo "Updating system."
 	sudo apt-get update
@@ -43,7 +43,7 @@ sudo ln /home/pi/betabot/scripts/config /bin/config -fs
 sudo ln /home/pi/betabot/scripts/web /bin/web -fs
 sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
-if [ "$1" -ne "quick" ]
+if [ "$1" != "quick" ]; then
 	echo "cd betabot" >> ~/.bashrc
 	echo "welcome" >> ~/.bashrc
 fi
