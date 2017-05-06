@@ -1,0 +1,68 @@
+#!/bin/bash
+
+echo "Shrinking and cleaning up disk image."
+
+# Install utils
+sudo apt-get install -y dcfldd
+sudo apt-get install -y gparted
+# Note: This can be run on Mac to get a nicer dd with progress bars as well
+# ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
+# brew install dcfldd
+
+# Delete things
+sudo apt-get remove --purge libreoffice-*
+sudo apt-get remove --purge wolfram-engine
+sudo apt-get clean
+
+# Write disk image
+df -h
+sudo umount /dev/sde1 /dev/sde2
+sudo dcfldd if=/dev/sde of=betabot.img
+sudo sync
+
+# List START sector, put it in here
+sudo fdisk -l betabot.img
+START=
+#sudo losetup /dev/loop0 betabot.img -o $((START*512))
+
+echo "Click the /dev/loop0 partition and select Partition menu, Resize/Move."
+echo "Now click Edit menu, Apply All Operations. The data will be moved to fit into the new size."
+echo "When complete, it will display the new size. Make sure you note down the new size before you exit."
+echo "If the size is not displayed, click the triangle icon next to Details."
+sudo gparted /dev/loop0
+
+# Remove the loopback device for the second partition, create a new loopback device for the whole image
+# and edit the partition table to reflect the new smaller size
+sudo losetup -d /dev/loop0
+sudo losetup /dev/loop0 betabot.img
+
+echo "Enter d 2 to delete the table entry for the second partition"
+echo "Enter n p 2 to create a new second partition entry"
+echo "Enter the START sector number that you used earlier, as the start sector."
+echo "Enter +NEWSIZE as the new size. Don't forget the plus at the start. This is the new size that you noted down before exiting gparted. If your number was in K (kilobytes) or M (megabytes) then type that letter in too (for example +1410048K )."
+echo "Enter w to write the new partition table and exit"
+sudo fdisk /dev/loop0
+
+# That's the partition resized, and the partition table updated. Now we can remove the loopback device, 
+# then we just need to trim the empty space from the end of the image file. Let's look at the new
+# partition table and then destroy the loopback device:
+sudo fdisk -l /dev/loop0
+sudo losetup -d /dev/loop0
+
+# Note down the END sector of the second partition. In my case this is 8615936.
+# Now let's trim down the file to this length, replacing END with your end sector number:
+END=
+#truncate -s $(((END+1)*512)) betabot.img
+zip betabot.zip betabot.img
+
+# Write
+#sudo umount /dev/sde1 /dev/sde2
+#sudo dcfldd if=betabot.img of=/dev/sde
+#sudo sync
+
+# Expand
+#sudo raspi-config --expand-rootfs
+#sudo shutdown -r now
+
+echo "All done."
+
