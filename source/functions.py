@@ -62,7 +62,7 @@ def initMotors():
 			sys.stdout.write("\n" )
 
 	except:
-		print( "Error: Cannot access Raspberry Pi GPIO." )
+		print( "Error: Cannot access GPIO." )
 		print( sys.exc_info() )
 
 

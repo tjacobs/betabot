@@ -33,7 +33,7 @@ echo "Done."
 # Install the global Betabot script link
 echo ""
 echo "Installing system scripts."
-sudo ln /home/pi/betabot/betabot /bin/betabot -fs
+sudo ln /home/pi/betabot/start /bin/start -fs
 sudo ln /home/pi/betabot/scripts/work /bin/work -fs
 sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
 sudo ln /home/pi/betabot/scripts/off /bin/off -fs

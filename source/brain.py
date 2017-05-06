@@ -1,11 +1,6 @@
 import time
 import sys
-try:
-	import keras
-except:
-	print( "Error: Missing Keras for our brain." )
 import camera
-import brain_model
 
 # This is how we output our will, for now
 up_key_pressed = False
@@ -17,9 +12,11 @@ right_velocity = 0
 
 def abrain():
 	global left_velocity, right_velocity
-
-	# Turn off our brain for now
-	return False
+	try:
+		import keras
+		import brain_model
+	except:
+		print( "Error: Missing Keras for our brain." )
 
 	# Load our brain
 	model_path = "brain.model"

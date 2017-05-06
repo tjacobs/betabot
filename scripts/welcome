@@ -3,7 +3,7 @@
 echo "Welcome to Betabot."
 echo ""
 echo "Commands:"
-echo "betabot		Start betabot"
+echo "start		Start betabot"
 echo "stop		Stop betabot"
 echo "off		Switch off"
 echo "reboot		Reboot"
