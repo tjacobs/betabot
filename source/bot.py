@@ -14,7 +14,7 @@ import functions
 import walk
 
 # What shall we enable?
-ENABLE_KEYBOARD = False
+ENABLE_KEYBOARD = True
 ENABLE_BRAIN = True
 ENABLE_SIMULATOR = False
 
@@ -25,7 +25,7 @@ simulator = None
 motors = None
 from sensors import AMS
 if ENABLE_KEYBOARD:
-	import keyboard
+	import keys
 if ENABLE_BRAIN:
 	import brain
 if ENABLE_SIMULATOR:

@@ -27,8 +27,13 @@ def on_release(key):
 	if( key == keyboard.Key.esc ): esc_key_pressed = False
 
 def keyboard_listener():
-	time.sleep( 0 )
 	print( "Using keyboard." )
+	try:
+		import keyboard
+		keyboard.add_hotkey('up', lambda: print( "Up" ) )
+	except:
+		print( "Error: Cannot access keyboard." ) # Pip install keyboard, run with sudo 
+		print( sys.exc_info() )
 	try:
 		from pynput import keyboard
 		with keyboard.Listener(
@@ -36,7 +41,7 @@ def keyboard_listener():
 				on_release=on_release) as listener:
 			listener.join()
 	except:
-		print( "Error: Cannot start keyboard listener. Please install pynput and linux desktop." )
+		print( "Error: Cannot access keyboard. Please install pynput and linux desktop." )
 		print( sys.exc_info() )
 
 try:

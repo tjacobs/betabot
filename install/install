@@ -19,7 +19,8 @@ sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
 sudo apt-get install -y git
 git config --global push.default simple
-sudo pip install picamera[array]
+sudo pip install -q keyboard
+sudo pip install -q picamera[array]
 sudo pip install -q python_Xlib
 sudo pip install -q pynput
 sudo pip3 install -q pyserial
