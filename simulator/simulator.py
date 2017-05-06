@@ -36,10 +36,7 @@ class Simulator():
 		p.setRealTimeSimulation(0)
 
 		# Load the ground
-		p.loadURDF("sim/data/plane.urdf", 0, 0, 0)
-
-		# Load a duck
-#		p.loadURDF("sim/data/duck.urdf", -2, 0, 0.5)
+		p.loadURDF("simulator/data/plane.urdf", 0, 0, 0)
 
 		# Load model
 		self.betabot = p.loadURDF("ros/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
@@ -61,7 +58,7 @@ class Simulator():
 		p.setJointMotorControl(self.betabot, self.right_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 		p.setJointMotorControl(self.betabot, self.left_wheel_joint, p.VELOCITY_CONTROL, 0, 0.0)
 
-		# Gravity go! (a moon)
+		# Gravity go!
 		p.setGravity(0, 0, -9.8 / 1.0)
 		    
 		# Real time?
