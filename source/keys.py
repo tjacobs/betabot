@@ -8,6 +8,9 @@ left_key_pressed = False
 right_key_pressed = False
 esc_key_pressed = False
 
+def on_press_test(key):
+	print("Test")
+
 def on_press(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed, esc_key_pressed
 	from pynput import keyboard
@@ -30,7 +33,7 @@ def keyboard_listener():
 	print( "Using keyboard." )
 	try:
 		import keyboard
-		keyboard.add_hotkey('up', lambda: print( "Up" ) )
+		keyboard.add_hotkey('up', on_press_test )
 	except:
 		print( "Error: Cannot access keyboard." ) # Pip install keyboard, run with sudo 
 		print( sys.exc_info() )
