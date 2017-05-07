@@ -10,9 +10,10 @@ sudo apt-get install -y gparted
 # brew install dcfldd
 
 # Delete things
-sudo apt-get remove --purge libreoffice-*
-sudo apt-get remove --purge wolfram-engine
-sudo apt-get clean
+sudo apt-get remove -y --purge libreoffice-*
+sudo apt-get remove -y --purge wolfram-engine
+sudo apt-get clean -y
+sudo apt-get autoremove -y
 
 # Write disk image
 df -h
