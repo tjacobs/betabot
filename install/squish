@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Shrinking and cleaning up disk image."
+echo "Squishing and cleaning up disk image."
 
 # Install utils
 sudo apt-get install -y dcfldd
