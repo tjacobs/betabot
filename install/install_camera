@@ -4,6 +4,13 @@
 echo "Installing GStreamer."
 sudo apt-get install -y --fix-missing gstreamer1.0
 
+#echo "Installing FlyCapture for Point Grey camera"
+#sudo apt-get install libraw1394-11 libgtkmm-2.4-1v5 libglademm-2.4-1v5 libgtkglextmm-x11-1.2-dev libgtkglextmm-x11-1.2 libusb-1.0-0
+#unzip flycapture.2.9.3.43_armhf.tar.gz
+#cd flycapture.2.9.3.43_armhf
+#sudo flycap2-conf
+#sudo sh install_flycapture.sh
+
 # Install UV4L for Raspberry
 echo "Installing UV4L."
 sudo apt-get install -y curl
