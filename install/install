@@ -7,8 +7,8 @@ echo "Installing Betabot."
 if [ "$1" != "quick" ]; then
 	echo ""
 	echo "Updating system."
-	sudo apt-get update
-	sudo apt-get upgrade
+	sudo apt-get update -y
+	sudo apt-get upgrade -y
 	echo "Done."
 fi
 
@@ -19,6 +19,8 @@ sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
 sudo apt-get install -y git
 git config --global push.default simple
+git config --global user.name "Betabot"
+git config --global user.email "hatsmagee@gmail.com"
 sudo pip install -q keyboard
 sudo pip install -q picamera[array]
 sudo pip install -q python_Xlib
@@ -45,7 +47,7 @@ sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 if [ "$1" != "quick" ]; then
 	echo "cd betabot" >> ~/.bashrc
-	echo "welcome" >> ~/.bashrc
+	echo "scripts/welcome" >> ~/.bashrc
 fi
 echo "Done."
 
