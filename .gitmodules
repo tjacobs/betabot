@@ -1,0 +1,3 @@
+[submodule "controller/betaflight"]
+	path = controller/betaflight
+	url = https://github.com/tjacobs/betaflight

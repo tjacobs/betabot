@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "Making controller"
+
+cd betaflight
+make arm_sdk_install
+
+make SPRACINGF3EVO
+
+cp obj/betaflight_3.2.0_SPRACINGF3EVO.hex ..
+
