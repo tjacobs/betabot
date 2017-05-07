@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Squishing and cleaning up disk image."
+echo "Squishing and writing disk image."
 
 # Install utils
 sudo apt-get install -y dcfldd
@@ -8,12 +8,6 @@ sudo apt-get install -y gparted
 # Note: This can be run on Mac to get a nicer dd with progress bars as well
 # ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null
 # brew install dcfldd
-
-# Delete things
-sudo apt-get remove -y --purge libreoffice-*
-sudo apt-get remove -y --purge wolfram-engine
-sudo apt-get clean -y
-sudo apt-get autoremove -y
 
 # Write disk image
 df -h

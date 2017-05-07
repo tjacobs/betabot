@@ -58,8 +58,11 @@ echo "Done."
 #sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
 #echo "Done."
 
-# Install Raspicam to capture video from C
-#./install_camera
+# Clean up stuff we don't need
+./install_cleanup
+
+# Install camera utilities like GStreamer to stream and Raspicam to capture
+./install_camera  
 
 # Install TensorFlow
 #./install_tensorflow
@@ -71,3 +74,6 @@ echo "Done."
 # Done
 echo ""
 echo "All done. Enjoy Betabot."
+
+echo "sudo raspi-config set keyboard to US"
+echo "sudo raspi-config enable camera"

@@ -16,7 +16,7 @@ echo "Installing UV4L."
 sudo apt-get install -y curl
 curl http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -
 sudo bash -c "echo 'deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ jessie main' >> /etc/apt/sources.list"
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install -y uv4l uv4l-raspicam
 sudo apt-get install -y uv4l-raspicam-extras
 sudo service uv4l_raspicam restart
