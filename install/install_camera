@@ -32,6 +32,7 @@ sudo service uv4l_raspicam restart
   
 # Install Raspicam from source to fix it and capture video from C
 echo "Installing Raspicam."
+sudo apt-get install -y cmake
 git clone https://github.com/cedricve/raspicam &&
 cd raspicam && 
 mkdir build &&

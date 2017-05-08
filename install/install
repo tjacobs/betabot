@@ -21,6 +21,8 @@ sudo apt-get install -y git
 git config --global push.default simple
 git config --global user.name "Betabot"
 git config --global user.email "hatsmagee@gmail.com"
+
+echo "Installing python modules."
 sudo pip install -q keyboard
 sudo pip install -q picamera[array]
 sudo pip install -q python_Xlib
@@ -33,18 +35,10 @@ sudo pip3 install -q six
 sudo pip3 install -q six --upgrade
 echo "Done."
 
-# Install the global Betabot script link
-echo ""
-echo "Installing system scripts."
-sudo ln /home/pi/betabot/start /bin/start -fs
-sudo ln /home/pi/betabot/scripts/work /bin/work -fs
-sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
-sudo ln /home/pi/betabot/scripts/off /bin/off -fs
-sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
-sudo ln /home/pi/betabot/scripts/config /bin/config -fs
-sudo ln /home/pi/betabot/scripts/web /bin/web -fs
-sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
-sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
+# Install utilities and startup
+./install_utilities
+
+# Install welcome script
 if [ "$1" != "quick" ]; then
 	echo "cd betabot" >> ~/.bashrc
 	echo "scripts/welcome" >> ~/.bashrc
@@ -77,3 +71,5 @@ echo "All done. Enjoy Betabot."
 
 echo "sudo raspi-config set keyboard to US"
 echo "sudo raspi-config enable camera"
+echo "Add terminal to lxde startup"
+

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Installs the things needed for Betabot to run on a Raspberry Pi 3.
+echo "Installing utilities."
+
+sudo ln /home/pi/betabot/start /bin/start -fs
+sudo ln /home/pi/betabot/scripts/work /bin/work -fs
+sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
+sudo ln /home/pi/betabot/scripts/off /bin/off -fs
+sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
+sudo ln /home/pi/betabot/scripts/see /bin/see -fs
+sudo ln /home/pi/betabot/scripts/config /bin/config -fs
+sudo ln /home/pi/betabot/scripts/web /bin/web -fs
+sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
+sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
+echo "Done."
