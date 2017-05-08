@@ -8,7 +8,7 @@ sudo ln /home/pi/betabot/scripts/work /bin/work -fs
 sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
 sudo ln /home/pi/betabot/scripts/off /bin/off -fs
 sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
-sudo ln /home/pi/betabot/scripts/see /bin/see -fs
+sudo ln /home/pi/betabot/scripts/vision /bin/vision -fs
 sudo ln /home/pi/betabot/scripts/config /bin/config -fs
 sudo ln /home/pi/betabot/scripts/web /bin/web -fs
 sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
