@@ -14,18 +14,18 @@ import functions
 import walk
 
 # What shall we enable?
-ENABLE_KEYBOARD = True
+ENABLE_KEYS = True
 ENABLE_MOUSE = True
 ENABLE_BRAIN = False
 ENABLE_SIMULATOR = False
 
 # Import Betabot parts
-keyboard = None
+keys = None
 brain = None
 simulator = None
 motors = None
 from sensors import AMS
-if ENABLE_KEYBOARD:
+if ENABLE_KEYS:
 	import keys
 if ENABLE_MOUSE:
 	import mouse
@@ -52,23 +52,23 @@ def main():
 	motorSpeeds    = [0] * 4
 	old_mouse_x    = 0.0
 	old_mouse_y	   = 0.0
-	mouse_speed_factor = 20.0
+	mouse_speed_factor = 5.0
 
 	# Flush output for file logging
 	sys.stdout.flush()
 
 	# Loop
-	while not keyboard or not keyboard.esc_key_pressed:
+	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer X, Y, Z values.
 #			board = functions.readIMU()
 
 		# Slow down slowly
-		velocity       *= 0.99
-		velocity_left  *= 0.99
-		velocity_right *= 0.99
+		velocity       *= 0.98
+		velocity_left  *= 0.95
+		velocity_right *= 0.95
 
-		# Keyboard/brain moving forward, left, or right?
+		# keys/brain moving forward, left, or right?
 		if( brain ):
 			if( brain.up_key_pressed == True ):   velocity += 2.3
 			if( brain.down_key_pressed == True ): velocity -= 2.3
@@ -79,13 +79,13 @@ def main():
 				velocity_left += 1.5
 				velocity_right -= 1.5
 
-		if( keyboard ):
-			if( keyboard.up_key_pressed == True ):   velocity += 2.3
-			if( keyboard.down_key_pressed == True ): velocity -= 2.3
-			if( keyboard.left_key_pressed == True ): 
+		if( keys ):
+			if( keys.up_key_pressed == True ):   velocity += 2.3
+			if( keys.down_key_pressed == True ): velocity -= 2.3
+			if( keys.left_key_pressed == True ): 
 				velocity_right += 1.5
 				velocity_left -= 1.5
-			if( keyboard.right_key_pressed == True ):
+			if( keys.right_key_pressed == True ):
 				velocity_left += 1.5
 				velocity_right -= 1.5
 
@@ -98,11 +98,11 @@ def main():
 			mouse_y_diff = mouse_y - old_mouse_y
 
 			# Set forward/backward speed
-			velocity += mouse_y_diff * mouse_speed_factor
+			velocity -= mouse_y_diff * mouse_speed_factor * 2.0
 
 			# Set rotate left right speed
-			velocity_left += mouse_x_diff * mouse_speed_factor
-			velocity_right -= mouse_x_diff * mouse_speed_factor
+			velocity_left -= mouse_x_diff * mouse_speed_factor
+			velocity_right += mouse_x_diff * mouse_speed_factor
 
 			# Remember
 			old_mouse_x = mouse_x

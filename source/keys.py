@@ -8,8 +8,20 @@ left_key_pressed = False
 right_key_pressed = False
 esc_key_pressed = False
 
-def on_press_test(key):
-	print("Test")
+def keyboard_hook(key):
+	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed, esc_key_pressed
+	pressed = True
+	if key.event_type == "up":
+		pressed = False
+	print( key.event_type )
+	if key.name == "up":
+		up_key_pressed = pressed
+	if key.name == "down":
+		down_key_pressed = pressed
+	if key.name == "left":
+		left_key_pressed = pressed
+	if key.name == "right":
+		right_key_pressed = pressed
 
 def on_press(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed, esc_key_pressed
@@ -31,21 +43,26 @@ def on_release(key):
 
 def keyboard_listener():
 	print( "Using keyboard." )
-	try:
-		import keyboard
-		keyboard.add_hotkey('up', on_press_test )
-	except:
-		print( "Error: Cannot access keyboard." ) # Pip install keyboard, run with sudo 
-		print( sys.exc_info() )
-	try:
-		from pynput import keyboard
-		with keyboard.Listener(
-				on_press=on_press,
-				on_release=on_release) as listener:
-			listener.join()
-	except:
-		print( "Error: Cannot access keyboard. Please install pynput and linux desktop." )
-		print( sys.exc_info() )
+
+	USE_PYNPUT = True
+		
+	if( USE_PYNPUT ):
+		try:
+			from pynput import keyboard
+			with keyboard.Listener(
+					on_press=on_press,
+					on_release=on_release) as listener:
+				listener.join()
+		except:
+			print( "Error: Cannot access keyboard. Please install pynput and linux desktop." )
+			print( sys.exc_info() )
+	else:
+		try:
+			import keyboard
+			keyboard.hook( keyboard_hook )
+		except:
+			print( "Error: Cannot access keyboard." ) # Pip install keyboard, run with sudo 
+			print( sys.exc_info() )
 
 try:
 	import thread
