@@ -13,4 +13,5 @@ sudo ln /home/pi/betabot/scripts/config /bin/config -fs
 sudo ln /home/pi/betabot/scripts/web /bin/web -fs
 sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
 sudo cp rc.local /etc/rc.local # Start on system startup (overrides rc.local)
+sudo cp autostart /home/pi/.config/lxsession/LXDE-pi/autostart (start terminal)
 echo "Done."
