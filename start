@@ -1,4 +1,4 @@
 #!/bin/bash
-
+stop
 cd /home/pi/betabot
-python source/bot.py
+sudo python source/bot.py
