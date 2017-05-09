@@ -52,7 +52,7 @@ def main():
 	motorSpeeds    = [0] * 4
 	old_mouse_x    = 0.0
 	old_mouse_y	   = 0.0
-	mouse_speed_factor = 5.0
+	mouse_speed_factor = 1.0
 
 	# Flush output for file logging
 	sys.stdout.flush()
@@ -83,11 +83,11 @@ def main():
 			if( keys.up_key_pressed == True ):   velocity += 2.3
 			if( keys.down_key_pressed == True ): velocity -= 2.3
 			if( keys.left_key_pressed == True ): 
-				velocity_right += 1.5
-				velocity_left -= 1.5
-			if( keys.right_key_pressed == True ):
-				velocity_left += 1.5
 				velocity_right -= 1.5
+				velocity_left += 1.5
+			if( keys.right_key_pressed == True ):
+				velocity_left -= 1.5
+				velocity_right += 1.5
 
 		# Update velocity from mouse
 		if( mouse ):
@@ -96,6 +96,11 @@ def main():
 			mouse_y = mouse.mouse_y
 			mouse_x_diff = mouse_x - old_mouse_x
 			mouse_y_diff = mouse_y - old_mouse_y
+			
+			if( mouse_x_diff > 500 ): mouse_x_diff = 0
+			if( mouse_x_diff < -500 ): mouse_x_diff = 0
+			if( mouse_y_diff > 500 ): mouse_y_diff = 0
+			if( mouse_y_diff < -500 ): mouse_y_diff = 0
 
 			# Set forward/backward speed
 			velocity -= mouse_y_diff * mouse_speed_factor * 2.0
@@ -143,9 +148,9 @@ def main():
 #			sys.stdout.write("\r%s" % message )
 		
 		# Display wheel angles and speeds
-		sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
-			(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
-		sys.stdout.flush()			
+		#sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
+		#	(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+		#sys.stdout.flush()			
 
 	# Finish up
 	try:

@@ -13,7 +13,6 @@ def keyboard_hook(key):
 	pressed = True
 	if key.event_type == "up":
 		pressed = False
-	print( key.event_type )
 	if key.name == "up":
 		up_key_pressed = pressed
 	if key.name == "down":
@@ -22,6 +21,8 @@ def keyboard_hook(key):
 		left_key_pressed = pressed
 	if key.name == "right":
 		right_key_pressed = pressed
+	if( key.name == "esc" ):
+		esc_key_pressed = pressed
 
 def on_press(key):
 	global up_key_pressed, down_key_pressed, left_key_pressed, right_key_pressed, esc_key_pressed
@@ -44,7 +45,10 @@ def on_release(key):
 def keyboard_listener():
 	print( "Using keyboard." )
 
-	USE_PYNPUT = True
+	# Two different libraries to access the keyboard.
+	# Pynput works well but doesn't start on startup because no Xlib.
+	# Keyboard works well but requires sudo. Your choice.
+	USE_PYNPUT = False
 		
 	if( USE_PYNPUT ):
 		try:

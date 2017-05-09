@@ -89,10 +89,12 @@ def sendMotorSpeeds(motorSpeedsIn):
 
 	# Send
 	middle = 992 + 500
-	scale = 5
+	scale = 7
 	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
 	try:
-#		print( rcChannels )
+		sys.stdout.write("\r\x1b[KChannels: " + str( rcChannels ) )
+		sys.stdout.flush()	
+		
 		board.sendCMD(16, MultiWii.SET_RAW_RC, rcChannels)
 
 	except Exception as error:
