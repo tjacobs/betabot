@@ -15,7 +15,8 @@ import walk
 
 # What shall we enable?
 ENABLE_KEYBOARD = True
-ENABLE_BRAIN = True
+ENABLE_MOUSE = True
+ENABLE_BRAIN = False
 ENABLE_SIMULATOR = False
 
 # Import Betabot parts
@@ -26,16 +27,13 @@ motors = None
 from sensors import AMS
 if ENABLE_KEYBOARD:
 	import keys
+if ENABLE_MOUSE:
+	import mouse
 if ENABLE_BRAIN:
 	import brain
 if ENABLE_SIMULATOR:
-	try:
-		sys.path.append( 'simulator' )
-		from simulator import Simulator
-		simulator = Simulator()
-	except:
-		print( "Simulator unavailable." )
-		print( sys.exc_info() )
+	sys.path.append( 'simulator' )
+	import simulator
 
 # Go
 def main():
@@ -52,6 +50,9 @@ def main():
 	velocity_left  = 0.0
 	velocity_right = 0.0
 	motorSpeeds    = [0] * 4
+	old_mouse_x    = 0.0
+	old_mouse_y	   = 0.0
+	mouse_speed_factor = 20.0
 
 	# Flush output for file logging
 	sys.stdout.flush()
@@ -61,6 +62,11 @@ def main():
 
 		# Read current IMU accelerometer X, Y, Z values.
 #			board = functions.readIMU()
+
+		# Slow down slowly
+		velocity       *= 0.99
+		velocity_left  *= 0.99
+		velocity_right *= 0.99
 
 		# Keyboard/brain moving forward, left, or right?
 		if( brain ):
@@ -72,6 +78,7 @@ def main():
 			if( brain.right_key_pressed == True ):
 				velocity_left += 1.5
 				velocity_right -= 1.5
+
 		if( keyboard ):
 			if( keyboard.up_key_pressed == True ):   velocity += 2.3
 			if( keyboard.down_key_pressed == True ): velocity -= 2.3
@@ -82,6 +89,25 @@ def main():
 				velocity_left += 1.5
 				velocity_right -= 1.5
 
+		# Update velocity from mouse
+		if( mouse ):
+			# How much has the mouse moved from last loop?
+			mouse_x = mouse.mouse_x
+			mouse_y = mouse.mouse_y
+			mouse_x_diff = mouse_x - old_mouse_x
+			mouse_y_diff = mouse_y - old_mouse_y
+
+			# Set forward/backward speed
+			velocity += mouse_y_diff * mouse_speed_factor
+
+			# Set rotate left right speed
+			velocity_left += mouse_x_diff * mouse_speed_factor
+			velocity_right -= mouse_x_diff * mouse_speed_factor
+
+			# Remember
+			old_mouse_x = mouse_x
+			old_mouse_y = mouse_y
+
 		# Calculate left and right wheel velocities
 		#R = 0.1 # Radius of wheels
 		#L = 0.1 # Linear distance between wheels
@@ -89,14 +115,9 @@ def main():
 		#(2.0 * velocity + heading * L ) / 2.0 * R
 
 		# Update velocities
-		velocity       = functions.clamp( velocity, -80.0, 80.0 )
-		velocity_left  = functions.clamp( velocity_left, -80.0, 80.0 )
-		velocity_right = functions.clamp( velocity_right, -80.0, 80.0 )
-
-		# Slow down slowly
-		velocity       *= 0.98
-		velocity_left  *= 0.95
-		velocity_right *= 0.95
+#		velocity       = functions.clamp( velocity, -80.0, 80.0 )
+#		velocity_left  = functions.clamp( velocity_left, -80.0, 80.0 )
+#		velocity_right = functions.clamp( velocity_right, -80.0, 80.0 )
 
 		# Read current wheel rotational angles
 		currentAngles = functions.readCurrentAngles(sensors)
