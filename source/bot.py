@@ -129,7 +129,7 @@ def main():
 		currentAngles = functions.readCurrentAngles(sensors)
 		
 		# Figure out what our angles should be
-		targetAngles = walk.updateTargetAngles(10, 0)
+		targetAngles = walk.updateTargetAngles(0.5, 0)
 		
 		# Run our movement controller
 		movement = walk.calculateMovement(currentAngles, targetAngles)
@@ -156,6 +156,9 @@ def main():
 		pass
 
 	# Close
+	motorSpeeds[0] = 0
+	motorSpeeds[1] = 0
+	functions.sendMotorSpeeds(motorSpeeds)
 	functions.board.close()
 
 # Go

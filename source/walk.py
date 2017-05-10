@@ -13,14 +13,16 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	global targetAngles, timeOffset, oldTime
 	
 	# Calculate
-	speed = 200 # Degrees of movement in hip joint for a step
-	leftHipAngle = math.sin( timeOffset ) * speed 
-	rightHipAngle = math.sin( timeOffset ) * speed
+	speed = 100 # Degrees of movement in hip joint for a step
+	leftHipAngle = math.sin( timeOffset ) * speed + 70
+	rightHipAngle = math.sin( timeOffset ) * speed + 70
 
 	# Move forward in time
 	timeJump = time.time() - oldTime
 	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
-	timeOffset += timeJump * 8
+#	print( timeJump )
+#	timeJump = 1
+	timeOffset += timeJump * velocity
 	oldTime = time.time()
 
 	# Save
