@@ -17,6 +17,7 @@ echo ""
 echo "Installing requirements."
 sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
+sudo apt-get install -y dfu-util
 sudo apt-get install -y git
 git config --global push.default simple
 git config --global user.name "Betabot"
@@ -40,6 +41,7 @@ echo "Done."
 
 # Install welcome script
 if [ "$1" != "quick" ]; then
+	echo "PATH=$PATH:/home/pi/betabot/scripts" >> ~/.bashrc
 	echo "cd betabot" >> ~/.bashrc
 	echo "scripts/welcome" >> ~/.bashrc
 fi
@@ -64,6 +66,9 @@ echo "Done."
 # Install hdf5 for large model saving
 # This takes about half an hour.
 #./install_hdf5
+
+# Checkout submodules
+git submodule update --recursive --init
 
 # Done
 echo ""
