@@ -1,6 +1,11 @@
 import pybullet as p
 import time
 import math
+try:
+	simulator = Simulator()
+except:
+	print( "Simulator unavailable." )
+	print( sys.exc_info() )
 
 class Simulator():
 	def __init__(self):
