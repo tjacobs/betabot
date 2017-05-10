@@ -12,14 +12,14 @@ def on_move(x, y):
 	#print( "\n" + str( mouse_x ) + " " + str( mouse_y ) )
 	
 	# Set pointer position
-	if( mouse.position[0] > 1000 ):
-		mouse.position = (0, mouse.position[1])
-	if( mouse.position[1] > 900 ):
-		mouse.position = (mouse.position[0], 0)
-	if( mouse.position[0] == 0 ):
-		mouse.position = (1000, mouse.position[1])
-	if( mouse.position[1] == 0 ):
-		mouse.position = (mouse.position[0], 900)
+	#~ if( mouse.position[0] > 1000 ):
+		#~ mouse.position = (0, mouse.position[1])
+	#~ if( mouse.position[1] > 900 ):
+		#~ mouse.position = (mouse.position[0], 0)
+	#~ if( mouse.position[0] == 0 ):
+		#~ mouse.position = (1000, mouse.position[1])
+	#~ if( mouse.position[1] == 0 ):
+		#~ mouse.position = (mouse.position[0], 900)
 
 def on_click(x, y, button, pressed):
 	return

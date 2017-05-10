@@ -15,12 +15,13 @@ import walk
 
 # What shall we enable?
 ENABLE_KEYS = True
-ENABLE_MOUSE = True
+ENABLE_MOUSE = False
 ENABLE_BRAIN = False
 ENABLE_SIMULATOR = False
 
 # Import Betabot parts
 keys = None
+mouse = None
 brain = None
 simulator = None
 motors = None
@@ -67,7 +68,7 @@ def main():
 		velocity       *= 0.98
 		velocity_left  *= 0.95
 		velocity_right *= 0.95
-
+		
 		# keys/brain moving forward, left, or right?
 		if( brain ):
 			if( brain.up_key_pressed == True ):   velocity += 2.3
@@ -132,20 +133,15 @@ def main():
 		
 		# Run our movement controller
 		movement = walk.calculateMovement(currentAngles, targetAngles)
-#			motorSpeeds[0] = -movement[0]
-#			motorSpeeds[1] = -movement[1]
 
 		# Send motor speeds
-		motorSpeeds[0] = (velocity + velocity_right)
-		motorSpeeds[1] = (velocity + velocity_left)
-		motorSpeeds = functions.clampMotorSpeeds(motorSpeeds)
+		motorSpeeds[0] = (velocity + velocity_right) #- movement[0]
+		motorSpeeds[1] = (velocity + velocity_left) #- movement[1]
 		functions.sendMotorSpeeds(motorSpeeds)
 
-			# Update simulator
-		if simulator: simulator.simStep(motorSpeeds)
-
-#			message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
-#			sys.stdout.write("\r%s" % message )
+		# Display balance
+#		message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
+#		sys.stdout.write("\r%s" % message )
 		
 		# Display wheel angles and speeds
 		#sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 

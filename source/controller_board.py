@@ -67,18 +67,15 @@ class MultiWii:
 
 		"""Time to wait until the board becomes operational"""
 		wakeup = 0
-		try:
-			self.ser.open()
+		self.ser.open()
+		if self.PRINT:
+			print( "Waking up board on "+self.ser.port+"..." )
+		for i in range(1, wakeup):
 			if self.PRINT:
-				print( "Waking up board on "+self.ser.port+"..." )
-			for i in range(1, wakeup):
-				if self.PRINT:
-					print( wakeup-i )
-					time.sleep(1)
-				else:
-					time.sleep(1)
-		except Exception as error:
-			print( "Error opening "+self.ser.port+" port.\n"+str(error)+"" )
+				print( wakeup-i )
+				time.sleep(1)
+			else:
+				time.sleep(1)
 
 	def close(self):
 		self.ser.close()

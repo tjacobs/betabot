@@ -38,7 +38,7 @@ board = None
 def initMotors():
 	global board
 	try:
-		board = MultiWii("/dev/ttyACM0")
+		board = MultiWii("/dev/ttyUSB0")
 	except:
 		try:
 			board = MultiWii("/dev/ttyACM0")
@@ -81,23 +81,23 @@ def sendMotorSpeeds(motorSpeedsIn):
 	# Any motor speeds?
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = int(motorSpeedsIn[i])
-		if( (i != 2 ) and (motorSpeeds[i] > 1 or motorSpeeds[i] < -1 ) ):
+		if motorSpeeds[i] > 1 or motorSpeeds[i] < -1:
 			# Set used time as now
 			go = True
 			goTime = time.time()*1000
 			
-	# Motors been on for five seconds unused?
+	# Motors been on for two seconds unused?
 	if time.time()*1000 > goTime + 2000:
 		go = False
 
 	# Send
-	middle = 992 + 500
-	scale = 7
+	middle = 1000 + 500 + 5
+	scale = 5
+	motorSpeeds = clampMotorSpeeds(motorSpeeds)
 	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
 	try:
 		sys.stdout.write("\r\x1b[KChannels: " + str( rcChannels ) )
-		sys.stdout.flush()	
-		
+		sys.stdout.flush()
 		board.sendCMD(16, MultiWii.SET_RAW_RC, rcChannels)
 
 	except Exception as error:
@@ -113,4 +113,7 @@ def sendMotorSpeeds(motorSpeedsIn):
 			GPIO.output(motorEnablePin, GPIO.LOW)
 	except:
 		pass
+
+	# Update simulator
+	#if simulator: simulator.simStep(motorSpeeds)
 
