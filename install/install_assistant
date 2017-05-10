@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo ""
+
+# https://developers.google.com/assistant/sdk/prototype/getting-started-pi-python/config-dev-project-and-account
+# https://github.com/alexa-pi/AlexaPi/wiki/Installation
+
+cd /opt
+sudo git clone https://github.com/xtools-at/AssistantPi.git AlexaPi
+sudo /opt/AlexaPi/src/scripts/setup.sh
+# /opt/AlexaPi/env/bin/python -m googlesamples.assistant.auth_helpers --client-secrets /home/pi/Downloads/client_secret.json
+# python /opt/AlexaPi/src/main.py
+
+# Done
+echo ""
+echo "Done."
+
