@@ -2,12 +2,13 @@
 
 # Kill all other old instances of start other than ourselves
 for PID in `ps ax | grep '[s]tart' | awk '{print $1;}'`; do
-    #    echo $PID
+        echo $PID
     #    echo $BASHPID
         if [ $PID != $BASHPID ] ; then
+		echo "KILLING $PID"
                 sudo kill -9 $PID
         fi
 done
 
 cd /home/pi/betabot
-sudo python source/bot.py
+python source/bot.py

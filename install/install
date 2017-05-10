@@ -25,6 +25,7 @@ git config --global user.email "hatsmagee@gmail.com"
 
 echo "Installing python modules."
 sudo pip install -q keyboard
+sudo pip3 install -q keyboard
 sudo pip install -q picamera[array]
 sudo pip install -q python_Xlib
 sudo pip install -q pynput

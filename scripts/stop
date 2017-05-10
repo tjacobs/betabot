@@ -10,6 +10,7 @@ for PID in `ps ax | grep '[s]tart' | awk ' { print $1;}'`; do
 	fi
 done
 
+sudo killall -9 start 2> /dev/null
 sudo killall -9 python 2> /dev/null
 sudo killall -9 python2.7 2> /dev/null
 sudo killall -9 python3 2> /dev/null
