@@ -43,7 +43,12 @@ def initMotors():
 		try:
 			board = MultiWii("/dev/ttyACM0")
 		except:
-			print( "Error: Cannot access motors." )
+			try:
+				board = MultiWii("/dev/ttyACM1")
+			except:
+#				sys.stdout.write("\r\x1b[K
+				print( "Error: Cannot access USB motors." )
+				sys.stdout.flush()
 
 	# Motor enable pin
 	try:
@@ -92,7 +97,7 @@ def sendMotorSpeeds(motorSpeedsIn):
 
 	# Send
 	middle = 1000 + 500 + 5
-	scale = 5
+	scale = 0.5
 	motorSpeeds = clampMotorSpeeds(motorSpeeds)
 	rcChannels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
 	try:
@@ -102,6 +107,8 @@ def sendMotorSpeeds(motorSpeedsIn):
 
 	except Exception as error:
 #		print( "Error sending: " + str(error) )
+
+		initMotors()
 		pass
 
 	try:

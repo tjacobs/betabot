@@ -135,8 +135,8 @@ def main():
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
-		motorSpeeds[0] = (velocity + velocity_right) #- movement[0]
-		motorSpeeds[1] = (velocity + velocity_left) #- movement[1]
+		motorSpeeds[0] = (velocity + velocity_right) - movement[0]
+		motorSpeeds[1] = (velocity + velocity_left) - movement[1]
 		functions.sendMotorSpeeds(motorSpeeds)
 
 		# Display balance

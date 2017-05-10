@@ -4,21 +4,23 @@
 import math
 import time
 
+# Init
 timeOffset = 0.0
 targetAngles = [0] * 4
 oldTime = time.time()
+
 def updateTargetAngles( velocity, inverseTurningRadius ):
 	global targetAngles, timeOffset, oldTime
 	
-	# Calculate desired hip angles
-	hipTravel = 50 # Degrees of movement in hip joint for a step
-	leftHipAngle = math.sin( timeOffset ) * hipTravel + hipTravel 
-	rightHipAngle = math.cos( timeOffset ) * hipTravel + hipTravel
+	# Calculate
+	speed = 200 # Degrees of movement in hip joint for a step
+	leftHipAngle = math.sin( timeOffset ) * speed 
+	rightHipAngle = math.sin( timeOffset ) * speed
 
 	# Move forward in time
 	timeJump = time.time() - oldTime
 	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
-	timeOffset += timeJump
+	timeOffset += timeJump * 8
 	oldTime = time.time()
 
 	# Save
