@@ -38,9 +38,12 @@ board = None
 def initMotors():
 	global board
 	try:
-		board = MultiWii("/dev/ttyUSB0")
+		board = MultiWii("/dev/ttyACM0")
 	except:
-		print( "Error: Cannot access motors." )
+		try:
+			board = MultiWii("/dev/ttyACM0")
+		except:
+			print( "Error: Cannot access motors." )
 
 	# Motor enable pin
 	try:

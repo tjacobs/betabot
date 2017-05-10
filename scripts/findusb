@@ -1,0 +1,6 @@
+while true
+do
+ls /dev/tty*
+sleep 1
+done
+
