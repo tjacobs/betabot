@@ -1,5 +1,5 @@
 #!/bin/bash
 
-chromium-browser 2> /dev/null > /dev/null &
+chromium-browser $1 2> /dev/null > /dev/null &
 echo "Starting web browser..."
 

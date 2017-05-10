@@ -71,5 +71,5 @@ echo "All done. Enjoy Betabot."
 
 echo "sudo raspi-config set keyboard to US"
 echo "sudo raspi-config enable camera"
-echo "Add terminal to lxde startup"
 
+../scripts/web "https://chrome.google.com/webstore/detail/betaflight-configurator/kdaghagfopacdngbohiknlhcocjccjao"
