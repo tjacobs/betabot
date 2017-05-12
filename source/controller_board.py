@@ -88,13 +88,8 @@ class MultiWii:
 		for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
 			checksum = checksum ^ ord(i)
 		total_data.append(checksum)
-		try:
-			b = None
-			b = self.ser.write(struct.pack('<3c2B%dHB' % len(data), *total_data))
-			return
-		except Exception as error:
-			print( "\nError in sendCMD. " + str(error) ) 
-			pass
+		b = self.ser.write(struct.pack('<3c2B%dHB' % len(data), *total_data))
+		return
 
 	"""Function for sending a command to the board and receive attitude"""
 	"""

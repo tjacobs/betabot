@@ -11,6 +11,7 @@ import math
 import array
 import datetime
 import functions
+import motors
 import walk
 
 # What shall we enable?
@@ -24,7 +25,6 @@ keys = None
 mouse = None
 brain = None
 simulator = None
-motors = None
 from sensors import AMS
 if ENABLE_KEYS:
 	import keys
@@ -44,7 +44,7 @@ def main():
 	sensors.connect(1)
 
 	# Init motors via USB
-	functions.initMotors()
+	motors.initMotors()
 
 	# Init motor speeds
 	velocity       = 0.0
@@ -62,7 +62,7 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer X, Y, Z values.
-#			board = functions.readIMU()
+		board = motors.readIMU()
 
 		# Slow down slowly
 		velocity       *= 0.98
@@ -129,7 +129,7 @@ def main():
 		currentAngles = functions.readCurrentAngles(sensors)
 		
 		# Figure out what our angles should be
-		targetAngles = walk.updateTargetAngles(0.5, 0)
+		targetAngles = walk.updateTargetAngles(2.5, 0)
 		
 		# Run our movement controller
 		movement = walk.calculateMovement(currentAngles, targetAngles)
@@ -137,16 +137,14 @@ def main():
 		# Send motor speeds
 		motorSpeeds[0] = (velocity + velocity_right) - movement[0]
 		motorSpeeds[1] = (velocity + velocity_left) - movement[1]
-		functions.sendMotorSpeeds(motorSpeeds)
+		motors.sendMotorSpeeds(motorSpeeds)
 
 		# Display balance
-#		message = "ax= {:+.0f} ay= {:+.0f} az= {:+.0f} gx= {:+.0f} gy= {:+.0f} gz= {:+.0f} mx= {:+.0f} my= {:+.0f} mz= {:+.0f}" .format(float(board.rawIMU['ax']),float(board.rawIMU['ay']),float(board.rawIMU['az']),float(board.rawIMU['gx']),float(board.rawIMU['gy']),float(board.rawIMU['gz']),float(board.rawIMU['mx']),float(board.rawIMU['my']),float(board.rawIMU['mz']))
-#		sys.stdout.write("\r%s" % message )
+		# Also available: rawIMU['gx'] rawIMU['gy'] rawIMU['gz'] rawIMU['mx'] rawIMU['my'] rawIMU['mz']
+		functions.display( "Pitch: %3d, Roll: %3d" % (board.rawIMU['ax'], board.rawIMU['ay'] ) )
 		
-		# Display wheel angles and speeds
-		#sys.stdout.write("\r\x1b[KCurrent Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % 
-		#	(currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
-		#sys.stdout.flush()			
+		# Display angles, target angles and speeds
+#		functions.display( "Current Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % (currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 
 	# Finish up
 	try:
@@ -158,8 +156,8 @@ def main():
 	# Close
 	motorSpeeds[0] = 0
 	motorSpeeds[1] = 0
-	functions.sendMotorSpeeds(motorSpeeds)
-	functions.board.close()
+	motors.sendMotorSpeeds(motorSpeeds)
+	motors.board.close()
 
 # Go
 if __name__=="__main__":
