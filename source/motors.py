@@ -66,7 +66,7 @@ def initMotors():
 		print( sys.exc_info() )
 
 # Send the motor speeds to the motors, and enable the motors if any have any speed
-def sendMotorSpeeds(motorSpeedsIn):
+def sendMotorSpeeds(motorSpeedsIn, displayChannels=False):
 	global goTime, board, motorEnablePin
 	motorSpeeds = [0] * 4
 	
@@ -88,7 +88,8 @@ def sendMotorSpeeds(motorSpeedsIn):
 	motorSpeeds = clampMotorSpeeds(motorSpeeds)
 	channels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
 	try:
-		functions.display( "Channels: " + str( channels ) )
+		if( displayChannels ):
+			functions.display( "Channels: " + str( channels ) )
 		board.sendCMD(16, MultiWii.SET_RAW_RC, channels)
 	except Exception as error:
 		initMotors()

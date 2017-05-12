@@ -177,7 +177,7 @@ class MultiWii:
 
 	"""Function to receive a data packet from the board"""
 	def getData(self, cmd):
-		try:
+#		try:
 			start = time.time()
 			self.sendCMD(0, cmd, [])
 			while True:
@@ -187,6 +187,8 @@ class MultiWii:
 					break
 			datalength = struct.unpack('<b', self.ser.read())[0]
 			code = struct.unpack('<b', self.ser.read())
+			if( datalength == 0 ):
+				return 0
 			data = self.ser.read(datalength)
 			temp = struct.unpack('<'+'h'*(datalength/2),data)
 			self.ser.flushInput()
@@ -256,9 +258,9 @@ class MultiWii:
 				return self.PIDcoef
 			else:
 				return "No return error!"
-		except Exception as error:
-			print( error )
-			pass
+#		except Exception as error:
+#			print( "ERROR1 " + str( error ) )
+#			pass
 
 	"""Function to receive a data packet from the board. Note: easier to use on threads"""
 	def getDataInf(self, cmd):
