@@ -35,14 +35,12 @@ def calculateMovement( currentAngles, targetAngles ):
 	# PID controller. Start with P. Deal with craziness of wraparound angles.
 	Ps = [0] * len( targetAngles )
 	P_rate = 1.0
-	for i in range(len(targetAngles)):
+	for i in range(len(targetAngles)):	
+		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
 		angle_ccw = targetAngles[i] - currentAngles[i] + 360
-		
-		# Go the shortest way around
 		angleFromTarget = angle_ccw
 		if abs(angle_cw) < abs(angle_ccw):
 			angleFromTarget = angle_cw
-		print( "\n" + str( angle_cw ) + "  " + str( angle_ccw ) + "  " + str( angleFromTarget ) )
 		Ps[i] = P_rate * angleFromTarget
 	return Ps
