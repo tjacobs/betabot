@@ -13,19 +13,19 @@ import datetime
 import functions
 import motors
 import walk
+from sensors import AMS
 
 # What shall we enable?
-ENABLE_KEYS = True
-ENABLE_MOUSE = False
-ENABLE_BRAIN = False
-ENABLE_SIMULATOR = False
+ENABLE_KEYS 		= True
+ENABLE_MOUSE 		= False
+ENABLE_BRAIN 		= False
+ENABLE_SIMULATOR 	= False
 
 # Import Betabot parts
-keys = None
-mouse = None
-brain = None
-simulator = None
-from sensors import AMS
+keys 		= None
+mouse 		= None
+brain 		= None
+simulator 	= None
 if ENABLE_KEYS:
 	import keys
 if ENABLE_MOUSE:
@@ -62,9 +62,9 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer values to see which way we're leaning
-		board = motors.readIMU()
-		pitch = board.rawIMU['ax']
-		roll = board.rawIMU['ay']
+#		board = motors.readIMU()
+#		pitch = board.rawIMU['ax']
+#		roll = board.rawIMU['ay']
 
 		# Slow down slowly
 		velocity       *= 0.98
@@ -131,21 +131,25 @@ def main():
 		currentAngles = functions.readCurrentAngles(sensors)
 		
 		# Figure out what our angles should be
-		targetAngles = walk.updateTargetAngles(2.5, 0)
+		targetAngles = walk.updateTargetAngles(1.5, 0)
 		
 		# Run our movement controller
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
-		motorSpeeds[0] = (velocity + velocity_right) + pitch #- movement[0]
-		motorSpeeds[1] = (velocity + velocity_left) + pitch  #- movement[1]
+		pitch = 0
+		velocity = 0
+		velocity_left = 0
+		
+		motorSpeeds[0] = 0# (velocity + velocity_right) + pitch - movement[0]
+		motorSpeeds[1] = (velocity + velocity_left) + pitch  - movement[1]
 		motors.sendMotorSpeeds(motorSpeeds)
 
 		# Display balance
-		functions.display( "Pitch: %3d, Roll: %3d" % (pitch, roll ) )
+#		functions.display( "Pitch: %3d, Roll: %3d" % (pitch, roll ) )
 		
 		# Display angles, target angles and speeds
-#		functions.display( "Current Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % (currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+		functions.display( "Current Angles: %3d, %3d, Target Angles: %3d, %3d, Motor Speeds: %3d, %3d" % (currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 
 	# Finish up
 	try:

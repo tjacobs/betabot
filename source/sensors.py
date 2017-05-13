@@ -46,9 +46,9 @@ class AMS():
     angle2 = self.readAndWait(self.angleReadReg2, sensorNum)
     return (angle2 << 6) + angle1
 
-  def getMagnitude(self):
-    magnitude1 = self.readAndWait(self.magnitudeReadReg1)
-    magnitude2 = self.readAndWait(self.magnitudeReadReg2)
+  def getMagnitude(self, sensorNum):
+    magnitude1 = self.readAndWait(self.magnitudeReadReg1, sensorNum)
+    magnitude2 = self.readAndWait(self.magnitudeReadReg2, sensorNum)
     return magnitude2 << 6 + magnitude1
 
   def signedInt(self, value):

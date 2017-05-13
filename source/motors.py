@@ -39,7 +39,7 @@ def initMotors():
 			try:
 				board = MultiWii("/dev/ttyACM1")
 			except:
-				print( "Error: Cannot access USB motors." )
+				print( "\nError: Cannot access USB motors." )
 				sys.stdout.flush()
 
 	# Motor enable pin

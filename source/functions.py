@@ -15,7 +15,9 @@ def readCurrentAngles( sensors ):
 	currentAngles = [0] * 4
 	try:
 		for i in range(len(currentAngles)):
-			currentAngles[i] = 360.0 * sensors.getAngle(i+1) / 16384.0
+			mag = sensors.getMagnitude(i+1)
+			if mag > 100:
+				currentAngles[i] = 360.0 * sensors.getAngle(i+1) / 16384.0
 	except:
 		return currentAngles
 	return currentAngles

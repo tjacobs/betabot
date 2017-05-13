@@ -13,9 +13,10 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	global targetAngles, timeOffset, oldTime
 	
 	# Calculate
-	speed = 125 # Degrees of movement in hip joint for a step
-	leftHipAngle = math.sin( timeOffset ) * speed + 5
-	rightHipAngle = math.sin( timeOffset ) * speed + 5
+	angleSpan = 75 # Degrees of movement in hip joint for a step
+	angleSpan *= 0.5 # Half, as sine goes -1 to 1 = 2.
+	leftHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
+	rightHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
 
 	# Move forward in time
 	timeJump = time.time() - oldTime
@@ -26,14 +27,22 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	oldTime = time.time()
 
 	# Save
-	targetAngles[0] = int( rightHipAngle )
-	targetAngles[1] = int( leftHipAngle )
+	targetAngles[0] = int( leftHipAngle )
+	targetAngles[1] = int( rightHipAngle )
 	return targetAngles
 
 def calculateMovement( currentAngles, targetAngles ):
-	# PID controller. Start with P.
+	# PID controller. Start with P. Deal with craziness of wraparound angles.
 	Ps = [0] * len( targetAngles )
-	P_rate = 0.5
+	P_rate = 1.0
 	for i in range(len(targetAngles)):
-		Ps[i] = P_rate * (targetAngles[i] - currentAngles[i])
+		angle_cw =  targetAngles[i] - currentAngles[i]
+		angle_ccw = targetAngles[i] - currentAngles[i] + 360
+		
+		# Go the shortest way around
+		angleFromTarget = angle_ccw
+		if abs(angle_cw) < abs(angle_ccw):
+			angleFromTarget = angle_cw
+		print( "\n" + str( angle_cw ) + "  " + str( angle_ccw ) + "  " + str( angleFromTarget ) )
+		Ps[i] = P_rate * angleFromTarget
 	return Ps
