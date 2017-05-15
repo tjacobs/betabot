@@ -2,4 +2,4 @@
 
 # Start editing
 cd /home/pi/betabot
-geany source/bot.py source/walk.py source/functions.py source/controller_board.py &
+geany source/bot.py source/walk.py source/functions.py source/motors.py &

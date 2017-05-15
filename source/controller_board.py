@@ -187,9 +187,11 @@ class MultiWii:
 					break
 			datalength = struct.unpack('<b', self.ser.read())[0]
 			code = struct.unpack('<b', self.ser.read())
-			if( datalength == 0 ):
+			if datalength == 0:
 				return 0
 			data = self.ser.read(datalength)
+			if len( data ) == 0:
+				return 0
 			temp = struct.unpack('<'+'h'*(datalength/2),data)
 			self.ser.flushInput()
 			self.ser.flushOutput()

@@ -46,32 +46,42 @@ def main():
 	# Init motors via USB
 	motors.initMotors()
 
-	# Init motor speeds
+	# Flush output for file logging
+	sys.stdout.flush()
+
+	# Init velocity forward/backward, and individual left right velocities
 	velocity       = 0.0
 	velocity_left  = 0.0
 	velocity_right = 0.0
 	motorSpeeds    = [0] * 4
+
+	# Init mouse
 	old_mouse_x    = 0.0
 	old_mouse_y	   = 0.0
 	mouse_speed_factor = 1.0
+	
+	# Init balance trim
+	trim = 0.0
 
-	# Flush output for file logging
-	sys.stdout.flush()
+	# Read initial angles
+	board = motors.readIMU()
+	offsetPitch = board.rawIMU['ay']
+	currentAngles = functions.readCurrentAngles(sensors)
+	offsetAngle = currentAngles[1]
 
 	# Loop
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer values to see which way we're leaning
 		board = motors.readIMU()
-		pitch = board.rawIMU['ax']
-		roll = board.rawIMU['ay']
+		pitch = board.rawIMU['ay']
 
 		# Slow down slowly
 		velocity       *= 0.98
 		velocity_left  *= 0.95
 		velocity_right *= 0.95
 		
-		# keys/brain moving forward, left, or right?
+		# Update velocities
 		if( brain ):
 			if( brain.up_key_pressed == True ):   velocity += 2.3
 			if( brain.down_key_pressed == True ): velocity -= 2.3
@@ -81,10 +91,13 @@ def main():
 			if( brain.right_key_pressed == True ):
 				velocity_left += 1.5
 				velocity_right -= 1.5
-
 		if( keys ):
-			if( keys.up_key_pressed == True ):   velocity += 2.3
-			if( keys.down_key_pressed == True ): velocity -= 2.3
+			if( keys.up_key_pressed == True ):
+				trim += 1
+				#velocity += 2.3
+			if( keys.down_key_pressed == True ):
+				trim -= 1
+				#velocity -= 2.3
 			if( keys.left_key_pressed == True ): 
 				velocity_right -= 1.5
 				velocity_left += 1.5
@@ -98,8 +111,7 @@ def main():
 			mouse_x = mouse.mouse_x
 			mouse_y = mouse.mouse_y
 			mouse_x_diff = mouse_x - old_mouse_x
-			mouse_y_diff = mouse_y - old_mouse_y
-			
+			mouse_y_diff = mouse_y - old_mouse_y			
 			if( mouse_x_diff > 500 ): mouse_x_diff = 0
 			if( mouse_x_diff < -500 ): mouse_x_diff = 0
 			if( mouse_y_diff > 500 ): mouse_y_diff = 0
@@ -116,27 +128,30 @@ def main():
 			old_mouse_x = mouse_x
 			old_mouse_y = mouse_y
 
-		# Calculate left and right wheel velocities
-		#R = 0.1 # Radius of wheels
-		#L = 0.1 # Linear distance between wheels
-		#(2.0 * velocity - heading * L ) / 2.0 * R
-		#(2.0 * velocity + heading * L ) / 2.0 * R
-
 		# Update velocities
-#		velocity       = functions.clamp( velocity, -80.0, 80.0 )
-#		velocity_left  = functions.clamp( velocity_left, -80.0, 80.0 )
-#		velocity_right = functions.clamp( velocity_right, -80.0, 80.0 )
+		velocity       = functions.clamp(velocity,       -100.0, 100.0)
+		velocity_left  = functions.clamp(velocity_left,  -100.0, 100.0)
+		velocity_right = functions.clamp(velocity_right, -100.0, 100.0)
 
-		# Read current wheel rotational angles
+		# Read current angles of motors
 		currentAngles = functions.readCurrentAngles(sensors)
 		
-		# Figure out what our angles should be
-		targetAngles = walk.updateTargetAngles(1.5, 0)
+		# Figure out what our angles should be now to walk
+		targetAngles = walk.updateTargetAngles(1.0, 0)
 
-		# Compensate for our current body angle
+		# Compensate for the angle seen at startup
+		targetAngles[0] += offsetAngle
+		targetAngles[1] += offsetAngle
+
+		# Compensate for our current body angle to always stand up straight
+		targetAngles[0] += pitch
 		targetAngles[1] += pitch
-		
-		# Run our movement controller
+
+		# Allow ourselves to lean forward back manually
+		targetAngles[0] += trim
+		targetAngles[1] += trim
+
+		# Run our movement controller to see how fast we should set our motor speeds to get to targets
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
@@ -145,7 +160,7 @@ def main():
 		motors.sendMotorSpeeds(motorSpeeds)
 		
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d, Roll: %3d. Angles: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, roll, currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+		functions.display( "Pitch: %3d. Angles: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
 
 	# Finish up
 	try:

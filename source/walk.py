@@ -21,8 +21,6 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 	# Move forward in time
 	timeJump = time.time() - oldTime
 	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
-#	print( timeJump )
-#	timeJump = 1
 	timeOffset += timeJump * velocity
 	oldTime = time.time()
 
@@ -34,7 +32,7 @@ def updateTargetAngles( velocity, inverseTurningRadius ):
 def calculateMovement( currentAngles, targetAngles ):
 	# PID controller. Start with P. Deal with craziness of wraparound angles.
 	Ps = [0] * len( targetAngles )
-	P_rate = 1.0
+	P_rate = 0.5
 	for i in range(len(targetAngles)):	
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
