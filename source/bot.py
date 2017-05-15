@@ -17,7 +17,7 @@ from sensors import AMS
 
 # What shall we enable?
 ENABLE_KEYS 		= True
-ENABLE_MOUSE 		= False
+ENABLE_MOUSE 		= True
 ENABLE_BRAIN 		= False
 ENABLE_SIMULATOR 	= False
 
@@ -118,11 +118,11 @@ def main():
 			if( mouse_y_diff < -500 ): mouse_y_diff = 0
 
 			# Set forward/backward speed
-			velocity -= mouse_y_diff * mouse_speed_factor * 2.0
+#			velocity -= mouse_y_diff * mouse_speed_factor * 2.0
 
 			# Set rotate left right speed
 			velocity_left -= mouse_x_diff * mouse_speed_factor
-			velocity_right += mouse_x_diff * mouse_speed_factor
+			velocity_right += mouse_y_diff * mouse_speed_factor
 
 			# Remember
 			old_mouse_x = mouse_x
@@ -155,8 +155,8 @@ def main():
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
-		motorSpeeds[0] = (velocity + velocity_right)- movement[0]
-		motorSpeeds[1] = (velocity + velocity_left) - movement[1]
+		motorSpeeds[0] = (velocity + velocity_right)#- movement[0]
+		motorSpeeds[1] = (velocity + velocity_left) #- movement[1]
 		motors.sendMotorSpeeds(motorSpeeds)
 		
 		# Display balance, angles, target angles and speeds
