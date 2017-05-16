@@ -6,34 +6,49 @@ import time
 
 # Init
 timeOffset = 0.0
-targetAngles = [0] * 4
+targetAngles = [0] * 6
 oldTime = time.time()
 
-def updateTargetAngles( velocity, inverseTurningRadius ):
+def updateTargetAngles(velocity):
 	global targetAngles, timeOffset, oldTime
-	
-	# Calculate
-	angleSpan = 75 # Degrees of movement in hip joint for a step
-	angleSpan *= 0.5 # Half, as sine goes -1 to 1 = 2.
-	leftHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
-	rightHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
 
 	# Move forward in time
 	timeJump = time.time() - oldTime
 	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
 	timeOffset += timeJump * velocity
 	oldTime = time.time()
+	
+	# Calculate
+	angleSpan = 75 # Degrees of movement in hip joint for a step
+	angleSpan *= 0.5 # Half, as sine goes -1 to 1 = 2.
+	
+	# Hips
+	rightHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
+	leftHipAngle = math.sin( timeOffset ) * angleSpan + angleSpan
+	
+	# Knees
+	rightKneeAngle = math.sin( timeOffset ) * angleSpan + angleSpan
+	leftKneeAngle = math.sin( timeOffset ) * angleSpan + angleSpan
+	
+	# Feet
+	rightFootAngle = math.sin( timeOffset ) * angleSpan/2 + angleSpan/2
+	leftFootAngle = math.sin( timeOffset ) * angleSpan/2 + angleSpan/2
 
 	# Save
-	targetAngles[0] = int( leftHipAngle )
-	targetAngles[1] = int( rightHipAngle )
+	targetAngles[0] = int( rightHipAngle )
+	targetAngles[1] = int( rightKneeAngle )
+	targetAngles[2] = int( leftHipAngle )
+	targetAngles[3] = int( leftKneeAngle )
+	targetAngles[4] = int( rightFootAngle )
+	targetAngles[5] = int( leftFootAngle )
 	return targetAngles
 
-def calculateMovement( currentAngles, targetAngles ):
+def calculateMovement(currentAngles, targetAngles):
 	# PID controller. Start with P. Deal with craziness of wraparound angles.
-	Ps = [0] * len( targetAngles )
+	numAngles = 4
+	Ps = [0] * numAngles
 	P_rate = 0.5
-	for i in range(len(targetAngles)):	
+	for i in range(numAngles):
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
 		angle_ccw = targetAngles[i] - currentAngles[i] + 360

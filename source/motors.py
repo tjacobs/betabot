@@ -68,7 +68,7 @@ def initMotors():
 # Send the motor speeds to the motors, and enable the motors if any have any speed
 def sendMotorSpeeds(motorSpeedsIn, displayChannels=False):
 	global goTime, board, motorEnablePin
-	motorSpeeds = [0] * 4
+	motorSpeeds = [0] * 6
 	
 	# Any motor speeds?
 	for i in range(len(motorSpeedsIn)):
@@ -86,7 +86,7 @@ def sendMotorSpeeds(motorSpeedsIn, displayChannels=False):
 	middle = 1000 + 500 + 5
 	scale = 5
 	motorSpeeds = clampMotorSpeeds(motorSpeeds)
-	channels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, 1000, 1000, 1000, 1000]
+	channels = [motorSpeeds[0]*scale+middle, motorSpeeds[1]*scale+middle, motorSpeeds[2]*scale+middle, motorSpeeds[3]*scale+middle, motorSpeeds[4]*scale+middle, motorSpeeds[5]*scale+middle, 1000, 1000]
 	try:
 		if( displayChannels ):
 			functions.display( "Channels: " + str( channels ) )
