@@ -115,31 +115,34 @@ def main():
 		targetAngles[2] += trim
 
 		# Move mouse up, raise up
-		targetAngles[0] += mouse_y_diff # Right hip goes CW
-		targetAngles[2] += mouse_y_diff # Left hip goes CW
-		targetAngles[1] -= mouse_y_diff # Right knee goes CCW
-		targetAngles[3] -= mouse_y_diff # Left knee goes CCW
-		targetAngles[4] -= mouse_y_diff # Right foot goes CCW
-		targetAngles[5] -= mouse_y_diff # Left foot goes CCW
+		targetAngles[0] += mouse_y/3 # Right hip goes CW
+		targetAngles[1] += mouse_y/3 # Left hip goes CW
+		targetAngles[2] -= mouse_y/3 # Right knee goes CCW
+		targetAngles[3] -= mouse_y/3 # Left knee goes CCW
+		targetAngles[4] -= mouse_y/3 # Right foot goes CCW
+		targetAngles[5] -= mouse_y/3 # Left foot goes CCW
 
 		# Set foot angles
 		rightFootServoAngle = targetAngles[4]
 		leftFootServoAngle = targetAngles[5]
 
+		# hack
+		currentAngles[2] = 100
+		
 		# Run our movement controller to see how fast we should set our motor speeds to get to targets
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
 		motorSpeeds[0] = movement[0] # Right hip
-		motorSpeeds[1] = movement[1] # Right knee
-		motorSpeeds[2] = movement[2] # Left hip
-		motorSpeeds[3] = movement[3] # Left knee
-		motorSpeeds[4] = rightFootServoAngle # Right foot servo, actually sending angle directly not speed
-		motorSpeeds[5] = leftFootServoAngle # Left foot servo, actually sending angle directly not speed
+		motorSpeeds[2] = 0#movement[1] # Left hip
+		motorSpeeds[1] = movement[2] # Right knee
+		motorSpeeds[3] = 0#movement[3] # Left knee
+		motorSpeeds[4] = 0#rightFootServoAngle # Right foot servo, actually sending angle directly not speed
+		motorSpeeds[5] = 0#leftFootServoAngle # Left foot servo, actually sending angle directly not speed
 		motors.sendMotorSpeeds(motorSpeeds)
 		
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Angles: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[1], targetAngles[0], targetAngles[1], motorSpeeds[0], motorSpeeds[1] ) )
+		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[1] ) )
 
 	# Finish up
 	try:

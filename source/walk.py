@@ -19,7 +19,7 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 75 # Degrees of movement in hip joint for a step
+	angleSpan = 0 # Degrees of movement in hip joint for a step
 	angleSpan *= 0.5 # Half, as sine goes -1 to 1 = 2.
 	
 	# Hips
@@ -36,8 +36,8 @@ def updateTargetAngles(velocity):
 
 	# Save
 	targetAngles[0] = int( rightHipAngle )
-	targetAngles[1] = int( rightKneeAngle )
-	targetAngles[2] = int( leftHipAngle )
+	targetAngles[1] = int( leftHipAngle )
+	targetAngles[2] = int( rightKneeAngle )
 	targetAngles[3] = int( leftKneeAngle )
 	targetAngles[4] = int( rightFootAngle )
 	targetAngles[5] = int( leftFootAngle )
