@@ -14,10 +14,10 @@ def clamp(n, smallest, largest):
 def readCurrentAngles( sensors ):
 	currentAngles = [0] * 4
 	try:
-		for i in range(len(currentAngles)):
-			mag = sensors.getMagnitude(i+1)
+		for i in range(1, len(currentAngles)+1):
+			mag = sensors.getMagnitude(i)
 			if mag > 100:
-				currentAngles[i] = 360.0 * sensors.getAngle(i+1) / 16384.0
+				currentAngles[i] = 360.0 * sensors.getAngle(i) / 16384.0
 	except:
 		return currentAngles
 	return currentAngles

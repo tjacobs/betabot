@@ -4,7 +4,7 @@ class AMS():
   def __init__(self):
     self.address1 = 0x40
     self.address2 = 0x42
-    self.address3 = 0x41
+    self.address3 = 0x42
     self.address4 = 0x43
     self.angleReadReg1 = 0xFE
     self.angleReadReg2 = 0xFF
