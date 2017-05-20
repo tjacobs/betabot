@@ -62,8 +62,7 @@ def main():
 	sineOffset = 0.0
 
 	# Read initial angles
-	board = motors.readIMU()
-	offsetPitch = board.rawIMU['ay']
+	offsetPitch = motors.readIMU()
 	currentAngles = functions.readCurrentAngles(sensors)
 	offsetAngle = currentAngles[1]
 	
@@ -71,8 +70,7 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer values to see which way we're leaning
-		board = motors.readIMU()
-		pitch = board.rawIMU['ay']
+		pitch = motors.readIMU()
 		
 		# Update from keyboard
 		if( keys ):

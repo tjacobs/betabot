@@ -13,8 +13,11 @@ def clampMotorSpeeds(motorSpeeds):
 	return motorSpeeds
 
 def readIMU():
+	global board
+	if board == None:
+		return 0
 	board.getData(MultiWii.RAW_IMU)
-	return board
+	return board.rawIMU['ay'] # Pitch
 
 # Init
 simulator = None
@@ -39,7 +42,7 @@ def initMotors():
 			try:
 				board = MultiWii("/dev/ttyACM1")
 			except:
-				print( "\nError: Cannot access USB motors." )
+#				print( "\nError: Cannot access USB motors." )
 				sys.stdout.flush()
 
 	# Motor enable pin
@@ -62,8 +65,9 @@ def initMotors():
 			sys.stdout.write("\n" )
 
 	except:
-		print( "Error: Cannot access GPIO." )
-		print( sys.exc_info() )
+#		print( "Error: Cannot access GPIO." )
+#		print( sys.exc_info() )
+		sys.stdout.flush()
 
 # Send the motor speeds to the motors, and enable the motors if any have any speed
 def sendMotorSpeeds(motorSpeedsIn, displayChannels=False, displayCommands=False):
