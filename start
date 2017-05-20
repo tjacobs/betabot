@@ -1,14 +1,16 @@
 #!/bin/bash
 
-# Kill all other old instances of start other than ourselves
+# Kill all old instances of start other than ourselves
 for PID in `ps ax | grep '[s]tart' | awk '{print $1;}'`; do
-#        echo $PID
-    #    echo $BASHPID
-        if [ $PID != $BASHPID ] ; then
-#		echo "KILLING $PID"
+        if [ "$PID" != "$$" ] ; then
                 sudo kill -9 $PID
         fi
 done
 
-cd /home/pi/betabot
+# Change directory
+if [ -d "/home/pi/betabot" ]; then
+	cd /home/pi/betabot
+fi
+
+# Run
 sudo python source/bot.py
