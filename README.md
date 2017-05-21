@@ -18,7 +18,7 @@ To help you simulate and then quickly test out deep learning and computer vision
 
 
 ---
-# Getting started
+## Getting started
 
 Check out the main file: [bot.py](source/bot.py)
 
@@ -26,11 +26,11 @@ Check out the installer: [install](install/install)
 
 Check out the startup help: [welcome](scripts/welcome)
 
-To get started, write the [disk image](coming_soon) using [sd_restore](scripts/sd_restore) and pop it into a [Raspberry Pi Zero]().
+To get started, write the [disk image](coming_soon) using [sd_restore](scripts/sd_restore) and pop it into a Raspberry Pi Zero.
 
 ---
 
-# Parts
+## Parts
 
 | Part | $US | Ideal $US |
 |--:|--:|--:|
@@ -66,13 +66,13 @@ You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
 ---
 
-# 3D body
+## 3D body
 
 [STL file for 3D printing](3d_models/betabot.stl)
 
 ---
 
-# Videos
+## Videos
 
 Work in progress, old body shape...
 
@@ -84,7 +84,7 @@ Work in progress, old body shape...
 
 ---
 
-# How it works
+## How it works
 
 ### Hips
 
@@ -100,7 +100,7 @@ Controlled by motor outputs 5 and 6. Run by servos, these angle the feet so they
 
 
 ---
-# Development
+## Development
 
 The Pi Zero runs the bot. It runs the main bot.py file automatically on startup (via /etc/rc.local). No heavy HDMI cables go into the bot, keeping it mobile and untethered.
 
@@ -113,7 +113,7 @@ And after that: The Pi Zero listens to any write of the bot.py file, and every t
 
 
 ---
-# How to build it
+## How to build it
 
 Looking to build it? See parts list above.
 
