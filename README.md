@@ -2,7 +2,10 @@
 
 ### An affordable walking biped robot, designed for deep learning research.
 
+![Bot](docs/bot4.png)
+![Bot](docs/bot2.png)
 ![Bot](docs/bot.png)
+![Bot](docs/bot3.png)
 
 **What is it?**
 A 3D printed body, Raspberry Pi Zero, motors & motor controllers, sensors, power boards, and a camera.
