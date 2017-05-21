@@ -76,7 +76,7 @@ You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
 Work in progress, old body shape...
 
-[Moving](https://www.instagram.com/p/BSNbtOvhLsf/?taken-by=tomjacobs83)
+[Moving](https://www.instagram.com/p/BSNbtOvhLsf/)
 
 [Upright](https://twitter.com/TomPJacobs/status/848138218755170305)
 
