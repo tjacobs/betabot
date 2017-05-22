@@ -81,6 +81,56 @@
     </inertial>
   </link>
 
+  <link name="right_motor">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_motor.stl" scale="0.01 0.01 0.01" name="right_motor" />
+      </geometry>
+    </collision>
+    <visual name="right_motor_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_motor.stl" scale="0.01 0.01 0.01" name="right_motor" />
+      </geometry>
+      <material name="motor">
+        <color rgba="0.6 0.6 0.6 0.8"/>
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.8"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="left_motor">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_motor.stl" scale="0.01 0.01 0.01" name="left_motor" />
+      </geometry>
+    </collision>
+    <visual name="right_motor_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_motor.stl" scale="0.01 0.01 0.01" name="left_motor" />
+      </geometry>
+      <material name="motor">
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.8"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
 
   <link name="right_leg">
     <collision name="collision">
@@ -95,6 +145,7 @@
         <mesh filename="right_leg.stl" scale="0.01 0.01 0.01" name="right_leg" />
       </geometry>
       <material name="leg">
+        <color rgba="0.3 0.3 0.2 0.1"/>
       </material>
     </visual>
     <inertial>
@@ -132,6 +183,75 @@
     </inertial>
   </link>
 
+  <link name="right_lower_leg">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_lower_leg.stl" scale="0.01 0.01 0.01" name="right_lower_leg" />
+      </geometry>
+    </collision>
+    <visual name="right_lower_leg_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_lower_leg.stl" scale="0.01 0.01 0.01" name="right_lower_leg" />
+      </geometry>
+      <material name="lower_leg">
+        <color rgba="0.8 0.8 0.2 0.8"/>
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="left_lower_leg">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_lower_leg.stl" scale="0.01 0.01 0.01" name="left_lower_leg" />
+      </geometry>
+    </collision>
+    <visual name="left_leg_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_lower_leg.stl" scale="0.01 0.01 0.01" name="left_lower_leg" />
+      </geometry>
+      <material name="lower_leg">
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
+
+
+  <joint type="continuous" name="left_motor_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="left_motor"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
+
+  <joint type="continuous" name="right_motor_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="right_motor"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
 
   <joint type="continuous" name="left_leg_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -151,9 +271,27 @@
     <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
+  <joint type="continuous" name="left_lower_leg_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="left_leg"/>
+    <child link="left_lower_leg"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
+
+  <joint type="continuous" name="right_lower_leg_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="right_leg"/>
+    <child link="right_lower_leg"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
+
   <joint type="continuous" name="left_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="chassis"/>
+    <parent link="left_lower_leg"/>
     <child link="left_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
@@ -162,7 +300,7 @@
 
   <joint type="continuous" name="right_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <parent link="chassis"/>
+    <parent link="right_lower_leg"/>
     <child link="right_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
