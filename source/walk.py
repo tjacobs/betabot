@@ -24,6 +24,7 @@ def updateTargetAngles(velocity):
 	# Hips
 	rightHipAngle = math.sin( timeOffset ) * angleSpan/2.0
 	leftHipAngle = math.sin( timeOffset ) * angleSpan/2.0	
+
 	# Knees
 	rightKneeAngle = 0#math.cos( timeOffset ) * angleSpan + angleSpan
 	leftKneeAngle = 0#math.cos( timeOffset ) * angleSpan + angleSpan

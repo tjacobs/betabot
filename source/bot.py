@@ -137,8 +137,8 @@ def main():
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
-		motorSpeeds[1] = targetAngles[1]# movement[1] 		  # Right hip
-		motorSpeeds[2] = targetAngles[2]# movement[2] 		  # Left hip
+		motorSpeeds[1] = 0#targetAngles[1]# movement[1] 		  # Right hip
+		motorSpeeds[2] = 0#targetAngles[2]# movement[2] 		  # Left hip
 		motorSpeeds[3] = rightKneeServoAngle  # Right knee servo
 		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
 		motorSpeeds[5] = rightFootServoAngle  # Right foot servo
