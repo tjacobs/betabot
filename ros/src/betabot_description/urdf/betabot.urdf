@@ -25,7 +25,7 @@
         <mesh filename="body.stl" scale="0.01 0.01 0.01" name="body" />
       </geometry>
       <material name="body">
-        <color rgba="0.8 0.8 0.8 1"/>
+        <color rgba="0.8 0.6 0.3 1"/>
       </material>
     </visual>
   </link>
@@ -94,7 +94,7 @@
         <mesh filename="right_motor.stl" scale="0.01 0.01 0.01" name="right_motor" />
       </geometry>
       <material name="motor">
-        <color rgba="0.7 0.7 0.7 1"/>
+        <color rgba="0.5 0.5 0.5 1"/>
       </material>
     </visual>
     <inertial>
@@ -145,7 +145,7 @@
         <mesh filename="right_leg.stl" scale="0.01 0.01 0.01" name="right_leg" />
       </geometry>
       <material name="leg">
-        <color rgba="0.5 0.5 0.9 1"/>
+        <color rgba="0.8 0.6 0.3 1"/>
       </material>
     </visual>
     <inertial>
@@ -196,7 +196,7 @@
         <mesh filename="right_lower_leg.stl" scale="0.01 0.01 0.01" name="right_lower_leg" />
       </geometry>
       <material name="lower_leg">
-        <color rgba="0.5 0.5 0.8 1"/>
+        <color rgba="0.6 0.6 0.6 1"/>
       </material>
     </visual>
     <inertial>
