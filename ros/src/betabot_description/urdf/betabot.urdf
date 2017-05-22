@@ -5,7 +5,7 @@
   <link name='chassis'>
     <pose>0 0 0 0 0 0</pose>
     <inertial>
-      <mass value="40"/>
+      <mass value="1"/>
       <origin xyz="0.0 0 0" rpy=" 0 0 0"/>
       <inertia
           ixx="0.1" ixy="0" ixz="0"
@@ -30,26 +30,25 @@
     </visual>
   </link>
 
-  <link name="left_wheel">
+  <link name="left_foot">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="left_wheel.stl" scale="0.01 0.01 0.01" name="left_wheel" />
+        <mesh filename="left_foot.stl" scale="0.01 0.01 0.01" name="left_foot" />
       </geometry>
     </collision>
-    <visual name="left_wheel_visual">
+    <visual name="left_foot_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="left_wheel.stl" scale="0.01 0.01 0.01" name="left_wheel" />
+        <mesh filename="left_foot.stl" scale="0.01 0.01 0.01" name="left_foot" />
       </geometry>
-      <material name="wheel">
+      <material name="foot">
         <color rgba="0.1 0.1 0.9 0.8"/>
-        <!--<texture filename="wheel.png" />-->
       </material>
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="10"/>
+      <mass value="0.1"/>
       <inertia
         ixx="0.0" ixy="0.0" ixz="0.0"
         iyy="0.0" iyz="0.0"
@@ -57,24 +56,24 @@
     </inertial>
   </link>
 
-  <link name="right_wheel">
+  <link name="right_foot">
     <collision name="collision">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="right_wheel.stl" scale="0.01 0.01 0.01" name="right_wheel" />
+        <mesh filename="right_foot.stl" scale="0.01 0.01 0.01" name="right_foot" />
       </geometry>
     </collision>
-    <visual name="right_wheel_visual">
+    <visual name="right_foot_visual">
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="right_wheel.stl" scale="0.01 0.01 0.01" name="right_wheel" />
+        <mesh filename="right_foot.stl" scale="0.01 0.01 0.01" name="right_foot" />
       </geometry>
-      <material name="wheel">
+      <material name="foot">
       </material>
     </visual>
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
-      <mass value="10"/>
+      <mass value="0.1"/>
       <inertia
         ixx="0.0" ixy="0.0" ixz="0.0"
         iyy="0.0" iyz="0.0"
@@ -82,22 +81,22 @@
     </inertial>
   </link>
 
-  <joint type="continuous" name="left_wheel_joint">
+  <joint type="continuous" name="left_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <child link="left_wheel"/>
+    <child link="left_foot"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
-    <joint_properties damping="0.0" friction="0.0"/>
+    <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
-  <joint type="continuous" name="right_wheel_joint">
+  <joint type="continuous" name="right_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <child link="right_wheel"/>
+    <child link="right_foot"/>
     <parent link="chassis"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
-    <joint_properties damping="0.0" friction="0.0"/>
+    <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
 </robot>

@@ -48,7 +48,7 @@ def main():
 
 	# Init motors via USB
 	motors.initMotors()
-	motorSpeeds = [0] * 9 # Motor outputs 1 to 8, ignore 0
+	motorSpeeds = [0.0] * 9 # Motor outputs 1 to 8, ignore 0
 
 	# Init mouse
 	mouse_x_diff   = 0.0
@@ -103,7 +103,7 @@ def main():
 #		currentAngles[3] += offsetAngle
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(4.0)
+		targetAngles = walk.updateTargetAngles(1.0)
 
 		# Compensate for our current body angle to always stand up straight
 		targetAngles[1] += pitch
@@ -119,17 +119,19 @@ def main():
 		#targetAngles[5] -= mouse_y/3 # Right foot goes CCW
 		#targetAngles[6] -= mouse_y/3 # Left foot goes CCW
 
-		# Set angles
+		# Restrict movement. Hip and knee should only ever try to go 90 degrees
+		targetAngles[1] = functions.clamp(targetAngles[1], 210, 300)
+		targetAngles[2] = functions.clamp(targetAngles[2], 210, 300)
+		targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
+		targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
+		targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
+		targetAngles[6] = functions.clamp(targetAngles[6], -100, 100)
+
+		# Set servo angles directly
 		rightKneeServoAngle = targetAngles[3]
 		leftKneeServoAngle = targetAngles[4]
 		rightFootServoAngle = targetAngles[5]
 		leftFootServoAngle = targetAngles[6]
-
-		# Restrict movement. Hip and knee should on-ly ever try to go 90 degrees
-		targetAngles[1] = functions.clamp(targetAngles[1], 210, 300)
-		targetAngles[2] = functions.clamp(targetAngles[2], 210, 300)
-		targetAngles[3] = functions.clamp(targetAngles[3], 250, 340)
-		targetAngles[4] = functions.clamp(targetAngles[4], 250, 340)
 
 		# Run our movement controller to see how fast we should set our motor speeds to get to targets
 		movement = walk.calculateMovement(currentAngles, targetAngles)
@@ -141,17 +143,6 @@ def main():
 		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
 		motorSpeeds[5] = rightFootServoAngle  # Right foot servo
 		motorSpeeds[6] = leftFootServoAngle   # Left foot servo
-		if False:
-			# Test all motor commands
-			sineOffset += 10.0
-			motorSpeeds[1] = math.sin(sineOffset/100.0)*100 # Right hip
-			motorSpeeds[2] = math.sin(sineOffset/100.0)*100 # Left hip
-			motorSpeeds[3] = math.sin(sineOffset/100.0)*100 # Right knee servo
-			motorSpeeds[4] = math.sin(sineOffset/100.0)*100 # Left knee servo
-			motorSpeeds[5] = math.sin(sineOffset/100.0)*100 # Right foot servo
-			motorSpeeds[6] = math.sin(sineOffset/100.0)*100 # Left foot servo
-			motorSpeeds[7] = math.sin(sineOffset/100.0)*100 # Unused
-			motorSpeeds[8] = math.sin(sineOffset/100.0)*100 # Unused
 		motors.sendMotorSpeeds(motorSpeeds, simulator, False, True)
 		
 		# Display balance, angles, target angles and speeds
