@@ -253,7 +253,7 @@
     <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
-  <joint type="continuous" name="left_leg_joint">
+  <joint type="continuous" name="left_hip_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="left_leg"/>
@@ -262,7 +262,7 @@
     <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
-  <joint type="continuous" name="right_leg_joint">
+  <joint type="continuous" name="right_hip_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="chassis"/>
     <child link="right_leg"/>
@@ -271,7 +271,7 @@
     <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
-  <joint type="continuous" name="left_lower_leg_joint">
+  <joint type="continuous" name="left_knee_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="left_leg"/>
     <child link="left_lower_leg"/>
@@ -280,7 +280,7 @@
     <joint_properties damping="0.5" friction="0.5"/>
   </joint>
 
-  <joint type="continuous" name="right_lower_leg_joint">
+  <joint type="continuous" name="right_knee_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
     <parent link="right_leg"/>
     <child link="right_lower_leg"/>

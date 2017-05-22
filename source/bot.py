@@ -120,8 +120,8 @@ def main():
 		#targetAngles[6] -= mouse_y/3 # Left foot goes CCW
 
 		# Restrict movement. Hip and knee should only ever try to go 90 degrees
-		targetAngles[1] = functions.clamp(targetAngles[1], 210, 300)
-		targetAngles[2] = functions.clamp(targetAngles[2], 210, 300)
+		targetAngles[1] = functions.clamp(targetAngles[1], -100, 100) #210, 300)
+		targetAngles[2] = functions.clamp(targetAngles[2], -100, 100) #210, 300)
 		targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
 		targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
 		targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
@@ -137,8 +137,8 @@ def main():
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor speeds
-		motorSpeeds[1] = movement[1] 		  # Right hip
-		motorSpeeds[2] = movement[2] 		  # Left hip
+		motorSpeeds[1] = targetAngles[1]# movement[1] 		  # Right hip
+		motorSpeeds[2] = targetAngles[2]# movement[2] 		  # Left hip
 		motorSpeeds[3] = rightKneeServoAngle  # Right knee servo
 		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
 		motorSpeeds[5] = rightFootServoAngle  # Right foot servo

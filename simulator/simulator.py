@@ -52,6 +52,10 @@ class Simulator():
 			jointNameToId[jointInfo[1].decode('UTF-8')] = jointInfo[0]
 
 		# Make nice names of joints
+		self.right_hip_joint = jointNameToId['right_hip_joint']
+		self.left_hip_joint = jointNameToId['left_hip_joint']
+		self.right_knee_joint = jointNameToId['right_knee_joint']
+		self.left_knee_joint = jointNameToId['left_knee_joint']
 		self.right_foot_joint = jointNameToId['right_foot_joint']
 		self.left_foot_joint = jointNameToId['left_foot_joint']
 
@@ -77,9 +81,21 @@ class Simulator():
 		else:
 			self.t = self.t + self.fixedTimeStep
 
-		# Move joints
-		target_left = motorSpeeds[5] / math.pi #+ (math.pi/2)
-		target_right = motorSpeeds[6] / math.pi #+ (math.pi/2)
+		# Hips
+		target_left = motorSpeeds[1] / math.pi 
+		target_right = motorSpeeds[2] / math.pi 
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_hip_joint, controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_hip_joint,  controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+
+		# Knees
+		target_left = motorSpeeds[3] / math.pi
+		target_right = motorSpeeds[4] / math.pi 
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_knee_joint, controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_knee_joint,  controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+
+		# Feet
+		target_left = motorSpeeds[5] / math.pi
+		target_right = motorSpeeds[6] / math.pi 
 		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_foot_joint, controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
 		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_foot_joint,  controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
 
