@@ -19,7 +19,7 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 10.0 # Degrees of movement in hip joint for a step
+	angleSpan = 100.0 # Degrees of movement in hip joint for a step
 	angleSpan *= 0.5 # Half, as sine goes -1 to 1 = 2.
 	
 	# Hips

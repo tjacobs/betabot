@@ -81,10 +81,80 @@
     </inertial>
   </link>
 
+
+  <link name="right_leg">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_leg.stl" scale="0.01 0.01 0.01" name="right_leg" />
+      </geometry>
+    </collision>
+    <visual name="right_leg_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="right_leg.stl" scale="0.01 0.01 0.01" name="right_leg" />
+      </geometry>
+      <material name="leg">
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
+
+  <link name="left_leg">
+    <collision name="collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_leg.stl" scale="0.01 0.01 0.01" name="left_leg" />
+      </geometry>
+    </collision>
+    <visual name="left_leg_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="left_leg.stl" scale="0.01 0.01 0.01" name="left_leg" />
+      </geometry>
+      <material name="leg">
+      </material>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.0" ixy="0.0" ixz="0.0"
+        iyy="0.0" iyz="0.0"
+        izz="0.0"/>
+    </inertial>
+  </link>
+
+
+  <joint type="continuous" name="left_leg_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="left_leg"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
+
+  <joint type="continuous" name="right_leg_joint">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="chassis"/>
+    <child link="right_leg"/>
+    <axis xyz="0 1 0" rpy="0 0 0"/>
+    <limit effort="10" velocity="10"/>
+    <joint_properties damping="0.5" friction="0.5"/>
+  </joint>
+
   <joint type="continuous" name="left_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <child link="left_foot"/>
     <parent link="chassis"/>
+    <child link="left_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
     <joint_properties damping="0.5" friction="0.5"/>
@@ -92,8 +162,8 @@
 
   <joint type="continuous" name="right_foot_joint">
     <origin xyz="0 0 0" rpy="0 0 0"/>
-    <child link="right_foot"/>
     <parent link="chassis"/>
+    <child link="right_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
     <limit effort="10" velocity="10"/>
     <joint_properties damping="0.5" friction="0.5"/>

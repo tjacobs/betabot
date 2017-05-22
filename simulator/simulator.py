@@ -14,11 +14,11 @@ class Simulator():
 		# Simulator constants
 		self.useRealTime = 1
 		self.fixedTimeStep = 0.01
-		self.speed = 10
+		self.speed = 1
 
 		# Tunable Betabot behaviour
-		self.maxForce = 50.0
-		self.kp = 2.0
+		self.maxForce = 10.0
+		self.kp = 0.01
 		self.kd = 0.1
 
 		# Motor directions
@@ -58,8 +58,8 @@ class Simulator():
 		# Reset joints
 		p.resetJointState(self.betabot, self.right_foot_joint, self.motordir[0] * self.halfpi)
 		p.resetJointState(self.betabot, self.left_foot_joint, self.motordir[1] * self.halfpi)
-		p.setJointMotorControl(self.betabot, self.right_foot_joint, p.POSITION_CONTROL, 1, 1.0)
-		p.setJointMotorControl(self.betabot, self.left_foot_joint, p.POSITION_CONTROL, 1, 1.0)
+		p.setJointMotorControl2(self.betabot, self.right_foot_joint, p.POSITION_CONTROL, 0, 0)
+		p.setJointMotorControl2(self.betabot, self.left_foot_joint, p.POSITION_CONTROL, 0, 0)
 
 		# Gravity go!
 		p.setGravity(0, 0, -9.8 / 1.0)
@@ -78,13 +78,10 @@ class Simulator():
 			self.t = self.t + self.fixedTimeStep
 
 		# Move joints
-		target_left = 0
-		target_right = 0
-
-		target_left = 1#motorSpeeds[5] / math.pi #+ (math.pi/2)
-		target_right = 1.5#motorSpeeds[6] / math.pi #+ (math.pi/2)
-		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_foot_joint, controlMode=p.VELOCITY_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
-		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_foot_joint,  controlMode=p.VELOCITY_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		target_left = motorSpeeds[5] / math.pi #+ (math.pi/2)
+		target_right = motorSpeeds[6] / math.pi #+ (math.pi/2)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_foot_joint, controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_foot_joint,  controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
 
 		# Step if not real time
 		if (self.useRealTime==0):
