@@ -19,7 +19,7 @@ import sensors
 ENABLE_KEYS 		= True
 ENABLE_MOUSE 		= True
 ENABLE_BRAIN 		= False
-ENABLE_SIMULATOR 	= False
+ENABLE_SIMULATOR 	= True
 
 # Import Betabot parts
 keys 		= None
@@ -152,7 +152,7 @@ def main():
 			motorSpeeds[6] = math.sin(sineOffset/100.0)*100 # Left foot servo
 			motorSpeeds[7] = math.sin(sineOffset/100.0)*100 # Unused
 			motorSpeeds[8] = math.sin(sineOffset/100.0)*100 # Unused
-		motors.sendMotorSpeeds(motorSpeeds, False, True)
+		motors.sendMotorSpeeds(motorSpeeds, simulator, False, True)
 		
 		# Display balance, angles, target angles and speeds
 #		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[2] ) )
