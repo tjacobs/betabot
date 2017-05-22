@@ -4,7 +4,6 @@
 
 ![Bot](docs/bot4.png)
 ![Bot](docs/bot2.png)
-![Bot](docs/bot.png)
 ![Bot](docs/bot3.png)
 
 **What is it?**
@@ -42,6 +41,7 @@ To get started, write the [disk image](coming_soon) using [sd_restore](scripts/s
 |[1.3A Lipo Battery](https://hobbyking.com/en_us/graphene-1300mah-4s-45c-w-xt60.html)| $20 | $10
 |[16GB Memory Card](https://www.adafruit.com/product/2693)| $20 | $10
 |[Pi Fisheye Cam](https://www.aliexpress.com/store/product/Raspberry-Pi-wide-angle-fish-eye-camera-module-5-megapixel-160-degree-lens/1181118_32305170854.html)| $17 | $10
+|[9g Servo (x4)](https://hobbyking.com/en_us/hxt900-micro-servo-1-6kg-0-12sec-9g.html)| $16 | $16
 |[Raspberry Pi Zero W]()| $10 | $5 |
 |[Charger Board](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 | $7
 |[12V/5V Voltage Regulator](https://www.banggood.com/Matek-Mini-Power-Hub-Power-Distribution-Board-With-BEC-5V-And-12V-For-FPV-Multicopter-p-1005549.html)| $5 | $5
