@@ -4,6 +4,7 @@
 
 ![Bot](docs/bot4.png)
 ![Bot](docs/bot3.png)
+![Bot](docs/bot.gif)
 
 **What is it?**
 A 3D printed body, Raspberry Pi Zero, motors & motor controllers, sensors, power boards, and a camera.
