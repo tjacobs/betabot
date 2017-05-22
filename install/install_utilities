@@ -3,15 +3,7 @@
 # Installs the things needed for Betabot to run on a Raspberry Pi 3.
 echo "Installing utilities."
 
-sudo ln /home/pi/betabot/start /bin/start -fs
-sudo ln /home/pi/betabot/scripts/work /bin/work -fs
-sudo ln /home/pi/betabot/scripts/reboot /bin/reboot -fs
-sudo ln /home/pi/betabot/scripts/off /bin/off -fs
-sudo ln /home/pi/betabot/scripts/cam /bin/cam -fs
-sudo ln /home/pi/betabot/scripts/vision /bin/vision -fs
-sudo ln /home/pi/betabot/scripts/config /bin/config -fs
-sudo ln /home/pi/betabot/scripts/web /bin/web -fs
-sudo ln /home/pi/betabot/scripts/stop /bin/stop -fs
+sudo ln /home/pi/betabot/start /home/pi/betabot/scripts/start -fs
 sudo cp /home/pi/betabot/install/rc.local /etc/rc.local # Start on system startup (overrides rc.local)
 sudo cp /home/pi/betabot/install/autostart /home/pi/.config/lxsession/LXDE-pi/autostart #(start terminal)
 echo "Done."

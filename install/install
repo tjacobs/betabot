@@ -1,15 +1,21 @@
 #!/bin/bash
 
-# Installs the things needed for Betabot to run on a Raspberry Pi 3.
+# Installs the things needed for Betabot to run on a Raspberry Pi.
 echo "Installing Betabot."
 
-# Update
+# Do full install if "quick" isn't given on commandline
 if [ "$1" != "quick" ]; then
+	# Update system
 	echo ""
 	echo "Updating system."
 	sudo apt-get update -y
 	sudo apt-get upgrade -y
 	echo "Done."
+
+	# Install path and welcome on startup
+	echo "PATH=$PATH:/home/pi/betabot/scripts" >> ~/.bashrc
+	echo "cd betabot" >> ~/.bashrc
+	echo "scripts/welcome" >> ~/.bashrc
 fi
 
 # Install
@@ -40,21 +46,6 @@ echo "Done."
 # Install utilities and startup
 ./install_utilities
 
-# Install welcome script
-if [ "$1" != "quick" ]; then
-	echo "PATH=$PATH:/home/pi/betabot/scripts" >> ~/.bashrc
-	echo "cd betabot" >> ~/.bashrc
-	echo "scripts/welcome" >> ~/.bashrc
-fi
-echo "Done."
-
-# Raspberry Pi 3 has broken UART serial output pins because Bluetooth uses the serial line and breaks it. 
-# If you need to use it, you can disable Bluetooth by uncommenting these lines and running install.
-#echo ""
-#echo "Enabling serial bus."
-#sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
-#echo "Done."
-
 # Clean up stuff we don't need
 ./install_cleanup
 
@@ -64,18 +55,27 @@ echo "Done."
 # Install TensorFlow
 #./install_tensorflow
 
-# Install hdf5 for large model saving
-# This takes about half an hour.
+# Install hdf5 for large model saving. This takes about half an hour.
 #./install_hdf5
+
+# Install configurator
+../scripts/web "https://chrome.google.com/webstore/detail/betaflight-configurator/kdaghagfopacdngbohiknlhcocjccjao"
 
 # Checkout submodules
 git submodule update --recursive --init
+
+# Raspberry Pi 3 has broken UART serial output pins because Bluetooth uses the serial line and breaks it. 
+# If you need to use it, you can disable Bluetooth by uncommenting these lines and running install.
+#echo ""
+#echo "Enabling serial bus."
+#sudo bash -c "echo 'dtoverlay=pi3-disable-bt' >> /boot/config.txt"
+#echo "Done."
 
 # Done
 echo ""
 echo "All done. Enjoy Betabot."
 
+# Todo:
 echo "sudo raspi-config set keyboard to US"
 echo "sudo raspi-config enable camera"
 
-../scripts/web "https://chrome.google.com/webstore/detail/betaflight-configurator/kdaghagfopacdngbohiknlhcocjccjao"
