@@ -13,7 +13,7 @@ import datetime
 import functions
 import motors
 import walk
-from sensors import AMS
+import sensors
 
 # What shall we enable?
 ENABLE_KEYS 		= True
@@ -43,8 +43,8 @@ def main():
 	sys.stdout.flush()
 
 	# Init motor angle sensors via I2C
-	sensors = AMS()
-	sensors.connect(1)
+	magneticSensors = sensors.AMS()
+	magneticSensors.connect(1)
 
 	# Init motors via USB
 	motors.initMotors()
@@ -63,7 +63,7 @@ def main():
 
 	# Read initial angles
 	offsetPitch = motors.readIMU()
-	currentAngles = functions.readCurrentAngles(sensors)
+	currentAngles = functions.readCurrentAngles(magneticSensors)
 	offsetAngle = currentAngles[1]
 	
 	# Loop
