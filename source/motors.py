@@ -12,12 +12,12 @@ def clampMotorSpeeds(motorSpeeds):
 		motorSpeeds[i] = functions.clamp(motorSpeeds[i], minSpeed, maxSpeed)
 	return motorSpeeds
 
-def readIMU():
+def readIMU(xy='ax'):
 	global board
 	if board == None:
 		return 0
 	board.getData(MultiWii.RAW_IMU)
-	return board.rawIMU['ay'] # Pitch
+	return board.rawIMU[xy] # Pitch
 
 # Init
 simulator = None

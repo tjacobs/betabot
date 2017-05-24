@@ -143,10 +143,10 @@ def main():
 		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
 		motorSpeeds[5] = rightFootServoAngle  # Right foot servo
 		motorSpeeds[6] = leftFootServoAngle   # Left foot servo
-		motors.sendMotorSpeeds(motorSpeeds, simulator, True, False)
+		motors.sendMotorSpeeds(motorSpeeds, simulator, False, False)
 		
 		# Display balance, angles, target angles and speeds
-#		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[2] ) )
+		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[2] ) )
 
 	# Finish up
 	try:
