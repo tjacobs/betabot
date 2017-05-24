@@ -133,5 +133,5 @@ def sendMotorSpeeds(motorSpeedsIn, simulator=None, displayChannels=False, displa
 		pass
 
 	# Update simulator
-	if simulator:
+	if simulator and simulator.simulator:
 		simulator.simulator.simStep(motorSpeeds)

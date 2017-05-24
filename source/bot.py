@@ -103,7 +103,7 @@ def main():
 #		currentAngles[3] += offsetAngle
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(1.0)
+		targetAngles = walk.updateTargetAngles(2.0)
 
 		# Compensate for our current body angle to always stand up straight
 		targetAngles[1] += pitch
@@ -143,7 +143,7 @@ def main():
 		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
 		motorSpeeds[5] = rightFootServoAngle  # Right foot servo
 		motorSpeeds[6] = leftFootServoAngle   # Left foot servo
-		motors.sendMotorSpeeds(motorSpeeds, simulator, False, True)
+		motors.sendMotorSpeeds(motorSpeeds, simulator, True, False)
 		
 		# Display balance, angles, target angles and speeds
 #		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[2] ) )

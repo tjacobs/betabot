@@ -1,9 +1,10 @@
-import pybullet as p
+try:
+	import pybullet as p
+except:
+	pass
 import time
 import math
 import sys
-
-simulator = None
 
 class Simulator():
 	def __init__(self):
@@ -104,9 +105,10 @@ class Simulator():
 			p.stepSimulation()
 			time.sleep(self.fixedTimeStep)
 
+simulator = None
 try:
-	global simulator
-	simulator = Simulator()
+#	global simulator
+	if p:
+		simulator = Simulator()
 except:
 	print( "Simulator unavailable." )
-	print( sys.exc_info() )
