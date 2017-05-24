@@ -78,4 +78,6 @@ echo "All done. Enjoy Betabot."
 # Todo:
 echo "sudo raspi-config set keyboard to US"
 echo "sudo raspi-config enable camera"
+echo "sudo raspi-config enable I2C"
+echo "sudo raspi-config enable SSH"
 
