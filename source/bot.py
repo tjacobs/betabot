@@ -17,9 +17,9 @@ import sensors
 
 # What shall we enable?
 ENABLE_KEYS 		= True
-ENABLE_MOUSE 		= True
+ENABLE_MOUSE 		= False
 ENABLE_BRAIN 		= False
-ENABLE_SIMULATOR 	= True
+ENABLE_SIMULATOR 	= False
 
 # Import Betabot parts
 keys 		= None
@@ -38,14 +38,13 @@ if ENABLE_SIMULATOR:
 
 # Go
 def main():
-
 	# Flush output for file logging
 	sys.stdout.flush()
 
 	# Init motor angle sensors via I2C
 	magneticSensors = sensors.AMS()
 	magneticSensors.connect(1)
-
+	
 	# Init motors via USB
 	motors.initMotors()
 	motorSpeeds = [0.0] * 9 # Motor outputs 1 to 8, ignore 0
@@ -96,7 +95,7 @@ def main():
 			mouse_y_diff *= mouse_speed_factor
 
 		# Read current angles of motors
-		currentAngles = functions.readCurrentAngles(sensors)
+		currentAngles = functions.readCurrentAngles(magneticSensors)
 		
 		# Compensate for the angle seen at startup
 #		currentAngles[1] += offsetAngle
@@ -146,7 +145,7 @@ def main():
 		motors.sendMotorSpeeds(motorSpeeds, simulator, False, False)
 		
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[0], currentAngles[2], targetAngles[0], targetAngles[2], motorSpeeds[0], motorSpeeds[2] ) )
+		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motorSpeeds[1], motorSpeeds[2] ) )
 
 	# Finish up
 	try:
