@@ -19,11 +19,11 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 130.0 # Degrees of movement in hip joint for a step
+	angleSpan = 30.0 # Degrees of movement in hip joint for a step
 	
 	# Hips
-	rightHipAngle = math.sin( timeOffset ) * angleSpan/2.0
-	leftHipAngle = math.sin( timeOffset ) * angleSpan/2.0	
+	rightHipAngle = 90 + math.sin( timeOffset ) * angleSpan/2.0 + angleSpan/2.0
+	leftHipAngle = 70 - math.cos( timeOffset ) * angleSpan/2.0  + angleSpan/2.0	
 
 	# Knees
 	rightKneeAngle = -60#10 - math.cos( timeOffset ) * angleSpan/2.0
@@ -46,7 +46,7 @@ def calculateMovement(currentAngles, targetAngles):
 	# PID controller. Start with P. Deal with craziness of wraparound angles.
 	numAngles = 4
 	Ps = [0] * numAngles
-	P_rate = 0.01
+	P_rate = 1.0
 	for i in range(numAngles):
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
