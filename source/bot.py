@@ -19,7 +19,7 @@ import sensors
 ENABLE_KEYS 		= True
 ENABLE_MOUSE 		= False
 ENABLE_BRAIN 		= False
-ENABLE_SIMULATOR 	= False
+ENABLE_SIMULATOR 	= True
 
 # Import Betabot parts
 keys 		= None
@@ -67,7 +67,7 @@ def main():
 		pitch = motorsModule.readIMU('ax')
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(4.0)
+		targetAngles = walk.updateTargetAngles(2.0)
 
 		# We want to be flat level
 #		targetAngles[1] = 0 

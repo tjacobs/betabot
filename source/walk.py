@@ -12,8 +12,8 @@ oldTime = time.time()
 
 def restrictAngles(targetAngles):
 	# Restrict movement
-	targetAngles[1] = functions.clamp(targetAngles[1], -120, 120)
-	targetAngles[2] = functions.clamp(targetAngles[2], -120, 120)
+	targetAngles[1] = functions.clamp(targetAngles[1], -180, 280)
+	targetAngles[2] = functions.clamp(targetAngles[2], -180, 280)
 	targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
 	targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
 	targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
@@ -23,6 +23,14 @@ def restrictAngles(targetAngles):
 def updateTargetAngles(velocity):
 	global targetAngles, timeOffset, oldTime
 
+	# Define our gait
+	rightHipTimeOffset = 0
+	leftHipTimeOffset = math.pi / 4
+	rightKneeTimeOffset = 0
+	leftKneeTimeOffset = math.pi / 4
+	rightFootTimeOffset = 0
+	leftFootTimeOffset = math.pi / 4
+
 	# Move forward in time
 	timeJump = time.time() - oldTime
 	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
@@ -30,19 +38,19 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 30.0 # Degrees of movement in hip joint for a step
+	angleSpan = 50.0 # Degrees of movement in hip joint for a step
 	
 	# Hips
-	rightHipAngle = 90 + math.sin( timeOffset ) * angleSpan/2.0 + angleSpan/2.0
-	leftHipAngle = 70 - math.cos( timeOffset ) * angleSpan/2.0  + angleSpan/2.0	
+	rightHipAngle = 90 + math.sin( timeOffset + rightHipTimeOffset ) * angleSpan/2.0 + angleSpan/2.0
+	leftHipAngle = 70 - math.sin( timeOffset + leftHipTimeOffset ) * angleSpan/2.0  + angleSpan/2.0	
 
 	# Knees
-	rightKneeAngle = 10 - math.cos( timeOffset ) * angleSpan/2.0 * 4.0
-	leftKneeAngle = 10 + math.cos( timeOffset ) * angleSpan/2.0 * 4.0
+	rightKneeAngle = 10 - math.sin( timeOffset ) * angleSpan/2.0 * 1.2
+	leftKneeAngle = 10 + math.cos( timeOffset ) * angleSpan/2.0 * 1.2
 	
 	# Feet
-	rightFootAngle = 10 - math.sin( timeOffset ) * angleSpan/2.0
-	leftFootAngle = 10 + math.sin( timeOffset ) * angleSpan/2.0
+	rightFootAngle = 0#10 - math.sin( timeOffset + rightFootTimeOffset ) * angleSpan/2.0
+	leftFootAngle = 0#10 + math.sin( timeOffset + leftFootTimeOffset ) * angleSpan/2.0
 
 	# Save
 	targetAngles[1] = rightHipAngle
