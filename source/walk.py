@@ -25,11 +25,11 @@ def updateTargetAngles(velocity):
 
 	# Define our gait
 	rightHipTimeOffset = 0
-	leftHipTimeOffset = math.pi / 4
+	leftHipTimeOffset = math.pi/2
 	rightKneeTimeOffset = 0
-	leftKneeTimeOffset = math.pi / 4
-	rightFootTimeOffset = 0
-	leftFootTimeOffset = math.pi / 4
+	leftKneeTimeOffset = math.pi/2
+	rightFootTimeOffset = 0 + math.pi/8
+	leftFootTimeOffset = math.pi/2 + math.pi/8
 
 	# Move forward in time
 	timeJump = time.time() - oldTime
@@ -38,19 +38,19 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 50.0 # Degrees of movement in hip joint for a step
+	angleSpan = 30.0 # Degrees of movement in hip joint for a step
 	
 	# Hips
-	rightHipAngle = 90 + math.sin( timeOffset + rightHipTimeOffset ) * angleSpan/2.0 + angleSpan/2.0
-	leftHipAngle = 70 - math.sin( timeOffset + leftHipTimeOffset ) * angleSpan/2.0  + angleSpan/2.0	
+	rightHipAngle = 0 + math.sin( timeOffset + rightHipTimeOffset ) * angleSpan/2.0 #+ angleSpan/2.0
+	leftHipAngle = 0 - math.sin( timeOffset + leftHipTimeOffset ) * angleSpan/2.0  #+ angleSpan/2.0	
 
 	# Knees
-	rightKneeAngle = 10 - math.sin( timeOffset ) * angleSpan/2.0 * 1.2
-	leftKneeAngle = 10 + math.cos( timeOffset ) * angleSpan/2.0 * 1.2
+	rightKneeAngle = -40 - math.sin( timeOffset + rightKneeTimeOffset ) * angleSpan/2.0 * 1.2
+	leftKneeAngle = -40 + math.sin( timeOffset + leftKneeTimeOffset ) * angleSpan/2.0 * 1.2
 	
 	# Feet
-	rightFootAngle = 0#10 - math.sin( timeOffset + rightFootTimeOffset ) * angleSpan/2.0
-	leftFootAngle = 0#10 + math.sin( timeOffset + leftFootTimeOffset ) * angleSpan/2.0
+	rightFootAngle = 10 - math.sin( timeOffset + rightFootTimeOffset ) * angleSpan/2.0 * 0.3
+	leftFootAngle = 10 + math.sin( timeOffset + leftFootTimeOffset ) * angleSpan/2.0 * 0.3
 
 	# Save
 	targetAngles[1] = rightHipAngle

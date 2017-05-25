@@ -290,7 +290,7 @@
   </joint>
 
   <joint type="continuous" name="left_foot_joint">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.5 0 -0.7" rpy="0 0 0"/>
     <parent link="left_lower_leg"/>
     <child link="left_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
@@ -299,7 +299,7 @@
   </joint>
 
   <joint type="continuous" name="right_foot_joint">
-    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <origin xyz="-0.5 0 -0.7" rpy="0 0 0"/>
     <parent link="right_lower_leg"/>
     <child link="right_foot"/>
     <axis xyz="0 1 0" rpy="0 0 0"/>
