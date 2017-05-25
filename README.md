@@ -2,6 +2,7 @@
 
 ### An affordable walking biped robot, designed for deep learning research.
 
+![Bot](docs/fall.gif)
 ![Bot](docs/bot4.png)
 ![Bot](docs/bot3.png)
 ![Bot](docs/bot.gif)
