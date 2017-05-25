@@ -15,6 +15,8 @@ Python, PID loops, OpenCV, TensorFlow, Keras, and Betabot OS running on Raspbian
 **Why?**
 To help you simulate and then quickly test out deep learning and computer vision techniques in the real world.
 
+Read more and buy the kit [here](https://robot-overlords.myshopify.com/pages/betabot).
+
 
 ---
 ### Getting started

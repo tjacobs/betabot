@@ -1,9 +1,15 @@
 import time
 import sys
 
+# Init mouse
 mouse_x = 0
 mouse_y = 0
 mouse = None
+mouse_x_diff   = 0.0
+mouse_y_diff   = 0.0
+old_mouse_x    = 0.0
+old_mouse_y	   = 0.0
+mouse_speed_factor = 1.0
 
 def on_move(x, y):
 	global mouse_x, mouse_y, mouse
@@ -20,6 +26,20 @@ def on_move(x, y):
 		mouse.position = (1000, mouse.position[1])
 	if( mouse.position[1] == 0 ):
 		mouse.position = (mouse.position[0], 900)
+
+	# How much has the mouse moved from last loop?
+	mouse_x = mouse.mouse_x
+	mouse_y = mouse.mouse_y
+	mouse_x_diff = mouse_x - old_mouse_x
+	mouse_y_diff = mouse_y - old_mouse_y			
+	if( mouse_x_diff > 500 ): mouse_x_diff = 0
+	if( mouse_x_diff < -500 ): mouse_x_diff = 0
+	if( mouse_y_diff > 500 ): mouse_y_diff = 0
+	if( mouse_y_diff < -500 ): mouse_y_diff = 0
+	old_mouse_x = mouse_x
+	old_mouse_y = mouse_y
+	mouse_x_diff *= mouse_speed_factor
+	mouse_y_diff *= mouse_speed_factor
 
 def on_click(x, y, button, pressed):
 	return

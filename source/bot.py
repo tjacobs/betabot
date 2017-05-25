@@ -11,7 +11,7 @@ import math
 import array
 import datetime
 import functions
-import motors
+import motors as motorsModule
 import walk
 import sensors
 
@@ -46,21 +46,14 @@ def main():
 	magneticSensors.connect(1)
 	
 	# Init motors via USB
-	motors.initMotors()
-	motorSpeeds = [0.0] * 9 # Motor outputs 1 to 8, ignore 0
-
-	# Init mouse
-	mouse_x_diff   = 0.0
-	mouse_y_diff   = 0.0
-	old_mouse_x    = 0.0
-	old_mouse_y	   = 0.0
-	mouse_speed_factor = 1.0
+	motorsModule.initMotors()
+	motors = [0.0] * 9 # Motor outputs 1 to 8, ignore 0
 	
 	# Init balance trim
 	trim = 0.0
 
 	# Read initial angles
-	offsetPitch = motors.readIMU()
+	offsetPitch = motorsModule.readIMU()
 	currentAngles = functions.readCurrentAngles(magneticSensors)
 	offsetAngle = currentAngles[1]
 	
@@ -68,7 +61,7 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current IMU accelerometer values to see which way we're leaning
-		pitch = motors.readIMU()
+		pitch = motorsModule.readIMU()
 		
 		# Update from keyboard
 		if( keys ):
@@ -76,22 +69,6 @@ def main():
 				trim += 1
 			if( keys.down_key_pressed == True ):
 				trim -= 1
-
-		# Update from mouse
-		if( mouse ):
-			# How much has the mouse moved from last loop?
-			mouse_x = mouse.mouse_x
-			mouse_y = mouse.mouse_y
-			mouse_x_diff = mouse_x - old_mouse_x
-			mouse_y_diff = mouse_y - old_mouse_y			
-			if( mouse_x_diff > 500 ): mouse_x_diff = 0
-			if( mouse_x_diff < -500 ): mouse_x_diff = 0
-			if( mouse_y_diff > 500 ): mouse_y_diff = 0
-			if( mouse_y_diff < -500 ): mouse_y_diff = 0
-			old_mouse_x = mouse_x
-			old_mouse_y = mouse_y
-			mouse_x_diff *= mouse_speed_factor
-			mouse_y_diff *= mouse_speed_factor
 
 		# Read current angles of motors
 		currentAngles = functions.readCurrentAngles(magneticSensors)
@@ -147,16 +124,16 @@ def main():
 			movement[2] = 5
 
 		# Send motor speeds
-		motorSpeeds[1] = movement[1] 		  # Right hip
-		motorSpeeds[2] = movement[2] 		  # Left hip
-		motorSpeeds[3] = rightKneeServoAngle  # Right knee servo
-		motorSpeeds[4] = leftKneeServoAngle   # Left knee servo
-		motorSpeeds[5] = rightFootServoAngle  # Right foot servo
-		motorSpeeds[6] = leftFootServoAngle   # Left foot servo
-		motors.sendMotorSpeeds(motorSpeeds, simulator, False, False)
+		motors[1] = movement[1] 		  # Right hip
+		motors[2] = movement[2] 		  # Left hip
+		motors[3] = rightKneeServoAngle  # Right knee servo
+		motors[4] = leftKneeServoAngle   # Left knee servo
+		motors[5] = rightFootServoAngle  # Right foot servo
+		motors[6] = leftFootServoAngle   # Left foot servo
+		motorsModule.sendMotorCommands(motors, simulator, False, False)
 		
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Right Left. Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motorSpeeds[1], motorSpeeds[2] ) )
+		functions.display( "Pitch: %3d. Right Left. Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
 
 	# Finish up
 	try:
@@ -166,10 +143,10 @@ def main():
 		pass
 
 	# Close
-	motorSpeeds[0] = 0
-	motorSpeeds[1] = 0
-	motors.sendMotorSpeeds(motorSpeeds)
-	motors.board.close()
+	motors[0] = 0
+	motors[1] = 0
+	motorsModule.sendMotorCommands(motors)
+	motorsModule.board.close()
 
 # Go
 if __name__=="__main__":

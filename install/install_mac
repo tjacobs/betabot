@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Installs the things needed for Betabot to run on a Mac.
+echo "Installing Betabot on Mac."
+
+# Install path
+echo 'export PATH=~/Desktop/betabot/scripts:$PATH' >> ~/.bashrc
+
+# Install SSHPass
+brew install https://raw.githubusercontent.com/kadwanev/bigboybrew/master/Library/Formula/sshpass.rb
+
+# Install Sublime
+echo "Install Sublime, user."
+
+echo "All done."

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sshpass -p 'raspberry' ssh pi@10.0.0.3 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
