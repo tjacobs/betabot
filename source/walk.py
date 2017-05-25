@@ -3,11 +3,22 @@
 # We're were going, we're gonna need some serious math
 import math
 import time
+import functions
 
 # Init
 timeOffset = 0.0
 targetAngles = [0] * 9
 oldTime = time.time()
+
+def restrictAngles(targetAngles):
+	# Restrict movement
+	targetAngles[1] = functions.clamp(targetAngles[1], -120, 120)
+	targetAngles[2] = functions.clamp(targetAngles[2], -120, 120)
+	targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
+	targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
+	targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
+	targetAngles[6] = functions.clamp(targetAngles[6], -100, 100)
+	return targetAngles
 
 def updateTargetAngles(velocity):
 	global targetAngles, timeOffset, oldTime

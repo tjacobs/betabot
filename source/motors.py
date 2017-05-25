@@ -69,6 +69,19 @@ def initMotors():
 #		print( sys.exc_info() )
 		sys.stdout.flush()
 
+def stopMotors():
+	motors[1] = 0
+	motors[2] = 0
+	sendMotorCommands(motors)
+	board.close()
+
+	# Finish up
+	try:
+		import RPi.GPIO as GPIO
+		GPIO.cleanup()
+	except:
+		pass
+
 # Send the motor speeds to the motors, and enable the motors if any have any speed
 def sendMotorCommands(motorSpeedsIn, simulator=None, displayChannels=False, displayCommands=False):
 	global goTime, board, motorEnablePin

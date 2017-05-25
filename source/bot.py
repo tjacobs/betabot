@@ -60,93 +60,43 @@ def main():
 	# Loop
 	while not keys or not keys.esc_key_pressed:
 
-		# Read current IMU accelerometer values to see which way we're leaning
-		pitch = motorsModule.readIMU()
-		
-		# Update from keyboard
-		if( keys ):
-			if( keys.up_key_pressed == True ):
-				trim += 1
-			if( keys.down_key_pressed == True ):
-				trim -= 1
-
 		# Read current angles of motors
 		currentAngles = functions.readCurrentAngles(magneticSensors)
-		
-		# Compensate for the angle seen at startup
-#		currentAngles[1] += offsetAngle
-#		currentAngles[3] += offsetAngle
+
+		# Read current accelerometer value to see how far forward we're leaning
+		pitch = motorsModule.readIMU('ax')
 
 		# Figure out what our angles should be now to walk
 		targetAngles = walk.updateTargetAngles(4.0)
 
-		# Compensate for our current body angle to always stand up straight
-		targetAngles[1] = 0 
-		targetAngles[2] = 0 
+		# We want to be flat level
+#		targetAngles[1] = 0 
+#		targetAngles[2] = 0
 
-		# Allow ourselves to lean forward back manually
-		#targetAngles[3] += trim
-
-		# Move mouse up, raise up
-		#targetAngles[1] += 255 #mouse_y/3 # Right hip goes CW
-		#targetAngles[2] += mouse_y/3 # Left hip goes CW
-		#targetAngles[3] += 280 #mouse_x/3 # Right knee goes CCW
-		#targetAngles[4] -= mouse_y/3 # Left knee goes CCW
-		#targetAngles[5] -= mouse_y/3 # Right foot goes CCW
-		#targetAngles[6] -= mouse_y/3 # Left foot goes CCW
-
-		# Restrict movement. Hip and knee should only ever try to go 90 degrees
-		targetAngles[1] = functions.clamp(targetAngles[1], -100, 150) #210, 300)
-		targetAngles[2] = functions.clamp(targetAngles[2], -100, 150) #210, 300)
-		targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
-		targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
-		targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
-		targetAngles[6] = functions.clamp(targetAngles[6], -100, 100)
-
-		# Set servo angles directly
-		rightKneeServoAngle = targetAngles[3]
-		leftKneeServoAngle = targetAngles[4]
-		rightFootServoAngle = targetAngles[5]
-		leftFootServoAngle = targetAngles[6]
-
-		# Run our movement controller to see how fast we should set our motor speeds to get to targets
-		currentAngles[1] = - pitch
+		# Assume our current angle is which way we're leaning.
+		# Override angles. TODO: Incorporate motor current angles as well
+		currentAngles[1] = -pitch
 		currentAngles[2] = pitch
+
+		# Run movement controller to see how fast we should set our motor speeds
+		targetAngles = walk.restrictAngles(targetAngles)
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
-		if movement[1] > 5:
-			movement[1] = 5
-		if movement[2] < -5:
-			movement[2] = -5
-		if movement[1] < -5:
-			movement[1] = -5
-		if movement[2] > 5:
-			movement[2] = 5
-
-		# Send motor speeds
-		motors[1] = movement[1] 		  # Right hip
-		motors[2] = movement[2] 		  # Left hip
-		motors[3] = rightKneeServoAngle  # Right knee servo
-		motors[4] = leftKneeServoAngle   # Left knee servo
-		motors[5] = rightFootServoAngle  # Right foot servo
-		motors[6] = leftFootServoAngle   # Left foot servo
+		# Send motor commands
+		motors[1] = movement[1] 	 # Right hip
+		motors[2] = movement[2] 	 # Left hip
+		motors[3] = targetAngles[3]  # Right knee servo
+		motors[4] = targetAngles[4]  # Left knee servo
+		motors[5] = targetAngles[5]  # Right foot servo
+		motors[6] = targetAngles[6]  # Left foot servo
 		motorsModule.sendMotorCommands(motors, simulator, False, False)
-		
+
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Right Left. Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
+		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
+		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
 
-	# Finish up
-	try:
-		import RPi.GPIO as GPIO
-		GPIO.cleanup()
-	except:
-		pass
-
-	# Close
-	motors[0] = 0
-	motors[1] = 0
-	motorsModule.sendMotorCommands(motors)
-	motorsModule.board.close()
+	# Stop motors
+	motorsModule.stopMotors()
 
 # Go
 if __name__=="__main__":
