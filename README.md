@@ -82,7 +82,7 @@ You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
 [Simulator Crawling](https://github.com/tjacobs/betabot/blob/master/docs/legs.mov?raw=true)
 
-[More](https://github.com/tjacobs/betabot/blob/master/docs/fall.m4v?raw=true)
+[More](https://github.com/tjacobs/betabot/blob/master/docs/)
 
 
 ---
