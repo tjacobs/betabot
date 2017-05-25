@@ -6,6 +6,7 @@
 ![Bot](docs/bot4.png)
 ![Bot](docs/bot3.png)
 ![Bot](docs/bot.gif)
+![Bot](docs/whoop.gif)
 
 **What is it?**
 A 3D printed body, Raspberry Pi Zero, motors & motor controllers, sensors, power boards, and a camera.
@@ -78,6 +79,11 @@ You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 ### Videos
 
 [Falling](https://github.com/tjacobs/betabot/blob/master/docs/fall.m4v?raw=true)
+
+[Simulator Crawling](https://github.com/tjacobs/betabot/blob/master/docs/legs.mov?raw=true)
+
+[More](https://github.com/tjacobs/betabot/blob/master/docs/fall.m4v?raw=true)
+
 
 ---
 
