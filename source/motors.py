@@ -70,7 +70,7 @@ def initMotors():
 		sys.stdout.flush()
 
 # Send the motor speeds to the motors, and enable the motors if any have any speed
-def sendMotorSpeeds(motorSpeedsIn, simulator=None, displayChannels=False, displayCommands=False):
+def sendMotorCommands(motorSpeedsIn, simulator=None, displayChannels=False, displayCommands=False):
 	global goTime, board, motorEnablePin
 	motorSpeeds = [0.0] * 9
 	
