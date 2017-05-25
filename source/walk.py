@@ -26,8 +26,8 @@ def updateTargetAngles(velocity):
 	leftHipAngle = 70 - math.cos( timeOffset ) * angleSpan/2.0  + angleSpan/2.0	
 
 	# Knees
-	rightKneeAngle = -60#10 - math.cos( timeOffset ) * angleSpan/2.0
-	leftKneeAngle = 90#10 + math.cos( timeOffset ) * angleSpan/2.0
+	rightKneeAngle = 10 - math.cos( timeOffset ) * angleSpan/2.0 * 4.0
+	leftKneeAngle = 10 + math.cos( timeOffset ) * angleSpan/2.0 * 4.0
 	
 	# Feet
 	rightFootAngle = 10 - math.sin( timeOffset ) * angleSpan/2.0
@@ -42,12 +42,17 @@ def updateTargetAngles(velocity):
 	targetAngles[6] = leftFootAngle
 	return targetAngles
 
+# PID controller. Start with P. Deal with craziness of wraparound angles.
+numAngles = 2
+previousAngles = [0.0] * (numAngles + 1)
 def calculateMovement(currentAngles, targetAngles):
-	# PID controller. Start with P. Deal with craziness of wraparound angles.
-	numAngles = 4
-	Ps = [0] * numAngles
-	P_rate = 1.0
-	for i in range(numAngles):
+	global previousAngles
+	movements = [0.0] * (numAngles + 1)
+	Ps = [0.0] * (numAngles + 1)
+	Ds = [0.0] * (numAngles + 1)
+	P_rate = 0.2
+	D_rate = 0.1
+	for i in range(1, (numAngles+1)):
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
 		angle_ccw = targetAngles[i] - currentAngles[i] + 360
@@ -55,4 +60,6 @@ def calculateMovement(currentAngles, targetAngles):
 		if abs(angle_cw) < abs(angle_ccw):
 			angleFromTarget = angle_cw
 		Ps[i] = P_rate * angleFromTarget
-	return Ps
+		Ds[i] = D_rate * 0.0
+		movements = Ps + Ds
+	return movements

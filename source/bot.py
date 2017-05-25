@@ -104,7 +104,8 @@ def main():
 		targetAngles = walk.updateTargetAngles(4.0)
 
 		# Compensate for our current body angle to always stand up straight
-		#targetAngles[1] += pitch
+		targetAngles[1] = 0 
+		targetAngles[2] = 0 
 
 		# Allow ourselves to lean forward back manually
 		#targetAngles[3] += trim
@@ -132,12 +133,18 @@ def main():
 		leftFootServoAngle = targetAngles[6]
 
 		# Run our movement controller to see how fast we should set our motor speeds to get to targets
+		currentAngles[1] = - pitch
+		currentAngles[2] = pitch
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
-		if movement[1] > 3:
-			movement[1] = 3
-		if movement[2] < -3:
-			movement[2] = -3
+		if movement[1] > 5:
+			movement[1] = 5
+		if movement[2] < -5:
+			movement[2] = -5
+		if movement[1] < -5:
+			movement[1] = -5
+		if movement[2] > 5:
+			movement[2] = 5
 
 		# Send motor speeds
 		motorSpeeds[1] = movement[1] 		  # Right hip
@@ -149,7 +156,7 @@ def main():
 		motors.sendMotorSpeeds(motorSpeeds, simulator, False, False)
 		
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. R Hip, R Knee: %3d, %3d, Target: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motorSpeeds[1], motorSpeeds[2] ) )
+		functions.display( "Pitch: %3d. Right Left. Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motorSpeeds[1], motorSpeeds[2] ) )
 
 	# Finish up
 	try:
