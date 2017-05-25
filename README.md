@@ -71,19 +71,13 @@ You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
 ### 3D body
 
-[STL file for 3D printing](3d_models/betabot.stl)
+[STL files](https://github.com/tjacobs/betabot/tree/master/ros/src/betabot_description/urdf)
 
 ---
 
 ### Videos
 
-Work in progress, old body shape...
-
-[Moving](https://www.instagram.com/p/BSNbtOvhLsf/)
-
-[Upright](https://twitter.com/TomPJacobs/status/848138218755170305)
-
-[Inside](https://twitter.com/TomPJacobs/status/848136720797192192)
+[Falling](https://github.com/tjacobs/betabot/blob/master/docs/fall.m4v?raw=true)
 
 ---
 
