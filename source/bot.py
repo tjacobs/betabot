@@ -67,11 +67,11 @@ def main():
 		pitch = motorsModule.readIMU('ax')
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(1.0)
+		targetAngles = walk.updateTargetAngles(4.0)
 
 		# We want to be flat level
-		targetAngles[1] = pitch * 0.0 
-		targetAngles[2] = -pitch * 0.0
+#		targetAngles[1] = pitch * 0.0 
+#		targetAngles[2] = -pitch * 0.0
 
 		# Run movement controller to see how fast we should set our motor speeds
 		targetAngles = walk.restrictAngles(targetAngles)
@@ -89,8 +89,12 @@ def main():
 		motorsModule.sendMotorCommands(motors, simulator, False, False)
 
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
-		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
+		#functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
+		#        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
+		#functions.display( "Pitch: %3d. Right, Left: Knees: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
+		#        % (pitch, 0, 0, targetAngles[3], targetAngles[4], motors[3], motors[4] ) )
+		functions.display( "Pitch: %3d. Right, Left: Feet: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
+		        % (pitch, 0, 0, targetAngles[5], targetAngles[6], motors[5], motors[6] ) )
 
 	# Stop motors
 	motorsModule.stopMotors()

@@ -12,8 +12,8 @@ oldTime = time.time()
 
 def restrictAngles(targetAngles):
 	# Restrict movement
-	targetAngles[1] = functions.clamp(targetAngles[1], -180, 280)
-	targetAngles[2] = functions.clamp(targetAngles[2], -180, 280)
+	targetAngles[1] = functions.clamp(targetAngles[1], -180, 180)
+	targetAngles[2] = functions.clamp(targetAngles[2], -180, 180)
 	targetAngles[3] = functions.clamp(targetAngles[3], -100, 100)
 	targetAngles[4] = functions.clamp(targetAngles[4], -100, 100)
 	targetAngles[5] = functions.clamp(targetAngles[5], -100, 100)
@@ -38,19 +38,19 @@ def updateTargetAngles(velocity):
 	oldTime = time.time()
 	
 	# Calculate
-	angleSpan = 30.0 # Degrees of movement in hip joint for a step
+	angleSpan = 60.0 # Degrees of movement in hip joint for a step
 	
 	# Hips
-	rightHipAngle = 0 + math.sin( timeOffset + rightHipTimeOffset ) * angleSpan/2.0 #+ angleSpan/2.0
-	leftHipAngle = 0 - math.sin( timeOffset + leftHipTimeOffset ) * angleSpan/2.0  #+ angleSpan/2.0	
+	rightHipAngle = 0 + math.sin( timeOffset + rightHipTimeOffset ) * angleSpan/2.0 
+	leftHipAngle = 0 - math.sin( timeOffset + leftHipTimeOffset ) * angleSpan/2.0	
 
 	# Knees
-	rightKneeAngle = -40 - math.sin( timeOffset + rightKneeTimeOffset ) * angleSpan/2.0 * 1.2
-	leftKneeAngle = -40 + math.sin( timeOffset + leftKneeTimeOffset ) * angleSpan/2.0 * 1.2
+	rightKneeAngle = - math.sin( timeOffset + rightKneeTimeOffset ) * angleSpan/2.0 * 2.2
+	leftKneeAngle =    math.sin( timeOffset + leftKneeTimeOffset ) * angleSpan/2.0 * 2.2
 	
 	# Feet
-	rightFootAngle = 10 - math.sin( timeOffset + rightFootTimeOffset ) * angleSpan/2.0 * 0.3
-	leftFootAngle = 10 + math.sin( timeOffset + leftFootTimeOffset ) * angleSpan/2.0 * 0.3
+	rightFootAngle = 0 - math.sin( timeOffset + rightFootTimeOffset ) * angleSpan/2.0 * 2.1
+	leftFootAngle = 0 + math.sin( timeOffset + leftFootTimeOffset ) * angleSpan/2.0 * 2.1
 
 	# Save
 	targetAngles[1] = rightHipAngle
