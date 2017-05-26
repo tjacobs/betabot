@@ -60,7 +60,7 @@ As you can see, the gimbals, encoders, and speed controllers are the main cost. 
 ### **Extras**
 
 | Part | $US |
-|--:|--:|--:|
+|--:|--:|
 |[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $40 |
 |[12V Power Supply](https://www.adafruit.com/product/352)| $25 |
 |[Wireless Keyboard and Mouse](https://core-electronics.com.au/wireless-keyboard-and-mouse-for-raspberry-pi.html)| $20 |
