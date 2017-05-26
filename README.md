@@ -119,27 +119,20 @@ And after that: The Pi Zero listens to any write of the bot.py file, and every t
 ---
 ### How to build it
 
-Looking to build it? See parts list above.
+See parts list above.
 
-Take the 3D printed case, two motors, and six screws. Make sure the small magnets are still on the back of the motors. Place one motor on the side with cable running through the hole in the case. Rotate until screw holes line up, and screw three screws in half way.
+Take the 3D printed body, two motors, and six screws. Glue the small magnets onto the back of the motor axles. Place one motor on the side of the body. Rotate until screw holes line up, and screw three screws in half way.
 
 Take one motor sensor board, and slide it into position under the three screws, with chip facing towards and sitting directly under the motor magnet. Screw three screws fully in to hold the motor and board in place. Repeat with the other motor.
 
-Take the motor controller board and place it into the mounting square in the case, plug in the microUSB. Screw it down with four screws.
+Solder the power lead, via the on switch, 5v lead, and speed controllers onto the power board. Take the power board and and place it into the mounting square on the body, and screw it down with four spacing screws
 
-Place the power boards at the back of Betabot and screw them into place. Run the power cable into the battery compartment.
+Solder the 8 motor output header pins onto the controller board. Place the controller board on top of the power board, and screw it down.
 
-Take the two speed controller boards and plug the motors into them. Place them down into the front sides of the body.
+Take the two speed controller boards and plug the motors into them. Place them down into the body.
 
-Take the on switch and push it into position.
+Write the Betabot [disk image](coming_soon) to the SD memory card using [sd_restore](scripts/sd_restore), and pop it into the Raspberry Pi. Take the Raspberry Pi and place it on the body, with memory card at the outer edge. Screw down with four screws. Plug in the HDMI adapter, and OTG adapter.
 
-Place the battery into the battery compartment and plug it in. 
-
-Take the battery charger board and slide it in over the top of the battery facing upwards with the white ports facing towards the middle. Plug the battery's charge cable into the largest white port. Screw into place with one screw. Screw two round-headed screws through the front of the body into the charge bolts.
-
-Write the Betabot [disk image](coming_soon) to the SD memory card using [sd_restore](scripts/sd_restore), and pop it into the Raspberry Pi. Take the Raspberry Pi and place it on top, with USB ports facing towards the back of the case and the HDMI port facing out towards the open side. Screw down with four screws. 
-
-Slide the back plate in. Take the top cover and place it over the top of the body. Align the screw holes and screw the long screws in to affix the top. It should open freely to ninety degrees and close completely.
+Screw the legs onto the motors, and place the servos into the legs and feet, and screw together. Run the leads through the legs and into the controller.
 
 Switch Betabot on. He should wake up after a minute and come to life!
-
