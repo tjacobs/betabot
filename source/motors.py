@@ -17,7 +17,7 @@ def readIMU(xy='ax'):
 	if board == None:
 		return 0
 	board.getData(MultiWii.RAW_IMU)
-	return board.rawIMU[xy] # Pitch
+	return 90.0 * board.rawIMU[xy] / 500.0 # Pitch
 
 # Init
 simulator = None

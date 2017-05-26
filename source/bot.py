@@ -19,7 +19,7 @@ import sensors
 ENABLE_KEYS 		= True
 ENABLE_MOUSE 		= False
 ENABLE_BRAIN 		= False
-ENABLE_SIMULATOR 	= True
+ENABLE_SIMULATOR 	= False
 
 # Import Betabot parts
 keys 		= None
@@ -67,16 +67,16 @@ def main():
 		pitch = motorsModule.readIMU('ax')
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(2.0)
+		targetAngles = walk.updateTargetAngles(1.0)
 
 		# We want to be flat level
-#		targetAngles[1] = 0 
-#		targetAngles[2] = 0
+		targetAngles[1] = 0 
+		targetAngles[2] = 0
 
 		# Assume our current angle is which way we're leaning.
 		# Override angles. TODO: Incorporate motor current angles as well
-		currentAngles[1] = -pitch
-		currentAngles[2] = pitch
+		#currentAngles[1] = -pitch
+		#currentAngles[2] = pitch
 
 		# Run movement controller to see how fast we should set our motor speeds
 		targetAngles = walk.restrictAngles(targetAngles)
