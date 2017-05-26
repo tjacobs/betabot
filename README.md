@@ -47,7 +47,7 @@ To get started, write the [disk image](coming_soon) using [sd_restore](scripts/s
 |[Pi Fisheye Cam](https://www.aliexpress.com/item/Raspberry-Pi-Zero-W-Camera-Module-Night-Vision-Wide-Angle-Fisheye-5MP-Webcam-with-Infrared-IR/32802572768.html) [(Alt)](https://www.aliexpress.com/item/Raspberry-Pi-Zero-Camera-Module-5MP-Camera-Webcam-for-Raspberry-Pi-Zero/32782501654.html)| $10 |
 |[Raspberry Pi Zero W](https://www.adafruit.com/product/3400)| $10 |
 |[Charger Board](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 |
-|[12V/5V Voltage Regulator](https://hobbyking.com/en_us/matek-mini-power-hub-w-bec-5v-and-12v.html)| $5 |
+|[12V/5V Voltage Regulator](https://hobbyking.com/en_us/matek-mini-power-hub-w-bec-5v-and-12v.html) [(Plug)](https://hobbyking.com/en_us/xt60-to-ec2-losi-battery-adapter-2pcs-bag.html)| $8 |
 |[3D Printer Filament](https://hobbyking.com/en_us/colido-3d-printer-filament-1-75mm-pla-500g-spool-white.html)| $5 |
 |[Misc: Switch, Wire, Heatshrink, Heatsink, Screws](https://www.adafruit.com/product/1478)| $5 |
 |[Tiny MicroUSB OTG](https://www.adafruit.com/product/2910)| $3 |
@@ -62,7 +62,7 @@ As you can see, the gimbals, encoders, and speed controllers are the main cost. 
 | Part | $US |
 |--:|--:|
 |[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $40 |
-|[12V Power Supply](https://www.adafruit.com/product/352)| $25 |
+|[12V Power Supply](https://www.adafruit.com/product/352)[Adapter](https://www.adafruit.com/product/991)| $25 |
 |[Wireless Keyboard and Mouse](https://core-electronics.com.au/wireless-keyboard-and-mouse-for-raspberry-pi.html)| $20 |
 
 You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
