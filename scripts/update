@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Kill all old instances of start other than ourselves
+for PID in `ps ax | grep '[s]tart' | awk '{print $1;}'`; do
+        if [ "$PID" != "$$" ] ; then
+                sudo kill -9 $PID
+        fi
+done
+
+# Change directory
+if [ -d "/home/pi/betabot" ]; then
+	cd /home/pi/betabot
+fi
+
+# Update
+git pull
