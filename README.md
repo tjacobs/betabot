@@ -35,34 +35,35 @@ To get started, write the [disk image](coming_soon) using [sd_restore](scripts/s
 
 ### Parts
 
-| Part | $US | Ideal $US |
-|--:|--:|--:|
-|[BGMC Speed Controller (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 | $20 |
-|[Gimbal Motor (x2)](https://hobbyking.com/en_us/turnigy-hd-5208-brushless-gimbal-motor-bldc.html)| $84 | $60 |
-|[Rotary Encoder (x2)](http://au.mouser.com/Search/ProductDetail.aspx?qs=Rt6VE0PE%2fOduJIB%252bRfeBZQ%3d%3d)| $40 | $4
-|[SPRacing F3 Evo](https://www.banggood.com/F3-EVO-Cleanflight-10DOF-Flight-Controller-Oem-Version-for-Multirotor-Racing-with-4G-MicroSD-p-1064058.html)| $24 | $24
-|[Filament](https://hobbyking.com/en_us/esun-3d-printer-filament-gold-1-75mm-pla-1kg-roll.html)| $20 | $5
-|[1.3A Lipo Battery](https://hobbyking.com/en_us/graphene-1300mah-4s-45c-w-xt60.html)| $20 | $10
-|[16GB Memory Card](https://www.adafruit.com/product/2693)| $20 | $10
-|[Pi Fisheye Cam](https://www.aliexpress.com/store/product/Raspberry-Pi-wide-angle-fish-eye-camera-module-5-megapixel-160-degree-lens/1181118_32305170854.html)| $17 | $10
-|[9g Servo (x4)](https://hobbyking.com/en_us/hxt900-micro-servo-1-6kg-0-12sec-9g.html)| $16 | $16
-|[Raspberry Pi Zero W]()| $10 | $5 |
-|[Charger Board](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 | $7
-|[12V/5V Voltage Regulator](https://www.banggood.com/Matek-Mini-Power-Hub-Power-Distribution-Board-With-BEC-5V-And-12V-For-FPV-Multicopter-p-1005549.html)| $5 | $5
-|[Switch, Wire, Heatshrink, Heatsink, Screws]()| $5 | $4
-|[MicroUSB cable](https://www.adafruit.com/product/898)| $3 | $1
-|[2 Transistors BDX53C, BDX54C, 2 Resistors]()| $2 | $1
+| Part | $US |
+|--:|--:|
+|[BGMC Speed Controller (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 |
+|[Gimbal Motor (x2)](https://www.aliexpress.com/item/Maytech-4180-130-turn-rc-brushless-gimbal-motor-in-radio-controlled-toys/1000001024913.html)| $40 |
+|[Rotary Encoder (x2)](http://au.mouser.com/Search/ProductDetail.aspx?qs=Rt6VE0PE%2fOduJIB%252bRfeBZQ%3d%3d)| $40 |
+|[High Torque Servos (x4)](https://hobbyking.com/en_us/turnigytm-tgy-s901d-ds-mg-robot-servo-13kg-0-14sec-58g.html)| $40 |
+|[SPRacing F3 Evo](https://hobbyking.com/en_us/rjx-sp-racing-f3-evo-flight-controller.html)| $24 |
+|[16GB Memory Card](https://www.adafruit.com/product/2693)| $20 |
+|[1000mAh 3S Lipo Battery](https://hobbyking.com/en_us/turnigy-1000mah-3s-30c-lipo-pack.html)| $10 |
+|[Pi Fisheye Cam](https://www.aliexpress.com/item/Raspberry-Pi-Zero-W-Camera-Module-Night-Vision-Wide-Angle-Fisheye-5MP-Webcam-with-Infrared-IR/32802572768.html) [(Alt)](https://www.aliexpress.com/item/Raspberry-Pi-Zero-Camera-Module-5MP-Camera-Webcam-for-Raspberry-Pi-Zero/32782501654.html)| $10 |
+|[Raspberry Pi Zero W](https://www.adafruit.com/product/3400)| $10 |
+|[Charger Board](https://hobbyking.com/en_us/hobbykingr-dc-4s-balance-charger-cell-checker-30w-2s-4s.html)| $9 |
+|[12V/5V Voltage Regulator](https://hobbyking.com/en_us/matek-mini-power-hub-w-bec-5v-and-12v.html)| $5 |
+|[3D Printer Filament](https://hobbyking.com/en_us/colido-3d-printer-filament-1-75mm-pla-500g-spool-white.html)| $5 |
+|[Misc: Switch, Wire, Heatshrink, Heatsink, Screws](https://www.adafruit.com/product/1478)| $5 |
+|[Tiny MicroUSB OTG](https://www.adafruit.com/product/2910)| $3 |
+|[Components: 2 Transistors: BDX53C & BDX54C, 2 Resistors]()| $1 | 
+
+**Total:** $320
 
 As you can see, the gimbals, encoders, and speed controllers are the main cost. I may replace these with large servos for the first version to keep costs down.
 
 ### **Extras**
 
-| Part | $US | Ideal $US |
+| Part | $US |
 |--:|--:|--:|
-|[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $35 | $35 |
-|[Wireless Keyboard and Mouse](https://www.logitech.com/en-au/product/wireless-combo-mk220)| $40 | $30 |
-|[12V Power Supply](https://hobbyking.com/en_us/ac-dc-adapter-12v-8a-mini-fabrikator-indiv-power-supply-big-power-8-in-1.html)| $27 | $10
-
+|[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $40 |
+|[12V Power Supply](https://www.adafruit.com/product/352)| $25 |
+|[Wireless Keyboard and Mouse](https://core-electronics.com.au/wireless-keyboard-and-mouse-for-raspberry-pi.html)| $20 |
 
 You'll also need an HDMI cable and a monitor. And a soldering iron and tools.
 
