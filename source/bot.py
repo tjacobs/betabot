@@ -70,17 +70,14 @@ def main():
 		targetAngles = walk.updateTargetAngles(1.0)
 
 		# We want to be flat level
-		targetAngles[1] = 0 
-		targetAngles[2] = 0
-
-		# Assume our current angle is which way we're leaning.
-		# Override angles. TODO: Incorporate motor current angles as well
-		#currentAngles[1] = -pitch
-		#currentAngles[2] = pitch
+		targetAngles[1] = pitch * 0.0 
+		targetAngles[2] = -pitch * 0.0
 
 		# Run movement controller to see how fast we should set our motor speeds
 		targetAngles = walk.restrictAngles(targetAngles)
 		movement = walk.calculateMovement(currentAngles, targetAngles)
+#		movement[1] = functions.clamp(movement[1], -1, 1)
+#		movement[2] = functions.clamp(movement[2], -1, 1)
 
 		# Send motor commands
 		motors[1] = movement[1] 	 # Right hip

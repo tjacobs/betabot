@@ -12,6 +12,10 @@ def clamp(n, smallest, largest):
 
 # Read angles from sensors
 calibratedAngles = [None, -10, 170, 0, 0]
+STAND_UP = True
+if STAND_UP:
+	calibratedAngles[1] -= 90
+	calibratedAngles[2] += 90
 def readCurrentAngles( sensors ):
 	currentAngles = [0] * 4
 	try:
