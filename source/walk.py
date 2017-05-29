@@ -20,6 +20,38 @@ def restrictAngles(targetAngles):
 	targetAngles[6] = functions.clamp(targetAngles[6], -100, 100)
 	return targetAngles
 
+def standUp(velocity):
+	global timeOffset, oldTime
+
+	# Move forward in time
+	timeJump = time.time() - oldTime
+	if timeJump > 100: timeJump = 0.0 # Laggier than 100ms? Forget it
+	timeOffset += timeJump * velocity
+	oldTime = time.time()
+	
+	angleSpan = 60.0
+	
+	# Hips
+	rightHipAngle = math.sin(timeOffset)*20
+	leftHipAngle  = math.sin(timeOffset)*20
+
+	# Knees
+	rightKneeAngle = -math.sin(timeOffset)*20
+	leftKneeAngle  = -math.sin(timeOffset)*20
+	
+	# Feet
+	rightFootAngle = math.sin(timeOffset)*10 + 4
+	leftFootAngle  = math.sin(timeOffset)*10 + 4
+
+	# Save
+	targetAngles[1] = rightHipAngle
+	targetAngles[2] = leftHipAngle
+	targetAngles[3] = rightKneeAngle
+	targetAngles[4] = leftKneeAngle
+	targetAngles[5] = rightFootAngle
+	targetAngles[6] = leftFootAngle
+	return targetAngles
+
 def updateTargetAngles(velocity):
 	global targetAngles, timeOffset, oldTime
 

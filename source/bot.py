@@ -19,7 +19,7 @@ import sensors
 ENABLE_KEYS 		= True
 ENABLE_MOUSE 		= False
 ENABLE_BRAIN 		= False
-ENABLE_SIMULATOR 	= False
+ENABLE_SIMULATOR 	= True
 
 # Import Betabot parts
 keys 		= None
@@ -49,14 +49,6 @@ def main():
 	motorsModule.initMotors()
 	motors = [0.0] * 9 # Motor outputs 1 to 8, ignore 0
 	
-	# Init balance trim
-	trim = 0.0
-
-	# Read initial angles
-	offsetPitch = motorsModule.readIMU()
-	currentAngles = functions.readCurrentAngles(magneticSensors)
-	offsetAngle = currentAngles[1]
-	
 	# Loop
 	while not keys or not keys.esc_key_pressed:
 
@@ -67,7 +59,8 @@ def main():
 		pitch = motorsModule.readIMU('ax')
 
 		# Figure out what our angles should be now to walk
-		targetAngles = walk.updateTargetAngles(4.0)
+#		targetAngles = walk.updateTargetAngles(1.0)
+		targetAngles = walk.standUp(2.0)
 
 		# We want to be flat level
 #		targetAngles[1] = pitch * 0.0 
@@ -80,8 +73,8 @@ def main():
 #		movement[2] = functions.clamp(movement[2], -1, 1)
 
 		# Send motor commands
-		motors[1] = movement[1] 	 # Right hip
-		motors[2] = movement[2] 	 # Left hip
+		motors[1] = targetAngles[1] #movement[1] 	 # Right hip
+		motors[2] = targetAngles[2] #movement[2] 	 # Left hip
 		motors[3] = targetAngles[3]  # Right knee servo
 		motors[4] = targetAngles[4]  # Left knee servo
 		motors[5] = targetAngles[5]  # Right foot servo

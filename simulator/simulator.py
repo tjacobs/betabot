@@ -43,7 +43,7 @@ class Simulator():
 		p.loadURDF("simulator/data/plane.urdf", 0, 0, 0)
 
 		# Load model
-		self.betabot = p.loadURDF("ros/src/betabot_description/urdf/betabot.urdf", [1, 0, 0.2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
+		self.betabot = p.loadURDF("ros/src/betabot_description/urdf/betabot.urdf", [0, 0, 2], p.getQuaternionFromEuler([0, 0, 0.1]), useFixedBase=False)
 
 		# Map joint names to ids
 		nJoints = p.getNumJoints(self.betabot)
@@ -79,8 +79,8 @@ class Simulator():
 		# Hips
 		target_left = motorSpeeds[1] / math.pi 
 		target_right = motorSpeeds[2] / math.pi
-		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_hip_joint, controlMode=p.VELOCITY_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
-		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_hip_joint,  controlMode=p.VELOCITY_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.right_hip_joint, controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[0]*target_left, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
+		p.setJointMotorControl2(bodyIndex=self.betabot, jointIndex=self.left_hip_joint,  controlMode=p.POSITION_CONTROL, targetVelocity=self.motordir[1]*target_right, positionGain=self.kp, velocityGain=self.kd, force=self.maxForce)
 
 		# Knees
 		target_left = motorSpeeds[3] / math.pi
