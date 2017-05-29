@@ -35,7 +35,7 @@ To get started, write the [disk image](coming_soon) using [sd_restore](scripts/s
 
 ### Parts
 
-| Part | $US |
+| Part | US$ |
 |--:|--:|
 |[BGMC Speed Controller (x2)](http://www.rovertec.com/products-bgmc2.html)| $100 |
 |[Gimbal Motor (x2)](https://www.aliexpress.com/item/Maytech-4180-130-turn-rc-brushless-gimbal-motor-in-radio-controlled-toys/1000001024913.html)| $40 |
@@ -53,13 +53,11 @@ To get started, write the [disk image](coming_soon) using [sd_restore](scripts/s
 |[Tiny MicroUSB OTG](https://www.adafruit.com/product/2910)| $3 |
 |[Components: 2 Transistors: BDX53C & BDX54C, 2 Resistors]()| $1 | 
 
-**Total:** $320
-
 As you can see, the gimbals, encoders, and speed controllers are the main cost. I may replace these with large servos for the first version to keep costs down.
 
 ### **Extras**
 
-| Part | $US |
+| Part | US$ |
 |--:|--:|
 |[Raspberry Pi 3](https://www.adafruit.com/product/3055)| $40 |
 |[12V Power Supply](https://www.adafruit.com/product/352)[Adapter](https://www.adafruit.com/product/991)| $25 |
