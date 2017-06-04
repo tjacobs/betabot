@@ -17,10 +17,10 @@ VIEWPORT_H = 700
 # Betabot
 MOTORS_TORQUE  = 100
 SPEED_HIP      = 2
-SPEED_KNEE     = 4
+SPEED_KNEE     = 8
 SPEED_FOOT     = 4
 HULL_POLY =[
-    (-20, 120), (+10, 120), (+10, 0),
+    (-20, 180), (+10, 180), (+10, 0),
     (+10, -30), (-20, -30)
     ]
 LEG_DOWN = -32/SCALE
@@ -250,7 +250,7 @@ class BipedalWalker(gym.Env):
             position = (init_x, init_y),
             fixtures = fixtureDef(
                 shape=polygonShape(vertices=[ (x/SCALE,y/SCALE) for x,y in HULL_POLY ]),
-                density=0.4,
+                density=0.2,
                 friction=0.1,
                 categoryBits=0x0020,
                 maskBits=0x001,  # collide only with ground
@@ -270,7 +270,7 @@ class BipedalWalker(gym.Env):
                 angle = (i*0.01),
                 fixtures = fixtureDef(
                     shape=polygonShape(box=(LEG_W/2, LEG_H/2)),
-                    density=0.2,
+                    density=0.8,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -298,7 +298,7 @@ class BipedalWalker(gym.Env):
                 angle = (i*0.01),
                 fixtures = fixtureDef(
                     shape=polygonShape(box=(0.8*LEG_W/2, LEG_H/2)),
-                    density=0.2,
+                    density=0.8,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -447,7 +447,7 @@ class BipedalWalker(gym.Env):
         if self.game_over or pos[0] < -2:
             reward = -100
             done   = True
-        if pos[0] > (TERRAIN_LENGTH-TERRAIN_GRASS)*TERRAIN_STEP:
+        if pos[0] > 1 + (TERRAIN_LENGTH-TERRAIN_GRASS)*TERRAIN_STEP:
             done   = True
         return np.array(state), reward, done, {}
 
@@ -516,8 +516,8 @@ if __name__=="__main__":
     SPEED = 1.0
 
     # States
-    LEFT_FOOT_STANCE, RIGHT_FOOT_DOWN, RIGHT_FOOT_STANCE, LEFT_FOOT_DOWN = 1, 2, 3, 4
-    walk_state = LEFT_FOOT_STANCE
+    GET_UP, LEFT_FOOT_STANCE, RIGHT_FOOT_DOWN, RIGHT_FOOT_STANCE, LEFT_FOOT_DOWN = 1, 2, 3, 4, 5
+    walk_state = GET_UP
     right_leg = 0
     left_leg   = 1
 
@@ -527,7 +527,7 @@ if __name__=="__main__":
     time = 0
 
     # Loop
-    for t in range(1800):
+    for t in range(4000):
 
         # Render
         if True:
@@ -544,10 +544,10 @@ if __name__=="__main__":
 
         # Timer
         time += 2
-        time_mod = time % 1000
+        time_mod = time % 1200
 
         # State to target mapping
-        if walk_state == LEFT_FOOT_STANCE:
+        if walk_state == GET_UP:
             # Stand on left leg, straight down
             hip_target[left_leg]  = 0.0
             knee_target[left_leg] = 0.0
@@ -611,35 +611,33 @@ if __name__=="__main__":
                 foot_target[right_leg] = 0.1
                 foot_target[left_leg] = 0.1
 
-        elif walk_state == RIGHT_FOOT_DOWN:
-            if state[8]:
-                print( "Right foot is down." )
+            if time_mod > 900:
+                walk_state = LEFT_FOOT_STANCE
+ 
+        elif walk_state == LEFT_FOOT_STANCE: 
+
+            hip_target[left_leg]   =  0.8
+            hip_target[right_leg]  = -0.8
+            knee_target[left_leg]  =  0.5
+            knee_target[right_leg] =  1.5
+            foot_target[right_leg] = -0.1
+            foot_target[left_leg]  =  0.1
+            if time_mod > 150:
                 walk_state = RIGHT_FOOT_STANCE
+                if state[0] < -0.5 or state[0] > 0.5:
+                    walk_state = GET_UP
+                time = 0
 
         elif walk_state == RIGHT_FOOT_STANCE:
-            # Move right leg forward
-            hip_target[right_leg]  = 1.1
-            knee_target[right_leg] = -0.6
-
-            hip_target[left_leg]  = -0.2
-            knee_target[left_leg] = -0.3
-
-            # Jump!
-            if time_mod > 50 and time_mod < 150:
-                knee_target[left_leg] = 0.1
-                knee_target[right_leg] = -0.1
-
-                # If both legs off the ground, go for the leg flip
-#                if not state[8] and not state[13]:
-                if time_mod > 150:
-                    print( "Flip!" )
-                    walk_state = LEFT_FOOT_STANCE
-                    time = 200
-
-        elif walk_state == LEFT_FOOT_DOWN:
-            if state[13]:
-                print( "Left foot is down." )
+            hip_target[left_leg]   = -0.8
+            hip_target[right_leg]  =  0.8
+            knee_target[left_leg]  =  1.5
+            knee_target[right_leg] =  0.5
+            foot_target[right_leg] =  0.1
+            foot_target[left_leg]  = -0.1
+            if time_mod > 150:
                 walk_state = LEFT_FOOT_STANCE
+                time = 0
 
         # How should we move?
         hip_movement  = [0.0, 0.0]
@@ -647,7 +645,7 @@ if __name__=="__main__":
         foot_movement = [0.0, 0.0]
 
         # If we have targets, use PD controller to move them there. Kp * anglediff - Kd * velocity
-        Kp = 1.5
+        Kp = 1.0
         Kd = -0.1
         hip_in_world_frame = (state[4] - state[0], state[9] - state[0])
         hip_velocity_in_world_frame = (state[5] - state[1], state[10] - state[1])
@@ -659,20 +657,20 @@ if __name__=="__main__":
         if foot_target[1]: foot_movement[1] = Kp * (foot_target[1] - state[15])              + Kd * state[17]
 
         # Balance. PD controller to adjust hip in world frame to keep balance up straight. Kp * body_angle + Kd * body_angle_velocity.
-        kBalanceP = 0.0
-        kBalanceD = 0.0
+        kBalanceP = 1.0
+        kBalanceD = -0.8
         hip_movement[0] += kBalanceP * state[0] + kBalanceD * state[1]
         hip_movement[1] += kBalanceP * state[0] + kBalanceD * state[1]
 
         # Dampen bounce. PD controller to adjust knee according to vertical speed, to dampen bouncy oscillations. Kd*body_vertical_velocity.
-        kDampen = 0.0
+        kDampen = 1.0
         knee_movement[0] -= kDampen * state[3]
         knee_movement[1] -= kDampen * state[3]
 
         # Set action
         action = np.array([hip_movement[0], knee_movement[0], hip_movement[1], knee_movement[1], foot_movement[0], foot_movement[1]])
         action = np.clip(action, -1.0, 1.0)
-        print( "Torques: Hip %0.2f Knee %0.2f Foot %0.2f     Hip %0.2f Knee %0.2f Foot %0.2f" % (action[0], action[1], action[4], action[2], action[3], action[5] ) )
+        #print( "Torques: Hip %0.2f Knee %0.2f Foot %0.2f     Hip %0.2f Knee %0.2f Foot %0.2f" % (action[0], action[1], action[4], action[2], action[3], action[5] ) )
 
         # Step
         state, reward, done, info = env.step(action)
