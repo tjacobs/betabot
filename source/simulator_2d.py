@@ -16,12 +16,12 @@ VIEWPORT_H = 700
 
 # Betabot
 MOTORS_TORQUE  = 100
-SPEED_HIP      = 4
+SPEED_HIP      = 2
 SPEED_KNEE     = 4
 SPEED_FOOT     = 4
 HULL_POLY =[
-    (-20, 190), (+10, 130), (+10, 0),
-    (+20, -30), (-20, -30)
+    (-20, 120), (+10, 120), (+10, 0),
+    (+10, -30), (-20, -30)
     ]
 LEG_DOWN = -32/SCALE
 LEG_W, LEG_H = 32/SCALE, 138/SCALE
@@ -72,7 +72,7 @@ class BipedalWalker(gym.Env):
         self._reset()
 
         # Input and output to the env: actions and observations
-        high = np.array([np.inf]*24)
+        high = np.array([np.inf]*28)
         self.action_space = spaces.Box(np.array([-1,-1,-1,-1,-1,-1]), np.array([+1,+1,+1,+1,+1,+1]))
         self.observation_space = spaces.Box(-high, high)
 
@@ -250,7 +250,7 @@ class BipedalWalker(gym.Env):
             position = (init_x, init_y),
             fixtures = fixtureDef(
                 shape=polygonShape(vertices=[ (x/SCALE,y/SCALE) for x,y in HULL_POLY ]),
-                density=0.9,
+                density=0.4,
                 friction=0.1,
                 categoryBits=0x0020,
                 maskBits=0x001,  # collide only with ground
@@ -270,7 +270,7 @@ class BipedalWalker(gym.Env):
                 angle = (i*0.01),
                 fixtures = fixtureDef(
                     shape=polygonShape(box=(LEG_W/2, LEG_H/2)),
-                    density=0.5,
+                    density=0.2,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -287,7 +287,7 @@ class BipedalWalker(gym.Env):
                 maxMotorTorque=MOTORS_TORQUE,
                 motorSpeed = i,
                 lowerAngle = -1.1,
-                upperAngle = 1.1,
+                upperAngle = 1.3,
                 )
             self.legs.append(leg)
             self.joints.append(self.world.CreateJoint(rjd))
@@ -298,7 +298,7 @@ class BipedalWalker(gym.Env):
                 angle = (i*0.01),
                 fixtures = fixtureDef(
                     shape=polygonShape(box=(0.8*LEG_W/2, LEG_H/2)),
-                    density=0.5,
+                    density=0.2,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -314,7 +314,7 @@ class BipedalWalker(gym.Env):
                 enableLimit=True,
                 maxMotorTorque=MOTORS_TORQUE,
                 motorSpeed = 1,
-                lowerAngle = -1.8,
+                lowerAngle = -2.8,
                 upperAngle = 0.2,
                 )
             lower.ground_contact = False
@@ -327,7 +327,7 @@ class BipedalWalker(gym.Env):
                 angle = 0,
                 fixtures = fixtureDef(
                     shape=polygonShape(box=(0.8*LEG_H/2, LEG_W/2)),
-                    density=0.2,
+                    density=1.5,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -527,7 +527,7 @@ if __name__=="__main__":
     time = 0
 
     # Loop
-    for t in range(500):
+    for t in range(1800):
 
         # Render
         if True:
@@ -543,34 +543,73 @@ if __name__=="__main__":
         foot_target = [None, None]
 
         # Timer
-        time += 1
-        time_mod = time % 130
+        time += 2
+        time_mod = time % 1000
 
         # State to target mapping
         if walk_state == LEFT_FOOT_STANCE:
             # Stand on left leg, straight down
-            hip_target[left_leg]  = 0.8
+            hip_target[left_leg]  = 0.0
             knee_target[left_leg] = 0.0
 
             # Curl free leg back
-            hip_target[right_leg]  = 0.8
+            hip_target[right_leg]  = 0.0
             knee_target[right_leg] = 0.0
 
             # Feet flat
-            foot_target[right_leg] = math.sin(time_mod/10)
-            foot_target[left_leg] = math.sin(time_mod/10)
+            foot_target[right_leg] = 0
+            foot_target[left_leg] = 0
 
-            # Bounce
-            if time_mod > 80 and time_mod < 120:
-                hip_target[left_leg]  = 0.4
-                knee_target[left_leg] = -0.4
+            # Get up
+            if time_mod > 150:
+                hip_target[left_leg]  = 1.1
+                hip_target[right_leg]  = 1.1
+                knee_target[left_leg] = 0.2
+                knee_target[right_leg] = 0.2
+                foot_target[right_leg] = -0.4
+                foot_target[left_leg] = -0.4
 
-                # If both legs off the ground, go for the leg flip
-#                if time_mod > 150:
-#                if not state[8] and not state[13]:
-#                    print( "Flip!" )
-#                    walk_state = RIGHT_FOOT_STANCE
-#                    time = 200
+            if time_mod > 250:
+                foot_target[right_leg] = -0.6
+                foot_target[left_leg] = -0.6
+                hip_target[left_leg]  = None
+                hip_target[right_leg] = None
+                knee_target[left_leg] = -1.4
+                knee_target[right_leg] = -1.4
+
+            if time_mod > 350:
+                hip_target[left_leg]  = 1.9
+                hip_target[right_leg] = 1.9
+                knee_target[left_leg] = -1.3
+                knee_target[right_leg] = -1.3
+
+            if time_mod > 550:
+                foot_target[right_leg] = 0.8
+                foot_target[left_leg] = 0.8
+
+            if time_mod > 650:
+                hip_target[left_leg]  = 0.2
+                hip_target[right_leg]  = 0.2
+                knee_target[left_leg] =  0.8
+                knee_target[right_leg] = 0.8
+                foot_target[right_leg] = 0.0
+                foot_target[left_leg] = 0.0
+
+            if time_mod > 700:
+                hip_target[left_leg]  = 0.2
+                hip_target[right_leg]  = 0.2
+                knee_target[left_leg] =  0.8
+                knee_target[right_leg] = 0.8
+                foot_target[right_leg] = 0.1
+                foot_target[left_leg] = 0.1
+
+            if time_mod > 800:
+                hip_target[left_leg]  = 0.25
+                hip_target[right_leg]  = 0.25
+                knee_target[left_leg] =  0.9
+                knee_target[right_leg] = 0.9
+                foot_target[right_leg] = 0.1
+                foot_target[left_leg] = 0.1
 
         elif walk_state == RIGHT_FOOT_DOWN:
             if state[8]:
@@ -586,9 +625,9 @@ if __name__=="__main__":
             knee_target[left_leg] = -0.3
 
             # Jump!
-            if time_mod > 100 and time_mod < 150:
-                knee_target[left_leg] = 0.15
-                knee_target[right_leg] = -0.15
+            if time_mod > 50 and time_mod < 150:
+                knee_target[left_leg] = 0.1
+                knee_target[right_leg] = -0.1
 
                 # If both legs off the ground, go for the leg flip
 #                if not state[8] and not state[13]:
@@ -608,18 +647,17 @@ if __name__=="__main__":
         foot_movement = [0.0, 0.0]
 
         # If we have targets, use PD controller to move them there. Kp * anglediff - Kd * velocity
-        Kp = 1.0
-        Kd = 0.0
+        Kp = 1.5
+        Kd = -0.1
         hip_in_world_frame = (state[4] - state[0], state[9] - state[0])
         hip_velocity_in_world_frame = (state[5] - state[1], state[10] - state[1])
         if hip_target[0]:  hip_movement[0]  = Kp * (hip_target[0]  - hip_in_world_frame[0])  + Kd * hip_velocity_in_world_frame[0]
         if knee_target[0]: knee_movement[0] = Kp * (knee_target[0] - state[6])               + Kd * state[7]
         if hip_target[1]:  hip_movement[1]  = Kp * (hip_target[1]  - hip_in_world_frame[1])  + Kd * hip_velocity_in_world_frame[1]
         if knee_target[1]: knee_movement[1] = Kp * (knee_target[1] - state[11])              + Kd * state[12]
-        if foot_target[0]: foot_movement[0] = 1.0#Kp * (foot_target[0] - state[13])              + Kd * state[15]
-        if foot_target[1]: foot_movement[1] = 1.0#Kp * (foot_target[1] - state[14])              + Kd * state[16]
+        if foot_target[0]: foot_movement[0] = Kp * (foot_target[0] - state[14])              + Kd * state[16]
+        if foot_target[1]: foot_movement[1] = Kp * (foot_target[1] - state[15])              + Kd * state[17]
 
-        print( foot_target )
         # Balance. PD controller to adjust hip in world frame to keep balance up straight. Kp * body_angle + Kd * body_angle_velocity.
         kBalanceP = 0.0
         kBalanceD = 0.0
