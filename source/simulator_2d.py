@@ -17,8 +17,8 @@ VIEWPORT_H = 700
 # Betabot
 MOTORS_TORQUE  = 100
 SPEED_HIP      = 2
-SPEED_KNEE     = 8
-SPEED_FOOT     = 4
+SPEED_KNEE     = 2
+SPEED_FOOT     = 2
 HULL_POLY =[
     (-20, 180), (+10, 180), (+10, 0),
     (+10, -30), (-20, -30)
@@ -380,9 +380,9 @@ class BipedalWalker(gym.Env):
         self.joints[2].maxMotorTorque = float(MOTORS_TORQUE * np.clip(np.abs(action[4]), 0, 1))
         self.joints[3].motorSpeed     = float(SPEED_HIP     * np.sign(action[2]))
         self.joints[3].maxMotorTorque = float(MOTORS_TORQUE * np.clip(np.abs(action[2]), 0, 1))
-        self.joints[4].motorSpeed     = float(SPEED_FOOT    * np.sign(action[3]))
+        self.joints[4].motorSpeed     = float(SPEED_KNEE    * np.sign(action[3]))
         self.joints[4].maxMotorTorque = float(MOTORS_TORQUE * np.clip(np.abs(action[3]), 0, 1))
-        self.joints[5].motorSpeed     = float(SPEED_KNEE    * np.sign(action[5]))
+        self.joints[5].motorSpeed     = float(SPEED_FOOT    * np.sign(action[5]))
         self.joints[5].maxMotorTorque = float(MOTORS_TORQUE * np.clip(np.abs(action[5]), 0, 1))
 
         # Step
@@ -447,7 +447,7 @@ class BipedalWalker(gym.Env):
         if self.game_over or pos[0] < -2:
             reward = -100
             done   = True
-        if pos[0] > 1 + (TERRAIN_LENGTH-TERRAIN_GRASS)*TERRAIN_STEP:
+        if pos[0] > 5 + (TERRAIN_LENGTH-TERRAIN_GRASS)*TERRAIN_STEP:
             done   = True
         return np.array(state), reward, done, {}
 
@@ -543,7 +543,7 @@ if __name__=="__main__":
         foot_target = [None, None]
 
         # Timer
-        time += 2
+        time += 3
         time_mod = time % 1200
 
         # State to target mapping
@@ -611,7 +611,7 @@ if __name__=="__main__":
                 foot_target[right_leg] = 0.1
                 foot_target[left_leg] = 0.1
 
-            if time_mod > 900:
+            if time_mod > 1100:
                 walk_state = LEFT_FOOT_STANCE
  
         elif walk_state == LEFT_FOOT_STANCE: 
@@ -658,7 +658,7 @@ if __name__=="__main__":
 
         # Balance. PD controller to adjust hip in world frame to keep balance up straight. Kp * body_angle + Kd * body_angle_velocity.
         kBalanceP = 1.0
-        kBalanceD = -0.8
+        kBalanceD = -1.8
         hip_movement[0] += kBalanceP * state[0] + kBalanceD * state[1]
         hip_movement[1] += kBalanceP * state[0] + kBalanceD * state[1]
 
