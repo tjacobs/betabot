@@ -10,21 +10,33 @@ from gym.envs.classic_control import rendering
 
 # World
 FPS        = 60
-SCALE      = 80
+SCALE      = 100
 VIEWPORT_W = 1200
 VIEWPORT_H = 700
 
 # Betabot
-MOTORS_TORQUE  = 100
-SPEED_HIP      = 2
-SPEED_KNEE     = 2
-SPEED_FOOT     = 2
+MOTORS_TORQUE  = 400
+SPEED_HIP      = 3
+SPEED_KNEE     = 3
+SPEED_FOOT     = 3
+
 HULL_POLY =[
-    (-20, 180), (+10, 180), (+10, 0),
-    (+10, -30), (-20, -30)
+    (-20, 250), (+20, 250),
+    (+20, -30), (-20, -30)
     ]
+
+LEG_POLY =[
+    (-10, 70), (0, 79), (+30, 70),
+    (+20, -50), (-20, -50)
+    ]
+
+LOWERLEG_POLY =[
+    (-20, 70), (0, 79), (+20, 70),
+    (+15, -40), (-15, -40)
+    ]
+
 LEG_DOWN = -32/SCALE
-LEG_W, LEG_H = 32/SCALE, 138/SCALE
+LEG_W, LEG_H = 20/SCALE, 100/SCALE
 LIDAR_RANGE    = 160/SCALE
 
 # Terrain
@@ -33,7 +45,7 @@ TERRAIN_LENGTH = 200     # in steps
 TERRAIN_HEIGHT = VIEWPORT_H/SCALE/4
 TERRAIN_GRASS    = 10    # low long are grass spots, in steps
 TERRAIN_STARTPAD = 100    # in steps
-FRICTION = 2.5
+FRICTION = 5
 
 class ContactDetector(contactListener):
     def __init__(self, env):
@@ -42,11 +54,11 @@ class ContactDetector(contactListener):
     def BeginContact(self, contact):
         #if self.env.hull in [contact.fixtureA.body, contact.fixtureB.body]:
             #self.env.game_over = True
-        for leg in [self.env.legs[1], self.env.legs[3]]:
+        for leg in [self.env.legs[1], self.env.legs[5]]:
             if leg in [contact.fixtureA.body, contact.fixtureB.body]:
                 leg.ground_contact = True
     def EndContact(self, contact):
-        for leg in [self.env.legs[1], self.env.legs[3]]:
+        for leg in [self.env.legs[1], self.env.legs[5]]:
             if leg in [contact.fixtureA.body, contact.fixtureB.body]:
                 leg.ground_contact = False
 
@@ -61,7 +73,7 @@ class BipedalWalker(gym.Env):
         self.viewer = None
 
         # World
-        self.world = Box2D.b2World()
+        self.world = Box2D.b2World((0, -9.8*SCALE/20))
 
         # Terrain and bot
         self.terrain = None
@@ -250,11 +262,11 @@ class BipedalWalker(gym.Env):
             position = (init_x, init_y),
             fixtures = fixtureDef(
                 shape=polygonShape(vertices=[ (x/SCALE,y/SCALE) for x,y in HULL_POLY ]),
-                density=0.2,
+                density=1.0,
                 friction=0.1,
                 categoryBits=0x0020,
-                maskBits=0x001,  # collide only with ground
-                restitution=0.0) # 0.99 bouncy
+                maskBits=0x001,
+                restitution=0.0)
                 )
         self.hull.color1 = (0.3, 0.4, 0.9)
         self.hull.color2 = (0.3, 0.4, 0.7)
@@ -269,8 +281,8 @@ class BipedalWalker(gym.Env):
                 position = (init_x, init_y - LEG_H/2 - LEG_DOWN),
                 angle = (i*0.01),
                 fixtures = fixtureDef(
-                    shape=polygonShape(box=(LEG_W/2, LEG_H/2)),
-                    density=0.8,
+                    shape=polygonShape(vertices=[ (x/SCALE,y/SCALE) for x,y in LEG_POLY ]),
+                    density=1.0,
                     restitution=0.0,
                     categoryBits=0x0020,
                     maskBits=0x001)
@@ -297,9 +309,9 @@ class BipedalWalker(gym.Env):
                 position = (init_x, init_y - LEG_H*3/2 - LEG_DOWN),
                 angle = (i*0.01),
                 fixtures = fixtureDef(
-                    shape=polygonShape(box=(0.8*LEG_W/2, LEG_H/2)),
-                    density=0.8,
-                    restitution=0.0,
+                    shape=polygonShape(vertices=[ (x/SCALE,y/SCALE) for x,y in LOWERLEG_POLY ]),
+                    density=1.0,
+                    restitution=0.00,
                     categoryBits=0x0020,
                     maskBits=0x001)
                 )
@@ -323,12 +335,12 @@ class BipedalWalker(gym.Env):
 
             # Feet
             foot = self.world.CreateDynamicBody(
-                position = (init_x+4, init_y - LEG_H*3/2 - LEG_DOWN*0.5),
+                position = (init_x, init_y),
                 angle = 0,
                 fixtures = fixtureDef(
-                    shape=polygonShape(box=(0.8*LEG_H/2, LEG_W/2)),
-                    density=1.5,
-                    restitution=0.0,
+                    shape=polygonShape(box=(LEG_H, LEG_W)),
+                    density=1.0, 
+                    restitution=0.05,
                     categoryBits=0x0020,
                     maskBits=0x001)
                 )
@@ -338,7 +350,7 @@ class BipedalWalker(gym.Env):
                 bodyA=lower,
                 bodyB=foot,
                 localAnchorA=(0, -LEG_H/2),
-                localAnchorB=(-0.1, 0),
+                localAnchorB=(-0.05, 0),
                 enableMotor=True,
                 enableLimit=True,
                 maxMotorTorque=MOTORS_TORQUE,
@@ -386,7 +398,7 @@ class BipedalWalker(gym.Env):
         self.joints[5].maxMotorTorque = float(MOTORS_TORQUE * np.clip(np.abs(action[5]), 0, 1))
 
         # Step
-        self.world.Step(1.0/FPS, 6*30, 2*30)
+        self.world.Step(1.0/FPS, 6*60, 6*60)
 
         # Get bot position and velocity
         pos = self.hull.position
@@ -527,7 +539,7 @@ if __name__=="__main__":
     time = 0
 
     # Loop
-    for t in range(4000):
+    for t in range(800):
 
         # Render
         if True:
@@ -645,8 +657,8 @@ if __name__=="__main__":
         foot_movement = [0.0, 0.0]
 
         # If we have targets, use PD controller to move them there. Kp * anglediff - Kd * velocity
-        Kp = 1.0
-        Kd = -0.1
+        Kp = 0.8
+        Kd = -0.2
         hip_in_world_frame = (state[4] - state[0], state[9] - state[0])
         hip_velocity_in_world_frame = (state[5] - state[1], state[10] - state[1])
         if hip_target[0]:  hip_movement[0]  = Kp * (hip_target[0]  - hip_in_world_frame[0])  + Kd * hip_velocity_in_world_frame[0]
@@ -657,13 +669,13 @@ if __name__=="__main__":
         if foot_target[1]: foot_movement[1] = Kp * (foot_target[1] - state[15])              + Kd * state[17]
 
         # Balance. PD controller to adjust hip in world frame to keep balance up straight. Kp * body_angle + Kd * body_angle_velocity.
-        kBalanceP = 1.0
-        kBalanceD = -1.8
+        kBalanceP = 0.0
+        kBalanceD = -0.0
         hip_movement[0] += kBalanceP * state[0] + kBalanceD * state[1]
         hip_movement[1] += kBalanceP * state[0] + kBalanceD * state[1]
 
         # Dampen bounce. PD controller to adjust knee according to vertical speed, to dampen bouncy oscillations. Kd*body_vertical_velocity.
-        kDampen = 1.0
+        kDampen = 0.0
         knee_movement[0] -= kDampen * state[3]
         knee_movement[1] -= kDampen * state[3]
 
