@@ -7,5 +7,6 @@ make arm_sdk_install
 
 make SPRACINGF3EVO
 
+echo "Copying hex"
 cp obj/betaflight_3.2.0_SPRACINGF3EVO.hex ..
 
