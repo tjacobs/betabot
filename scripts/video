@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Where are we sending this to?
-DEST=192.168.0.10
+DEST=13.54.120.253
 
 # Sound
-#gst-launch-1.0 alsasrc ! opusenc bitrate=20000 ! rtpopuspay ! udpsink host=$DEST port=5002 &
+gst-launch-1.0 alsasrc ! opusenc bitrate=20000 ! rtpopuspay ! udpsink host=$DEST port=5002 #&
 
 # Video
-raspivid --nopreview --width 1280 --height 720 --intra 10 --framerate 30 --bitrate 1500000 -ex fixedfps -awb off --ISO 800 --profile baseline --timeout 0 -o - | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=126 ! udpsink host=$DEST port=5004
+raspivid --nopreview --width 1280 --height 768 --intra 10 --framerate 10 --bitrate 500000 -ex fixedfps -awb on --ISO 1800 --timeout 0 -o - | gst-launch-1.0 -v fdsrc ! h264parse ! rtph264pay config-interval=10 pt=126 ! udpsink host=$DEST port=5004
 
