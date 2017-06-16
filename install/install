@@ -2,6 +2,7 @@
 
 # Installs the things needed for Betabot to run on a Raspberry Pi.
 echo "Installing Betabot."
+cd /home/pi/betabot/install
 
 # Do full install if "quick" isn't given on commandline
 if [ "$1" != "quick" ]; then
