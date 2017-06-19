@@ -60,21 +60,13 @@ def main():
 
 		# Figure out what our angles should be now to walk
 		targetAngles = walk.updateTargetAngles(1.0)
-#		targetAngles = walk.standUp(2.0)
 
 		# Run movement controller to see how fast we should set our motor speeds
-#		targetAngles = walk.restrictAngles(targetAngles)
 		movement = walk.calculateMovement(currentAngles, targetAngles)
-#		movement[1] = functions.clamp(movement[1], -1, 1)
-#		movement[2] = functions.clamp(movement[2], -1, 1)
 
 		# Send motor commands
 		motors[1] = movement[1] 	 # Right motor
 		motors[2] = movement[2] 	 # Left motor
-		motors[3] = targetAngles[3]  # Right knee servo
-		motors[4] = targetAngles[4]  # Left knee servo
-		motors[5] = targetAngles[5]  # Right foot servo
-		motors[6] = targetAngles[6]  # Left foot servo
 		motorsModule.sendMotorCommands(motors, simulator, False, True)
 
 		# Display balance, angles, target angles and speeds
