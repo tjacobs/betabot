@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Where are we sending this to?
-DEST=13.54.120.253
+DEST=meetzippy.com
 
 # Sound
 gst-launch-1.0 alsasrc ! opusenc bitrate=20000 ! rtpopuspay ! udpsink host=$DEST port=5002 #&

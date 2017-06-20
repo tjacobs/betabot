@@ -1,6 +1,7 @@
 import sys
 import time
 from autobahn.asyncio.websocket import WebSocketClientProtocol, WebSocketServerProtocol, WebSocketClientFactory
+import functions
 
 speedL = 0
 speedR = 0
@@ -8,6 +9,8 @@ buttonUp = False
 buttonDown = False
 buttonLeft = False
 buttonRight = False
+x = 0
+y = 0
 
 class BotClient(WebSocketClientProtocol):
 
@@ -23,31 +26,32 @@ class BotClient(WebSocketClientProtocol):
 			minSpeed = -100
 			maxSpeed = 100
 			if buttonUp:
-				speedL = numpy.clip( speedL + 30, 1, maxSpeed )
-				speedR = numpy.clip( speedR + 30, 1, maxSpeed )
+				speedL = functions.clamp( speedL + 30, 1, maxSpeed )
+				speedR = functions.clamp( speedR + 30, 1, maxSpeed )
 			if buttonDown:
-				speedL = numpy.clip( speedL - 30, minSpeed, -1 )
-				speedR = numpy.clip( speedR - 30, minSpeed, -1 )
+				speedL = functions.clamp( speedL - 30, minSpeed, -1 )
+				speedR = functions.clamp( speedR - 30, minSpeed, -1 )
 			if buttonLeft:
-				speedL = numpy.clip( speedL - 35, minSpeed, -1 )
-				speedR = numpy.clip( speedR + 35, 1, maxSpeed )
+				speedL = functions.clamp( speedL - 35, minSpeed, -1 )
+				speedR = functions.clamp( speedR + 35, 1, maxSpeed )
 			if buttonRight:
-				speedL = numpy.clip( speedL + 35, 1, maxSpeed )
-				speedR = numpy.clip( speedR - 35, minSpeed, -1 )
+				speedL = functions.clamp( speedL + 35, 1, maxSpeed )
+				speedR = functions.clamp( speedR - 35, minSpeed, -1 )
 			print( speedL, speedR )
 
 			# Slow down
-			speedL = numpy.clip( 0.7 * speedL, -100, 100 )
-			speedR = numpy.clip( 0.7 * speedR, -100, 100 )
+			speedL = functions.clamp( 0.7 * speedL, -100, 100 )
+			speedR = functions.clamp( 0.7 * speedR, -100, 100 )
 
 			# Loop
 			self.factory.loop.call_later(0.1, loop)
 
-		loop()
+#		loop()
 
 	def onMessage(self, payload, isBinary):
 		global buttonUp, buttonDown, buttonLeft, buttonRight
 		global speedL, speedR
+		global x, y
 
 		if isBinary:
 			print("Binary message received: {0} bytes".format(len(payload)))
@@ -85,18 +89,31 @@ class BotClient(WebSocketClientProtocol):
 
 
 # Import websockets
-try:
-	import asyncio
-except ImportError:
-	import trollius as asyncio
+import asyncio
 
 # Start websocket client
 factory = WebSocketClientFactory(u"ws://meetzippy.com:8080")
 factory.protocol = BotClient
 
 # Connect
-loop = asyncio.get_event_loop()
-coro = loop.create_connection(factory, 'meetzippy.com', 8080)
-loop.run_until_complete(coro)
-loop.run_forever()
-loop.close()
+def remote_listener():
+	
+#	loop = asyncio.new_event_loop()	
+#	asyncio.set_event_loop(loop)
+	
+	loop = asyncio.get_event_loop()
+	coro = loop.create_connection(factory, 'meetzippy.com', 8080)
+	loop.run_until_complete(coro)
+	
+	
+	try:
+		import thread
+		thread.start_new_thread( loop.run_forever, () )
+	except:
+		print( "Error: Cannot start remote listener. Please install python threads." )
+
+
+	loop.close()
+
+remote_listener()
+
