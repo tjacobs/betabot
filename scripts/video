@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Kill all other old instances other than ourselves
-for PID in `ps ax | grep '[v]ideo' | awk ' { print $1;}'`; do
+for PID in `ps ax | grep -E '[v]ideo|[r]aspivid|[g]st' | awk ' { print $1;}'`; do
         if [ $PID != $BASHPID ]; then
                 sudo kill -9 $PID
         fi
