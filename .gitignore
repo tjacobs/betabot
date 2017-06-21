@@ -7,3 +7,5 @@ install/tensorflow*
 *.log
 install/raspicam/
 memories*/
+install/flycapture.2.9.3.43_armhf
+install/libdc1394-2.2.5
