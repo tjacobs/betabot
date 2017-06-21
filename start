@@ -13,4 +13,4 @@ if [ -d "/home/pi/betabot" ]; then
 fi
 
 # Run
-sudo python source/bot.py
+sudo python3 source/bot.py
