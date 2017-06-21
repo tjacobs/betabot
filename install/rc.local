@@ -1,7 +1,8 @@
 #!/bin/bash
 cd /home/pi/betabot
 
-scripts/video 2> /home/pi/betabot/video_error.log > /home/pi/betabot/video_log.log &
+sleep 10
 git pull
+scripts/video 2> /home/pi/betabot/video_error.log > /home/pi/betabot/video_log.log &
 ./start 2> /home/pi/betabot/error.log > /home/pi/betabot/log.log &
 
