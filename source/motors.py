@@ -70,9 +70,11 @@ def initMotors():
 		sys.stdout.flush()
 
 def stopMotors():
-	motors[1] = 0
-	motors[2] = 0
-	sendMotorCommands(motors)
+	global board
+	motorSpeeds = [0.0] * 9
+	motorSpeeds[1] = 0
+	motorSpeeds[2] = 0
+	sendMotorCommands(motorSpeeds)
 	board.close()
 
 	# Finish up
