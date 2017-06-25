@@ -8,6 +8,8 @@ from threading import Thread
 # Export x and y
 x = 0
 y = 0
+left_mouse_down = False
+right_mouse_down = False
 done = False
 
 # Start thread and create new event loop
@@ -21,13 +23,12 @@ thread.start()
 # Coroutine for websocket handling
 @asyncio.coroutine
 def remote_connect():
-    global x, y
-    print( "\nConnecting." )
+    global x, y, left_mouse_down, right_mouse_down
     try:
         websocket = yield from websockets.connect("ws://meetzippy.com:8080")
-        print( "\nConnected to server." )
+        print( "Connected to server." )
     except:
-        print( "\nNo internet." )
+        print( "No internet." )
         return
 
     # Loop
@@ -37,9 +38,13 @@ def remote_connect():
             if text.startswith( 'x' ):
                 x = int(text.split()[1])
 #                print( "\nX: " + str( x ) + "" )
-            if text.startswith( 'y' ):
+            elif text.startswith( 'y' ):
                 y = int(text.split()[1])
 #                print( "Y: " + str( y ) + "\n" )
+            elif text.startswith( 'left_mouse' ):
+                left_mouse_down = (text.split()[1] == "down")
+            elif text.startswith( 'right_mouse' ):
+                right_mouse_down = (text.split()[1] == "down")
     finally:
         yield from websocket.close()
     print( "Remote done" )

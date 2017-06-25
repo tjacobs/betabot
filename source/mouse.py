@@ -12,7 +12,7 @@ old_mouse_y	   = 0.0
 mouse_speed_factor = 1.0
 
 def on_move(x, y):
-	global mouse_x, mouse_y, mouse
+	global mouse_x, mouse_y, old_mouse_x, old_mouse_y, mouse_x_diff, mouse_y_diff
 	mouse_x = x
 	mouse_y = y
 	#print( "\n" + str( mouse_x ) + " " + str( mouse_y ) )
@@ -28,8 +28,6 @@ def on_move(x, y):
 		mouse.position = (mouse.position[0], 900)
 
 	# How much has the mouse moved from last loop?
-	mouse_x = mouse.mouse_x
-	mouse_y = mouse.mouse_y
 	mouse_x_diff = mouse_x - old_mouse_x
 	mouse_y_diff = mouse_y - old_mouse_y			
 	if( mouse_x_diff > 500 ): mouse_x_diff = 0
