@@ -43,6 +43,7 @@ sudo pip3 install -q python_Xlib --upgrade
 sudo pip3 install -q six
 sudo pip3 install -q six --upgrade
 sudo pip3 install -q asyncio
+sudo pip3 install -U socketIO-client
 echo "Done."
 
 # Install utilities and startup
