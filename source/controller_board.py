@@ -83,12 +83,24 @@ class MultiWii:
 
 	"""Function for sending a command to the board"""
 	def sendCMD(self, data_length, code, data):
+		total_data = [b'$', b'M', b'<', data_length, code] + data
+
+		# Debug data in
+		#print( "\ntotal_data " + str( total_data[3:len(total_data)]) )
+
+		# Calculate checksum. Pack 2 bytes and usually 8 shorts (double bytes)
 		checksum = 0
-		total_data = ['$', 'M', '<', data_length, code] + data
-		for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
+		for i in struct.pack('<BB%dH' % len(data), *total_data[3:len(total_data)]):
 			checksum = checksum ^ i # ord(i) on python2
 		total_data.append(checksum)
-		b = self.ser.write(struct.pack('<3c2B%dHB' % len(data), *total_data))
+
+		# Debug the types of packed data
+		#print()
+		#for a in total_data:
+		#	print( type( a ) )
+
+		# Pack 3 chars, 2 bytes, and usually 8 shorts (double bytes)
+		b = self.ser.write(struct.pack('<cccBB%dHB' % len(data), *total_data))
 		return
 
 	"""Function for sending a command to the board and receive attitude"""

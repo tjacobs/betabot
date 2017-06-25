@@ -122,19 +122,20 @@ def sendMotorCommands(motorSpeedsIn, simulator=None, displayChannels=False, disp
 	middle = 1000.0 + 500.0 #+ 5
 	scale = 5.0
 	motorSpeeds = clampMotorSpeeds(motorSpeeds)
-	channels = [motorSpeeds[1]*scale+middle,
-				motorSpeeds[2]*scale+middle,
-				motorSpeeds[4]*scale+middle, # Why be these flipped, betaflight throttle
-				motorSpeeds[3]*scale+middle,
-				motorSpeeds[5]*scale+middle,
-				motorSpeeds[6]*scale+middle,
-				motorSpeeds[7]*scale+middle,
-				motorSpeeds[8]*scale+middle]
+	channels = [int(motorSpeeds[1]*scale+middle),
+				int(motorSpeeds[2]*scale+middle),
+				int(motorSpeeds[4]*scale+middle), # Why be these flipped, betaflight throttle
+				int(motorSpeeds[3]*scale+middle),
+				int(motorSpeeds[5]*scale+middle),
+				int(motorSpeeds[6]*scale+middle),
+				int(motorSpeeds[7]*scale+middle),
+				int(motorSpeeds[8]*scale+middle)]
 	if( displayChannels ):
 		functions.display( "Channels: " + str( channels ) )
 	try:
 		board.sendCMD(16, MultiWii.SET_RAW_RC, channels)
 	except Exception as error:
+#		print( "\n" + str(sys.exc_info()[1]) )
 		initMotors()
 
 	# Set enable pin
