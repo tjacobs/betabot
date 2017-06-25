@@ -13,6 +13,7 @@ import subprocess
 import datetime
 from socketIO_client import SocketIO, LoggingNamespace
 import argparse
+from threading import Thread
 
 # Exports
 forward = False
@@ -129,25 +130,8 @@ def handle_chat_message(args):
                 os.system('cat ' + tempFilePath + ' | espeak -ven-us+f%d -s170 --stdout | aplay -D plughw:%d,0' % (commandArgs.voice_number, hardwareNumber))
     os.remove(tempFilePath)
 
-def moveGoPiGo(command):
-    if command == 'L':
-        gopigo.left_rot()
-        time.sleep(0.15)
-        gopigo.stop()
-    if command == 'R':
-        gopigo.right_rot()
-        time.sleep(0.15)
-        gopigo.stop()
-    if command == 'F':
-        gopigo.forward()
-        time.sleep(0.35)
-        gopigo.stop()
-    if command == 'B':
-        gopigo.backward()
-        time.sleep(0.35)
-        gopigo.stop()
-                
 def handle_command(args):
+        global left, right, forward, backward
         now = datetime.datetime.now()
         now_time = now.time()
 
@@ -176,25 +160,23 @@ def handle_command(args):
             print('Got command', args)
             command = args['command']
 
-            if commandArgs.type == 'gopigo':
-                moveGoPiGo(command)
-            
-            if commandArgs.type == 'serial':
-                sendSerialCommand(command)
-
             if commandArgs.type == 'motor_hat':
 
                 if command == 'F':
                     print( "Forward" )
+                    forward = True
                     time.sleep(straightDelay)
                 if command == 'B':
                     print( "Backward" )
+                    backward = True
                     time.sleep(straightDelay)
                 if command == 'L':
                     print( "Left" )
+                    left = True
                     time.sleep(turnDelay)
                 if command == 'R':
                     print( "Right" )
+                    right = True
                     time.sleep(turnDelay)
                 if command == 'U':
                     incrementArmServo(1, 10)
@@ -210,6 +192,10 @@ def handle_command(args):
                     time.sleep(0.05)
 
             if commandArgs.type == 'motor_hat':
+                left = False
+                right = False
+                forward = False
+                backward = False
                 pass
                 #turnOffMotors()
 
@@ -294,7 +280,6 @@ def sendChargeStateCallback(x):
 def identifyRobotId():
     socketIO.emit('identify_robot_id', robotID);
 
-waitCounter = 0
 
 identifyRobotId()
 
@@ -303,17 +288,22 @@ if platform.system() == 'Darwin':
 elif platform.system() == 'Linux':
     ipInfoUpdate()
 
-while True:
-    socketIO.wait(seconds=10)
-    if (waitCounter % 10) == 0:
+def robot_listener():
+    waitCounter = 0
+    while True:
+        socketIO.wait(seconds=10)
+        if (waitCounter % 10) == 0:
 
-        # Tell the server what robot id is using this connection
-        identifyRobotId()
-        
-        if platform.system() == 'Linux':
-            ipInfoUpdate()
+            # Tell the server what robot id is using this connection
+            identifyRobotId()
+            
+            if platform.system() == 'Linux':
+                ipInfoUpdate()
 
-        if commandArgs.type == 'motor_hat':
-            sendChargeState()
+            if commandArgs.type == 'motor_hat':
+                sendChargeState()
 
-    waitCounter += 1
+        waitCounter += 1
+
+thread = Thread(target=robot_listener, args=())
+thread.start()    
