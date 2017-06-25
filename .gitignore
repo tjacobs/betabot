@@ -7,3 +7,5 @@ install/tensorflow*
 *.log
 install/raspicam/
 memories*/
+
+TomNewNew.pem
