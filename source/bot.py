@@ -14,6 +14,7 @@ import functions
 import motors as motorsModule
 import walk
 import sensors
+import remote
 
 # What shall we enable?
 ENABLE_KEYS 		= True
@@ -60,6 +61,8 @@ def main():
 
 		# Figure out what our angles should be now to walk
 		targetAngles = walk.updateTargetAngles(1.0)
+		targetAngles[1] = remote.x
+		targetAngles[2] = remote.y
 
 		# Run movement controller to see how fast we should set our motor speeds
 		movement = walk.calculateMovement(currentAngles, targetAngles)

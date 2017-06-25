@@ -1,7 +1,14 @@
 #!/bin/bash
 
+# Kill all other old instances other than ourselves
+for PID in `ps ax | grep -E '[v]ideo|[r]aspivid|[g]st' | awk ' { print $1;}'`; do
+        if [ $PID != $BASHPID ]; then
+                sudo kill -9 $PID
+        fi
+done
+
 # Where are we sending this to?
-DEST=13.54.120.253
+DEST=meetzippy.com
 
 # Sound
 gst-launch-1.0 alsasrc ! opusenc bitrate=20000 ! rtpopuspay ! udpsink host=$DEST port=5002 #&

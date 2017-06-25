@@ -86,7 +86,7 @@ class MultiWii:
 		checksum = 0
 		total_data = ['$', 'M', '<', data_length, code] + data
 		for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-			checksum = checksum ^ ord(i)
+			checksum = checksum ^ i # ord(i) on python2
 		total_data.append(checksum)
 		b = self.ser.write(struct.pack('<3c2B%dHB' % len(data), *total_data))
 		return
@@ -106,7 +106,7 @@ class MultiWii:
 		checksum = 0
 		total_data = ['$', 'M', '<', data_length, code] + data
 		for i in struct.pack('<2B%dH' % len(data), *total_data[3:len(total_data)]):
-			checksum = checksum ^ ord(i)
+			checksum = checksum ^ i # ord(i) on python2
 		total_data.append(checksum)
 		try:
 			start = time.time()
