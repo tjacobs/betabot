@@ -10,3 +10,6 @@ memories*/
 TomNewNew.pem
 install/flycapture.2.9.3.43_armhf
 install/libdc1394-2.2.5
+install/alsa*
+install/FFmpeg
+install/x264
