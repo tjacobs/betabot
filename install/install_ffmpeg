@@ -3,7 +3,7 @@
 echo "Installing ffmpeg."
 
 # Install espeak
-sudo apt-get install espeak
+sudo apt-get install -y espeak
 
 # Install ALSA
 wget ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.25.tar.bz2
@@ -28,5 +28,15 @@ cd FFmpeg
 ./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree --extra-libs=-ldl
 make -j4
 sudo make install
+
+# Install UV4L extra stuff
+# Not sure what is needed, but I installed them all and now it works
+sudo apt-get install -y uvl4l
+sudo apt-get install -y v4l-utils v4l-conf
+sudo apt-get install -y uv4l-demos
+sudo apt-get install -y uv4l-webrtc
+sudo apt-get install -y uv4l-server uv4l-uvc uv4l-xscreen uv4l-mjpegstream uv4l-dummy uv4l-raspidisp
+sudo apt-get install -y uv4l-raspicam-extras
+
 
 echo "Done."
