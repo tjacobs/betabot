@@ -466,7 +466,7 @@ def main():
 
 if __name__ == "__main__":
 
-    cameraIDAnswer = "5472969" #args.camera_id
+    cameraIDAnswer = "26571281" #args.camera_id
         
     main()
 
