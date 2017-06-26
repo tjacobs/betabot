@@ -66,10 +66,10 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current accelerometer value to see how far forward we're leaning
-		pitch = motorsModule.readIMU('ax')
+		pitch = 0 #motorsModule.readIMU('ax')
 
 		# Read current angles of motors
-		currentAngles = functions.readCurrentAngles(magneticSensors)
+		#currentAngles = functions.readCurrentAngles(magneticSensors)
 
 		# Run movement controller to see how fast we should set our motor speeds
 #		movement = walk.calculateMovement(currentAngles, targetAngles)
@@ -81,18 +81,18 @@ def main():
 		old_remote_y = remote.y
 
 		# Change motor speeds for turning left right
-		TURNING_SPEED = 50.0
+		TURNING_SPEED = 150.0
 		speed_left -= diff_x * TURNING_SPEED / 100.0
 		speed_right += diff_x * TURNING_SPEED / 100.0
 
 		# Go forward backward on mouse y
-		MOVEMENT_SPEED = 50.0
+		MOVEMENT_SPEED = 150.0
 		speed_left += diff_y * MOVEMENT_SPEED / 100.0
 		speed_right += diff_y * MOVEMENT_SPEED / 100.0
 
 		# Go foward backward on clicks
-		FORWARD_SPEED = 50.0
-		BACKWARD_SPEED = 50.0
+		FORWARD_SPEED = 150.0
+		BACKWARD_SPEED = 150.0
 		if remote.left_mouse_down:
 			speed_left = speed_left + FORWARD_SPEED
 			speed_right = speed_right + FORWARD_SPEED
@@ -115,8 +115,8 @@ def main():
 			speed_right -= 1.0 * TURNING_SPEED / 100.0
 
 		# Slow down
-		speed_left = speed_left * 0.99
-		speed_right = speed_right * 0.99
+		speed_left = speed_left * 0.75
+		speed_right = speed_right * 0.75
 
 		# Clamp
 		speed_left = functions.clamp( speed_left, -100, 100)

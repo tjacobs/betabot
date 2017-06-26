@@ -43,19 +43,19 @@ parser.add_argument('--festival-tts', dest='festival_tts', action='store_true')
 parser.set_defaults(festival_tts=False)
 
 commandArgs = parser.parse_args()
-print(commandArgs)
+#print(commandArgs)
 
 chargeIONumber = 17
 robotID = "86663988" #commandArgs.robot_id
 
 # Enable watchdog timer
-os.system("sudo modprobe bcm2835_wdt")
-os.system("sudo /usr/sbin/service watchdog start")
+#os.system("sudo modprobe bcm2835_wdt")
+#os.system("sudo /usr/sbin/service watchdog start")
 
 # Set volume level
-if commandArgs.tts_volume > 50:
-    os.system("amixer set PCM -- -100")
-os.system("amixer -c 2 cset numid=3 %d%%" % commandArgs.tts_volume)
+#if commandArgs.tts_volume > 50:
+#    os.system("amixer set PCM -- -100")
+#os.system("amixer -c 2 cset numid=3 %d%%" % commandArgs.tts_volume)
 
 # Temp dir
 tempDir = tempfile.gettempdir()
@@ -266,7 +266,7 @@ def myWait():
     
 def ipInfoUpdate():
     socketIO.emit('ip_information',
-                  {'ip': subprocess.check_output(["hostname", "-I"]), 'robot_id': robotID})
+                  {'ip': subprocess.check_output(["hostname", "-I"]).decode( "UTF-8" ), 'robot_id': robotID})
 
 def sendChargeState():
     charging = 0 #GPIO.input(chargeIONumber) == 1
