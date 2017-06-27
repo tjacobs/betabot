@@ -16,7 +16,7 @@ import walk
 import sensors
 import remote
 import letsrobot_controller
-#import letsrobot_video
+import letsrobot_video
 
 # What shall we enable?
 ENABLE_KEYS 		= True

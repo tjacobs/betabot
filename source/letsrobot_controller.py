@@ -179,16 +179,16 @@ def handle_command(args):
                     right = True
                     time.sleep(turnDelay)
                 if command == 'U':
-                    incrementArmServo(1, 10)
+#                    incrementArmServo(1, 10)
                     time.sleep(0.05)
                 if command == 'D':
-                    incrementArmServo(1, -10)
+#                    incrementArmServo(1, -10)
                     time.sleep(0.05)
                 if command == 'O':
-                    incrementArmServo(2, -10)
+#                    incrementArmServo(2, -10)
                     time.sleep(0.05)
                 if command == 'C':
-                    incrementArmServo(2, 10)
+#                    incrementArmServo(2, 10)
                     time.sleep(0.05)
 
             if commandArgs.type == 'motor_hat':

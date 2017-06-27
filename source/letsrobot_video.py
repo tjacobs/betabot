@@ -45,8 +45,8 @@ else:
     print("invalid environment")
     sys.exit(0)
     
-print("Connecting to video server:", server)
 socketIO = SocketIO(server, port, LoggingNamespace)
+print("Connect video to:", server)
 
 def onHandleCameraCommand(*args):
 	pass
