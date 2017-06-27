@@ -49,8 +49,9 @@ print("Connecting to video server:", server)
 socketIO = SocketIO(server, port, LoggingNamespace)
 
 def onHandleCameraCommand(*args):
+	pass
     #thread.start_new_thread(handle_command, args)
-    print(args)
+#    print(args)
 
 socketIO.on('command_to_camera', onHandleCameraCommand)
 
@@ -68,14 +69,14 @@ def randomSleep():
     """A short wait is good for quick recovery, but sometimes a longer delay is needed or it will just keep trying and failing short intervals, like because the system thinks the port is still in use and every retry makes the system think it's still in use. So, this has a high likelihood of picking a short interval, but will pick a long one sometimes."""
 
     timeToWait = random.choice((0.25, 0.25, 0.25, 0.25, 0.25, 0.25, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 5))
-    print("sleeping", timeToWait)
+#    print("sleeping", timeToWait)
     time.sleep(timeToWait)
 
 def getVideoPort():
     url = 'http://%s/get_video_port/%s' % (server, cameraIDAnswer)
     for retryNumber in range(3):
         try:
-            print("GET", url)
+#            print("GET", url)
             response = urllib.request.urlopen(url).read()
             break
         except:
@@ -87,7 +88,7 @@ def getAudioPort():
     url = 'http://%s/get_audio_port/%s' % (server, cameraIDAnswer)
     for retryNumber in range(3):
         try:
-            print("GET", url)
+#            print("GET", url)
             response = urllib.request.urlopen(url).read()
             break
         except:
@@ -96,7 +97,7 @@ def getAudioPort():
     return json.loads(response.decode( "utf-8" ))['audio_stream_port']
 
 def runFfmpeg(commandLine):
-    print(commandLine)
+#    print(commandLine)
     ffmpegProcess = subprocess.Popen(shlex.split(commandLine))
 #    print("command started")
     return ffmpegProcess
@@ -116,9 +117,7 @@ def handleDarwin(deviceNumber, videoPort, audioPort):
 
 def handleLinux(deviceNumber, videoPort, audioPort):
 
-    print("sleeping to give the camera time to start working")
     randomSleep()
-    print("finished sleeping")
     
     #p = subprocess.Popen(["ffmpeg", "-list_devices", "true", "-f", "qtkit", "-i", "dummy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #out, err = p.communicate()
@@ -145,15 +144,15 @@ def handleLinux(deviceNumber, videoPort, audioPort):
         rotationOption = ""
 
     # video with audio
-    videoCommandLine = '/usr/local/bin/ffmpeg -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video%s %s -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (deviceAnswer, rotationOption, args.kbps, server, videoPort)
-    audioCommandLine = '/usr/local/bin/ffmpeg -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://%s:%s/hello/640/480/' % (server, audioPort)
+    videoCommandLine = '/usr/local/bin/ffmpeg -loglevel quiet -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video%s %s -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (deviceAnswer, rotationOption, args.kbps, server, videoPort)
+    audioCommandLine = '/usr/local/bin/ffmpeg -loglevel quiet -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://%s:%s/hello/640/480/' % (server, audioPort)
 
  #   print(videoCommandLine)
  #   print(audioCommandLine)
     
     videoProcess = runFfmpeg(videoCommandLine)
     audioProcess = runFfmpeg(audioCommandLine)
-
+	
     return {'video_process': videoProcess, 'audio_process': audioProcess, 'device_answer': deviceAnswer}
 
 
@@ -254,8 +253,8 @@ def startVideoCapture():
 
     videoPort = getVideoPort()
     audioPort = getAudioPort()
-    print("video port:", videoPort)
-    print("audio port:", audioPort)
+#    print("video port:", videoPort)
+#    print("audio port:", audioPort)
 
     #if len(sys.argv) >= 3:
     #    deviceNumber = sys.argv[2]
@@ -285,7 +284,7 @@ def main():
 
     # clean up, kill any ffmpeg process that are hanging around from a previous run
 #    print("killing all ffmpeg processes")
-#    os.system("killall ffmpeg")
+    os.system("sudo killall -9 ffmpeg")
     
     streamProcessDict = None
     twitterSnapCount = 0
@@ -343,7 +342,7 @@ def main():
             if twitterSnapCount > 0:
                 socketIO.emit('snapshot', {'image':base64.b64encode(data)})
 
-        print("starting video capture")
+#        print("starting video capture")
         streamProcessDict = startVideoCapture()
 
         # This loop counts out a delay that occurs between twitter snapshots.
@@ -367,7 +366,7 @@ def main():
                 time.sleep(1)
 
             if count % 30 == 0:
-                print("send status about this process and its child process ffmpeg")
+#                print("send status about this process and its child process ffmpeg")
                 ffmpegProcessExists = True #streamProcessDict['video_process'].poll() is None
                 socketIO.emit('send_video_status', {'send_video_process_exists': True,
                                                     'ffmpeg_process_exists': ffmpegProcessExists,
