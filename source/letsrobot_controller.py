@@ -33,7 +33,7 @@ parser.add_argument('--led', help="Type of LED for example max7219", default=Non
 parser.add_argument('--ledrotate', help="Rotates the LED matrix. Example: 180", default=None)
 parser.add_argument('--tts-volume', type=int, default=80)
 parser.add_argument('--secret-key', default=None)
-parser.add_argument('--turn-delay', type=float, default=0.4)
+parser.add_argument('--turn-delay', type=float, default=0.5)
 parser.add_argument('--straight-delay', type=float, default=0.5)
 parser.add_argument('--driving-speed', type=int, default=90)
 parser.add_argument('--night-speed', type=int, default=170)
@@ -46,7 +46,7 @@ commandArgs = parser.parse_args()
 #print(commandArgs)
 
 chargeIONumber = 17
-robotID = "86663988" #commandArgs.robot_id
+robotID = "44120726" #commandArgs.robot_id
 
 # Enable watchdog timer
 #os.system("sudo modprobe bcm2835_wdt")
@@ -157,25 +157,25 @@ def handle_command(args):
      
         if 'command' in args and 'robot_id' in args and args['robot_id'] == robotID:
 
-            print('Got command', args)
+#            print('Got command', args)
             command = args['command']
 
             if commandArgs.type == 'motor_hat':
 
                 if command == 'F':
-                    print( "Forward" )
+#                    print( "Forward" )
                     forward = True
                     time.sleep(straightDelay)
                 if command == 'B':
-                    print( "Backward" )
+#                    print( "Backward" )
                     backward = True
                     time.sleep(straightDelay)
                 if command == 'L':
-                    print( "Left" )
+#                    print( "Left" )
                     left = True
                     time.sleep(turnDelay)
                 if command == 'R':
-                    print( "Right" )
+#                    print( "Right" )
                     right = True
                     time.sleep(turnDelay)
                 if command == 'U':
@@ -272,7 +272,7 @@ def sendChargeState():
     charging = 0 #GPIO.input(chargeIONumber) == 1
     chargeState = {'robot_id': robotID, 'charging': charging}
     socketIO.emit('charge_state', chargeState)
-    print("charge state:", chargeState)
+#    print("charge state:", chargeState)
 
 def sendChargeStateCallback(x):
     sendChargeState()

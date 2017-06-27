@@ -11,6 +11,7 @@ import base64
 import random
 import argparse
 from socketIO_client import SocketIO, LoggingNamespace
+from threading import Thread
 
 parser = argparse.ArgumentParser(description='robot control')
 #parser.add_argument('camera_id')
@@ -28,10 +29,12 @@ parser.add_argument('--audio-input-device', default='Microphone (HD Webcam C270)
 args = parser.parse_args()
 #print("args", args)
 
+cameraIDAnswer = "88685178" #args.camera_id 
+
 server = "runmyrobot.com"
 
 # Enable raspicam driver in case a raspicam is being used
-#os.system("sudo modprobe bcm2835-v4l2")
+os.system("sudo modprobe bcm2835-v4l2")
 
 if args.env == "dev":
     print("using dev port 8122")
@@ -73,24 +76,24 @@ def getVideoPort():
     for retryNumber in range(3):
         try:
             print("GET", url)
-#            response = urllib.request.urlopen(url).read()
+            response = urllib.request.urlopen(url).read()
             break
         except:
             print("could not open url ", url)
             time.sleep(2)
-    return 123456 #json.loads(response.decode( "utf-8" ))['mpeg_stream_port']
+    return json.loads(response.decode( "utf-8" ))['mpeg_stream_port']
 
 def getAudioPort():
     url = 'http://%s/get_audio_port/%s' % (server, cameraIDAnswer)
     for retryNumber in range(3):
         try:
             print("GET", url)
-#            response = urllib.request.urlopen(url).read()
+            response = urllib.request.urlopen(url).read()
             break
         except:
             print("could not open url ", url)
             time.sleep(2)
-    return 123455 #json.loads(response.decode( "utf-8" ))['audio_stream_port']
+    return json.loads(response.decode( "utf-8" ))['audio_stream_port']
 
 def runFfmpeg(commandLine):
     print(commandLine)
@@ -392,8 +395,9 @@ def main():
                 
         twitterSnapCount += 1
 
-if __name__ == "__main__":
-
-    cameraIDAnswer = "26571281" #args.camera_id
- 
+def video_listener():
     main()
+
+thread = Thread(target=video_listener, args=())
+thread.start()    
+

@@ -16,6 +16,7 @@ import walk
 import sensors
 import remote
 import letsrobot_controller
+#import letsrobot_video
 
 # What shall we enable?
 ENABLE_KEYS 		= True
@@ -102,17 +103,17 @@ def main():
 
 		# Let's Robot controller
 		if letsrobot_controller.forward:
-			speed_left = speed_left + FORWARD_SPEED
-			speed_right = speed_right + FORWARD_SPEED
+			speed_left = speed_left - FORWARD_SPEED
+			speed_right = speed_right - FORWARD_SPEED
 		if letsrobot_controller.backward:
-			speed_left = speed_left - BACKWARD_SPEED
-			speed_right = speed_right - BACKWARD_SPEED
+			speed_left = speed_left + BACKWARD_SPEED
+			speed_right = speed_right + BACKWARD_SPEED
 		if letsrobot_controller.left:
-			speed_left -= 1.0 * TURNING_SPEED / 100.0
-			speed_right += 1.0 * TURNING_SPEED / 100.0
+			speed_left += 1.0 * TURNING_SPEED / 5.0
+			speed_right -= 1.0 * TURNING_SPEED / 5.0
 		if letsrobot_controller.right:
-			speed_left += 1.0 * TURNING_SPEED / 100.0
-			speed_right -= 1.0 * TURNING_SPEED / 100.0
+			speed_left -= 1.0 * TURNING_SPEED / 5.0
+			speed_right += 1.0 * TURNING_SPEED / 5.0
 
 		# Slow down
 		speed_left = speed_left * 0.75
