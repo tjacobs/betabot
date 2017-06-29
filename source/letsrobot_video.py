@@ -30,7 +30,6 @@ args = parser.parse_args()
 #print("args", args)
 
 cameraIDAnswer = "88685178" #args.camera_id 
-
 server = "runmyrobot.com"
 
 # Enable raspicam driver in case a raspicam is being used
@@ -109,7 +108,8 @@ def handleDarwin(deviceNumber, videoPort, audioPort):
 #    print(err.decode( "utf-8" ))
 #    deviceAnswer = input("Enter the number of the camera device for your robot from the list above: ")
 #    commandLine = 'ffmpeg -f qtkit -i %s -f mpeg1video -b 400k -r 30 -s 320x240 http://%s:%s/hello/320/240/' % (deviceAnswer, server, videoPort)
-    commandLine = 'ffmpeg -i input.mp4 -f mpeg1video -b 400k -r 30 -s 320x240 http://%s:%s/hello/320/240/' % (server, videoPort)    
+    commandLine = 'ffmpeg -i input.m4v -f mpeg1video -b 400k -r 30 -s 320x240 http://%s:%s/hello/320/240/' % (server, videoPort)    
+    print( commandLine )
     process = runFfmpeg(commandLine)
 
     return {'process': process, 'device_answer': deviceAnswer}
@@ -282,8 +282,6 @@ def timeInMilliseconds():
 
 def main():
 
-    # clean up, kill any ffmpeg process that are hanging around from a previous run
-#    print("killing all ffmpeg processes")
     os.system("sudo killall -9 ffmpeg")
     
     streamProcessDict = None
@@ -293,63 +291,24 @@ def main():
         socketIO.emit('send_video_status', {'send_video_process_exists': True,
                                             'camera_id':cameraIDAnswer})
         
- #       if streamProcessDict is not None:
- #           print("stopping previously running ffmpeg (needs to happen if this is not the first iteration)")
- #           streamProcessDict['video_process'].kill()
- #           streamProcessDict['audio_process'].kill()
+        if streamProcessDict is not None:
+            print("stopping previously running ffmpeg (needs to happen if this is not the first iteration)")
+            streamProcessDict['video_process'].kill()
+            streamProcessDict['audio_process'].kill()
 
-#        print("starting process just to get device result") # this should be a separate function so you don't have to do this
-#        streamProcessDict = startVideoCapture()
-#        inputDeviceID = streamProcessDict['device_answer']
-#        print("stopping video capture")
-#        streamProcessDict['video_process'].kill()
-#        streamProcessDict['audio_process'].kill()
+        print("Starting process to get device result") # this should be a separate function so you don't have to do this
+        streamProcessDict = startVideoCapture()
+        inputDeviceID = streamProcessDict['device_answer']
+        print("stopping video capture")
+        streamProcessDict['video_process'].kill()
+        streamProcessDict['audio_process'].kill()
 
-        videoWithSnapshots = False
-        while videoWithSnapshots:
-
-            frameCount = timeInMilliseconds()
-
-            print("taking single frame image")
-            snapShot(platform.system(), inputDeviceID, filename="single_frame_image.jpg")
-
-            with open ("single_frame_image.jpg", 'rb') as f:
-
-                # every so many frames, post a snapshot to twitter
-                #if frameCount % 450 == 0:
-                if frameCount % 6000 == 0:
-                        data = f.read()
-                        print("emit")
-                        socketIO.emit('snapshot', {'frame_count':frameCount, 'image':base64.b64encode(data)})
-                data = f.read()
-
-            print("emit")
-            socketIO.emit('single_frame_image', {'frame_count':frameCount, 'image':base64.b64encode(data)})
-            time.sleep(0)
-
-            #frameCount += 1
-
-        if False:
-         if platform.system() != 'Windows':
-            print("taking snapshot")
-            snapShot(platform.system(), inputDeviceID)
-            with open ("snapshot.jpg", 'rb') as f:
-                data = f.read()
-            print("emit")
-
-            # skip sending the first image because it's mostly black, maybe completely black
-            #todo: should find out why this black image happens
-            if twitterSnapCount > 0:
-                socketIO.emit('snapshot', {'image':base64.b64encode(data)})
-
-#        print("starting video capture")
+        # Start
         streamProcessDict = startVideoCapture()
 
-        # This loop counts out a delay that occurs between twitter snapshots.
         # Every 50 seconds, it kills and restarts ffmpeg.
         # Every 40 seconds, it sends a signal to the server indicating status of processes.
         period = 2*60*60 # period in seconds between snaps
-        #for count in range(period):
         count = 0
         while True:
             count += 1
@@ -359,39 +318,28 @@ def main():
                 socketIO.emit('send_video_status', {'send_video_process_exists': True,
                                                     'camera_id':cameraIDAnswer})
             
-            if False: #count % 40 == 30:
-                print("stopping video capture just in case it has reached a state where it's looping forever, not sending video, and not dying as a process, which can happen")
-                streamProcessDict['video_process'].kill()
-                streamProcessDict['audio_process'].kill()
-                time.sleep(1)
-
             if count % 30 == 0:
-#                print("send status about this process and its child process ffmpeg")
+                print("Sending status about ffmpeg")
                 ffmpegProcessExists = True #streamProcessDict['video_process'].poll() is None
                 socketIO.emit('send_video_status', {'send_video_process_exists': True,
                                                     'ffmpeg_process_exists': ffmpegProcessExists,
                                                     'camera_id':cameraIDAnswer})
 
-            #if count % 190 == 180:
-            #    print "reboot system in case the webcam is not working"
-            #    os.system("sudo reboot")
-                
-            # if the video stream process dies, restart it
-#            if (streamProcessDict['video_process'].poll() is not None) or \
-#               (streamProcessDict['audio_process'].poll() is not None):
+            # If the video stream process dies, restart it
+            if (streamProcessDict['video_process'].poll() is not None) or \
+               (streamProcessDict['audio_process'].poll() is not None):
 
-                # make sure audio and video ffmpeg processes are killed
-#                streamProcessDict['video_process'].kill()
-#                streamProcessDict['audio_process'].kill()
+                # Make sure audio and video ffmpeg processes are killed
+                streamProcessDict['video_process'].kill()
+                streamProcessDict['audio_process'].kill()
                 
-                # wait before trying to start ffmpeg
-#                print("ffmpeg process is dead, waiting before trying to restart")
-#                randomSleep()
+                # Wait before trying to start ffmpeg
+                print("FFmpeg process is dead, waiting before trying to restart")
+                randomSleep()
 
-                # start video and audio capture again
-#                streamProcessDict = startVideoCapture()
+                # Start video and audio capture again
+                streamProcessDict = startVideoCapture()
 
-                
         twitterSnapCount += 1
 
 def video_listener():
@@ -399,4 +347,3 @@ def video_listener():
 
 thread = Thread(target=video_listener, args=())
 thread.start()    
-
