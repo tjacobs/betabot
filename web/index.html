@@ -88,27 +88,27 @@
         });
 
       keyboardJS.bind( 'a', function(e) {
-            socket.send("left");
+            socket.send("left down");
         }, function(e) {
-            socket.send("left-release");
+            socket.send("left release");
         });
       keyboardJS.bind( 'w', function(e) {
             if( !socket ) {
                load();
             }
-            socket.send("up");
+            socket.send("up down");
         }, function(e) {
-            socket.send("up-release");
+            socket.send("up release");
         });
       keyboardJS.bind( 'd', function(e) {
-            socket.send("right");
+            socket.send("right down");
         }, function(e) {
-            socket.send("right-release");
+            socket.send("right release");
         });
       keyboardJS.bind( 's', function(e) {
-            socket.send("down");
+            socket.send("down down");
         }, function(e) {
-            socket.send("down-release");
+            socket.send("down release");
         });
 
 </script>
