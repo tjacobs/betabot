@@ -16,10 +16,10 @@ from threading import Thread
 parser = argparse.ArgumentParser(description='robot control')
 #parser.add_argument('camera_id')
 parser.add_argument('--video_device_number', default=0, type=int)
-parser.add_argument('--kbps', default=350, type=int)
-parser.add_argument('--brightness', default=75, type=int, help='camera brightness')
+parser.add_argument('--kbps', default=50, type=int)
+parser.add_argument('--brightness', default=80, type=int, help='camera brightness')
 parser.add_argument('--contrast', default=75, type=int, help='camera contrast')
-parser.add_argument('--saturation', default=75, type=int, help='camera saturation')
+parser.add_argument('--saturation', default=70, type=int, help='camera saturation')
 parser.add_argument('--rotate180', default=False, type=bool, help='rotate image 180 degrees')
 parser.add_argument('--env', default="prod")
 parser.add_argument('--screen-capture', dest='screen_capture', action='store_true') # tells windows to pull from different camera, this should just be replaced with a video input device option
@@ -144,96 +144,19 @@ def handleLinux(deviceNumber, videoPort, audioPort):
         rotationOption = ""
 
     # video with audio
-    videoCommandLine = '/usr/local/bin/ffmpeg -loglevel quiet -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video%s %s -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (deviceAnswer, rotationOption, args.kbps, server, videoPort)
-    audioCommandLine = '/usr/local/bin/ffmpeg -loglevel quiet -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://%s:%s/hello/640/480/' % (server, audioPort)
+    videoCommandLine = '/usr/local/bin/ffmpeg -loglevel error -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video%s %s -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (deviceAnswer, rotationOption, args.kbps, server, videoPort)
+    videoCommandLine = '/usr/local/bin/ffmpeg -loglevel error -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video%s %s -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (deviceAnswer, rotationOption, args.kbps, server, videoPort)
+    audioCommandLine = '/usr/local/bin/ffmpeg -loglevel error -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://%s:%s/hello/640/480/' % (server, audioPort)
 
  #   print(videoCommandLine)
  #   print(audioCommandLine)
     
     videoProcess = runFfmpeg(videoCommandLine)
-    audioProcess = runFfmpeg(audioCommandLine)
+    audioProcess = None #runFfmpeg(audioCommandLine)
 	
     return {'video_process': videoProcess, 'audio_process': audioProcess, 'device_answer': deviceAnswer}
 
 
-def handleWindows(deviceNumber, videoPort):
-
-    p = subprocess.Popen(["ffmpeg", "-list_devices", "true", "-f", "dshow", "-i", "dummy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    
-    out, err = p.communicate() 
-    lines = err.split('\n')
-    
-    count = 0
-    
-    devices = []
-    
-    for line in lines:    
-        #if "]  \"" in line:
-        #    print "line:", line
-        m = re.search('.*\\"(.*)\\"', line)
-        if m != None:
-            #print line
-            if m.group(1)[0:1] != '@':
-                print(count, m.group(1))
-                devices.append(m.group(1))
-                count += 1
- 
-    if deviceNumber is None:
-        deviceAnswer = input("Enter the number of the camera device for your robot from the list above: ")
-    else:
-        deviceAnswer = str(deviceNumber)
-
-    device = devices[int(deviceAnswer)]
-    commandLine = 'ffmpeg -s 640x480 -f dshow -i video="%s" -f mpegts -codec:v mpeg1video -b 200k -r 20 http://%s:%s/hello/640/480/' % (device, server, videoPort)
-    
-    process = runFfmpeg(commandLine)
-
-    return {'process': process, 'device_answer': device}
-    
-
-def handleWindowsScreenCapture(deviceNumber, videoPort, audioPort):
-
-    p = subprocess.Popen(["ffmpeg", "-list_devices", "true", "-f", "dshow", "-i", "dummy"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    
-    lines = err.split('\n')
-    
-    count = 0
-    devices = []
-    
-    for line in lines:
-    
-        #if "]  \"" in line:
-        #    print "line:", line    
-        m = re.search('.*\\"(.*)\\"', line)
-        if m != None:
-            #print line
-            if m.group(1)[0:1] != '@':
-                print(count, m.group(1))
-                devices.append(m.group(1))
-                count += 1
-    
-    if deviceNumber is None:
-        deviceAnswer = input("Enter the number of the camera device for your robot from the list above: ")
-    else:
-        deviceAnswer = str(deviceNumber)
-    
-    device = devices[int(deviceAnswer)]
-
-    #commandLine = 'ffmpeg -f dshow -i video="screen-capture-recorder" -vf "scale=640:480" -f mpeg1video -b 50k -r 20 http://%s:%s/hello/640/480/' % (server, videoPort)
-
-    videoCommandLine = 'ffmpeg -f dshow -i video="screen-capture-recorder" -framerate 25 -video_size 640x480 -f mpegts -codec:v mpeg1video -s 640x480 -b:v %dk -bf 0 -muxdelay 0.001 http://%s:%s/hello/640/480/' % (args.kbps, server, videoPort)
-    audioCommandLine = 'ffmpeg -f dshow -ar 44100 -ac 1 -i audio="%s" -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://%s:%s/hello/640/480/' % (args.audio_input_device, server, audioPort)
-    
-    print("video command line:", videoCommandLine)
-    print("audio command line:", audioCommandLine)
-    
-    videoProcess = runFfmpeg(videoCommandLine)
-    audioProcess = runFfmpeg(audioCommandLine)
-    
-    # todo: need to have an audio process not just another video process
-    return {'video_process': videoProcess, 'audio_process': audioProcess, 'device_answer': device}
-    
 def snapShot(operatingSystem, inputDeviceID, filename="snapshot.jpg"):    
 
     try:
@@ -296,12 +219,12 @@ def main():
             streamProcessDict['video_process'].kill()
             streamProcessDict['audio_process'].kill()
 
-        print("Starting process to get device result") # this should be a separate function so you don't have to do this
+#        print("Starting process to get device result") # this should be a separate function so you don't have to do this
         streamProcessDict = startVideoCapture()
         inputDeviceID = streamProcessDict['device_answer']
-        print("stopping video capture")
+#        print("stopping video capture")
         streamProcessDict['video_process'].kill()
-        streamProcessDict['audio_process'].kill()
+        if( streamProcessDict['audio_process'] ): streamProcessDict['audio_process'].kill()
 
         # Start
         streamProcessDict = startVideoCapture()
@@ -319,7 +242,7 @@ def main():
                                                     'camera_id':cameraIDAnswer})
             
             if count % 30 == 0:
-                print("Sending status about ffmpeg")
+#                print("Sending status about ffmpeg")
                 ffmpegProcessExists = True #streamProcessDict['video_process'].poll() is None
                 socketIO.emit('send_video_status', {'send_video_process_exists': True,
                                                     'ffmpeg_process_exists': ffmpegProcessExists,
@@ -327,7 +250,7 @@ def main():
 
             # If the video stream process dies, restart it
             if (streamProcessDict['video_process'].poll() is not None) or \
-               (streamProcessDict['audio_process'].poll() is not None):
+               ((streamProcessDict['audio_process'] and streamProcessDict['audio_process'].poll() is not None)):
 
                 # Make sure audio and video ffmpeg processes are killed
                 streamProcessDict['video_process'].kill()

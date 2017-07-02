@@ -1,8 +1,19 @@
 #!/bin/bash
 
-#sudo modprobe bcm2835-v4l2
+# Wake up /dev/video0
+sudo modprobe bcm2835-v4l2
+sleep 1
 
-#sudo killall -9 ffmpeg
+# Stop
+sudo killall -9 ffmpeg
 
-ffmpeg -loglevel error -f v4l2 -framerate 30 -video_size 640x480 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 -b:v 100k -bf 0 -muxdelay 0.001 http://meetzippy.com:8081/supersecret
+# Sound and vision
+ffmpeg -loglevel error -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -f v4l2 -framerate 30 -video_size 640x480 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 -b:v 20k -bf 0 -muxdelay 0.001 http://meetzippy.com:8081/supersecret &
+
+# Vision only
+#ffmpeg -loglevel error -f v4l2 -framerate 30 -video_size 640x480 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 -b:v 100k -bf 0 -muxdelay 0.001 http://meetzippy.com:8081/supersecret &
+
+# Sound only
+#ffmpeg -loglevel error -f alsa -ar 44100 -ac 1 -i hw:1 -f mpegts -codec:a mp2 -b:a 32k -muxdelay 0.001 http://meetzippy.com:8081/supersecret &
+
 
