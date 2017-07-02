@@ -14,27 +14,36 @@
 </head>
 <body>
 
-       <script type="text/javascript">
+<script type="text/javascript">
 
-        var oldmx;
-        var oldmy;
-        var mx;
-        var my;
+      var oldmx;
+      var oldmy;
+      var mx;
+      var my;
 
-      setInterval( function() {
+      /*setInterval( function() {
         if( mx != oldmx || my != oldmy ) {
             socket.send("x " + mx);
             socket.send("y " + my);
             oldmx = mx;
             oldmy = my;
         }
-      }, 100);
+      }, 10); */
+
+      $('html').mousedown(function(event){
+            socket.send("left_mouse down");
+	    console.log( "LEFT MOUSE" )
+      });
+      $('html').mouseup(function(event){
+            socket.send("left_mouse up");
+      });
 
       $('html').mousemove(function(event){
-
-              mx = Math.round(event.pageX/1.0);
-              my = Math.round(event.pageY/1.0);
-            });
+            mx = Math.round(event.pageX/1.0);
+            my = Math.round(event.pageY/1.0);
+            socket.send("x " + mx);
+            socket.send("y " + my);
+      });
 
       var socket = null;
       var isopen = false;
@@ -44,11 +53,8 @@
       }
 
       var load = function() {
-
         socket = new WebSocket("ws://meetzippy.com:8080");
         socket.binaryType = "arraybuffer";
-
-
 
         socket.onopen = function() {
            console.log("Connected");
@@ -74,51 +80,38 @@
            isopen = false;
         }
       };
-
-
-
-        keyboardJS.bind( 'shift', function(e) {
-                    socket.send("fast");
-                    console.log('fast');
+      
+      keyboardJS.bind( 'shift', function(e) {
+             socket.send("fast");
         }, function(e) {
-                    socket.send("fast-release");
+             socket.send("fast-release");
         });
 
-        keyboardJS.bind( 'a', function(e) {
-                    socket.send("left");
-                    console.log('left');
+      keyboardJS.bind( 'a', function(e) {
+            socket.send("left");
         }, function(e) {
-                    socket.send("left-release");
-            console.log('');
+            socket.send("left-release");
         });
-        keyboardJS.bind( 'w', function(e) {
-                   if( !socket ) {
-                     load();
-                   }
-                    socket.send("up");
-                    console.log('up');
+      keyboardJS.bind( 'w', function(e) {
+            if( !socket ) {
+               load();
+            }
+            socket.send("up");
         }, function(e) {
-                    socket.send("up-release");
-            console.log('');
+            socket.send("up-release");
         });
-                keyboardJS.bind( 'd', function(e) {
-                    socket.send("right");
-                          console.log('right');
+      keyboardJS.bind( 'd', function(e) {
+            socket.send("right");
         }, function(e) {
-                    socket.send("right-release");
-            console.log('');
+            socket.send("right-release");
         });
-                keyboardJS.bind( 's', function(e) {
-                    socket.send("down");
-                    console.log('down');
+      keyboardJS.bind( 's', function(e) {
+            socket.send("down");
         }, function(e) {
-                    socket.send("down-release");
-            console.log('');
+            socket.send("down-release");
         });
 
-        </script>
-
-
+</script>
 
 	<canvas id="video-canvas" style="width:800px;height:600px"></canvas>
 	<script type="text/javascript" src="jsmpeg.min.js"></script>
