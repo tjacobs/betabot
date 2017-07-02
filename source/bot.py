@@ -15,8 +15,9 @@ import motors as motorsModule
 import walk
 import sensors
 import remote
-import letsrobot_controller
-import letsrobot_video
+
+#import letsrobot_controller
+#import letsrobot_video
 
 # What shall we enable?
 ENABLE_KEYS 		= True
@@ -81,39 +82,57 @@ def main():
 		old_remote_x = remote.x
 		old_remote_y = remote.y
 
+		FORWARD_SPEED = 20.0
+		BACKWARD_SPEED = 20.0
+		TURNING_SPEED = 70.0
+		MOVEMENT_SPEED = 100.0
+
 		# Change motor speeds for turning left right
-		TURNING_SPEED = 150.0
 		speed_left -= diff_x * TURNING_SPEED / 100.0
 		speed_right += diff_x * TURNING_SPEED / 100.0
 
+		# Remote keyboard commands
+		if remote.up:
+			speed_left = speed_left - FORWARD_SPEED
+			speed_right = speed_right - FORWARD_SPEED
+		if remote.down:
+			speed_left = speed_left + BACKWARD_SPEED
+			speed_right = speed_right + BACKWARD_SPEED
+		if remote.left:
+			speed_left -= 20.0
+			speed_right += 20.0
+		if remote.right:
+			speed_left += 10.0
+			speed_right -= 20.0
+
 		# Go forward backward on mouse y
-		MOVEMENT_SPEED = 150.0
 		speed_left += diff_y * MOVEMENT_SPEED / 100.0
 		speed_right += diff_y * MOVEMENT_SPEED / 100.0
 
 		# Go foward backward on clicks
-		FORWARD_SPEED = 150.0
-		BACKWARD_SPEED = 150.0
 		if remote.left_mouse_down:
-			speed_left = speed_left + FORWARD_SPEED
-			speed_right = speed_right + FORWARD_SPEED
-		if remote.right_mouse_down:
-			speed_left = speed_left - BACKWARD_SPEED
-			speed_right = speed_right - BACKWARD_SPEED
-
-		# Let's Robot controller
-		if letsrobot_controller.forward:
 			speed_left = speed_left - FORWARD_SPEED
 			speed_right = speed_right - FORWARD_SPEED
-		if letsrobot_controller.backward:
+		if remote.right_mouse_down:
 			speed_left = speed_left + BACKWARD_SPEED
 			speed_right = speed_right + BACKWARD_SPEED
-		if letsrobot_controller.left:
-			speed_left += 1.0 * TURNING_SPEED / 5.0
-			speed_right -= 1.0 * TURNING_SPEED / 5.0
-		if letsrobot_controller.right:
-			speed_left -= 1.0 * TURNING_SPEED / 5.0
-			speed_right += 1.0 * TURNING_SPEED / 5.0
+
+		# Let's Robot controller
+		try:
+			if letsrobot_controller.forward:
+				speed_left = speed_left - FORWARD_SPEED
+				speed_right = speed_right - FORWARD_SPEED
+			if letsrobot_controller.backward:
+				speed_left = speed_left + BACKWARD_SPEED
+				speed_right = speed_right + BACKWARD_SPEED
+			if letsrobot_controller.left:
+				speed_left += 1.0 * TURNING_SPEED / 5.0
+				speed_right -= 1.0 * TURNING_SPEED / 5.0
+			if letsrobot_controller.right:
+				speed_left -= 1.0 * TURNING_SPEED / 5.0
+				speed_right += 1.0 * TURNING_SPEED / 5.0
+		except NameError:
+			pass
 
 		# Slow down
 		speed_left = speed_left * 0.75
