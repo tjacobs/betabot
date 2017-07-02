@@ -1,0 +1,8 @@
+#!/bin/bash
+
+#sudo modprobe bcm2835-v4l2
+
+#sudo killall -9 ffmpeg
+
+ffmpeg -loglevel error -f v4l2 -framerate 30 -video_size 640x480 -i /dev/video0 -f mpegts -codec:v mpeg1video -s 640x480 -b:v 100k -bf 0 -muxdelay 0.001 http://meetzippy.com:8081/supersecret
+
