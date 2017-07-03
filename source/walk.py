@@ -101,8 +101,8 @@ def calculateMovement(currentAngles, targetAngles):
 	movements = [0.0] * (numAngles + 1)
 	Ps = [0.0] * (numAngles + 1)
 	Ds = [0.0] * (numAngles + 1)
-	P_rate = 1.0
-	D_rate = 0.1
+	P_rate = 8.0
+	D_rate = 0.0
 	for i in range(1, (numAngles+1)):
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]

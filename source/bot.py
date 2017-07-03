@@ -68,13 +68,18 @@ def main():
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current accelerometer value to see how far forward we're leaning
-		pitch = 0 #motorsModule.readIMU('ax')
+		pitch = motorsModule.readIMU('ax')
 
 		# Read current angles of motors
-		#currentAngles = functions.readCurrentAngles(magneticSensors)
+		currentAngles = functions.readCurrentAngles(magneticSensors)
+		
+		# Balance
+		targetAngles = [None, 0, 0]
+		targetAngles[1] = - pitch - 22
+		targetAngles[2] = - pitch - 22
 
 		# Run movement controller to see how fast we should set our motor speeds
-#		movement = walk.calculateMovement(currentAngles, targetAngles)
+		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Calculate difference in mouse x position
 		diff_x = remote.x - old_remote_x
@@ -99,11 +104,11 @@ def main():
 			speed_left = speed_left + BACKWARD_SPEED
 			speed_right = speed_right + BACKWARD_SPEED
 		if remote.left:
+			speed_left += 20.0
+			speed_right -= 20.0
+		if remote.right:
 			speed_left -= 20.0
 			speed_right += 20.0
-		if remote.right:
-			speed_left += 10.0
-			speed_right -= 20.0
 
 		# Go forward backward on mouse y
 		speed_left += diff_y * MOVEMENT_SPEED / 100.0
@@ -143,13 +148,13 @@ def main():
 		speed_right = functions.clamp( speed_right, -100, 100)
 
 		# Send motor commands
-		motors[1] = speed_right	#movement[1] 	 # Right motor
-		motors[2] = speed_left #movement[2] 	 # Left motor
-		motorsModule.sendMotorCommands(motors, simulator, False, True)
+		motors[1] = speed_right	+ movement[1] 	 # Right motor
+		motors[2] = speed_left  + movement[2] 	 # Left motor
+		motorsModule.sendMotorCommands(motors, simulator, False, False)
 
 		# Display balance, angles, target angles and speeds
-#		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
-#		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
+		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
+		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
 		#functions.display( "Pitch: %3d. Right, Left: Knees: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
 		#        % (pitch, 0, 0, targetAngles[3], targetAngles[4], motors[3], motors[4] ) )
 #		functions.display( "Pitch: %3d. Right, Left: Feet: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 

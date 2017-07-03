@@ -194,17 +194,17 @@ class MultiWii:
 			self.sendCMD(0, cmd, [])
 			while True:
 				header = self.ser.read()
-				if header == '$':
+				if header == b'$':
 					header = header+self.ser.read(2)
 					break
-			datalength = struct.unpack('<b', self.ser.read())[0]
-			code = struct.unpack('<b', self.ser.read())
+			datalength = struct.unpack(b'<b', self.ser.read())[0]
+			code = struct.unpack(b'<b', self.ser.read())
 			if datalength == 0:
 				return 0
 			data = self.ser.read(datalength)
 			if len( data ) == 0:
 				return 0
-			temp = struct.unpack('<'+'h'*(datalength/2),data)
+			temp = struct.unpack('<'+('h'*int(datalength/2)), data)
 			self.ser.flushInput()
 			self.ser.flushOutput()
 			elapsed = time.time() - start
