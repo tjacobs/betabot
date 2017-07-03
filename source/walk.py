@@ -101,8 +101,8 @@ def calculateMovement(currentAngles, targetAngles):
 	movements = [0.0] * (numAngles + 1)
 	Ps = [0.0] * (numAngles + 1)
 	Ds = [0.0] * (numAngles + 1)
-	P_rate = 8.0
-	D_rate = 0.0
+	P_rate = 5.0
+	D_rate = 5.0
 	for i in range(1, (numAngles+1)):
 		# Go the shortest way around
 		angle_cw =  targetAngles[i] - currentAngles[i]
@@ -110,7 +110,14 @@ def calculateMovement(currentAngles, targetAngles):
 		angleFromTarget = angle_ccw
 		if abs(angle_cw) < abs(angle_ccw):
 			angleFromTarget = angle_cw
+			
+		# Calculate difference from last time
+		angleDeriv = angleFromTarget - previousAngles[i]
+		print( "\n" + str(int(angleDeriv * 1000)) + "\n" )
+		previousAngles[i] = angleFromTarget
+		
+		# Calculate P, D
 		Ps[i] = P_rate * angleFromTarget
-		Ds[i] = D_rate * 0.0
-		movements = Ps + Ds
+		Ds[i] = D_rate * angleDeriv
+		movements[i] = Ps[i] - Ds[i]
 	return movements

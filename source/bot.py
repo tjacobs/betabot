@@ -73,24 +73,16 @@ def main():
 		# Read current angles of motors
 		currentAngles = functions.readCurrentAngles(magneticSensors)
 		
-		# Balance
-		targetAngles = [None, 0, 0]
-		targetAngles[1] = - pitch - 22
-		targetAngles[2] = - pitch - 22
-
-		# Run movement controller to see how fast we should set our motor speeds
-		movement = walk.calculateMovement(currentAngles, targetAngles)
-
 		# Calculate difference in mouse x position
 		diff_x = remote.x - old_remote_x
 		diff_y = remote.y - old_remote_y
 		old_remote_x = remote.x
 		old_remote_y = remote.y
 
-		FORWARD_SPEED = 20.0
-		BACKWARD_SPEED = 20.0
-		TURNING_SPEED = 70.0
-		MOVEMENT_SPEED = 100.0
+		FORWARD_SPEED = 15.0
+		BACKWARD_SPEED = 15.0
+		TURNING_SPEED = 5.0
+		MOVEMENT_SPEED = 5.0
 
 		# Change motor speeds for turning left right
 		speed_left -= diff_x * TURNING_SPEED / 100.0
@@ -139,13 +131,21 @@ def main():
 		except NameError:
 			pass
 
+		# Clamp
+		speed_left = functions.clamp( speed_left, -100, 100)
+		speed_right = functions.clamp( speed_right, -100, 100)
+
+		# Balance
+		targetAngles = [None, 0, 0]
+		targetAngles[1] = - pitch - 22 + speed_left/10
+		targetAngles[2] = - pitch - 22 + speed_right/10
+
 		# Slow down
 		speed_left = speed_left * 0.75
 		speed_right = speed_right * 0.75
 
-		# Clamp
-		speed_left = functions.clamp( speed_left, -100, 100)
-		speed_right = functions.clamp( speed_right, -100, 100)
+		# Run movement controller to see how fast we should set our motor speeds
+		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor commands
 		motors[1] = speed_right	+ movement[1] 	 # Right motor
