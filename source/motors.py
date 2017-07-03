@@ -12,12 +12,21 @@ def clampMotorSpeeds(motorSpeeds):
 		motorSpeeds[i] = functions.clamp(motorSpeeds[i], minSpeed, maxSpeed)
 	return motorSpeeds
 
+# Read IMU
 def readIMU(xy='ax'):
 	global board
 	if board == None:
 		return 0
 	board.getData(MultiWii.RAW_IMU)
 	return 90.0 * board.rawIMU[xy] / 500.0 # Pitch
+
+# Read battery voltage
+def readBatteryVoltage():
+	global board
+	if board == None:
+		return 0
+	board.getData(MultiWii.ANALOG)
+	return board.batteryVoltage
 
 # Init
 simulator = None

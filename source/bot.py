@@ -62,13 +62,16 @@ def main():
 	old_remote_y = 0.0
 
 	# Wait on other threads to start up
-	time.sleep(1)
+	time.sleep(0.5)
 
 	# Loop
 	while not keys or not keys.esc_key_pressed:
 
 		# Read current accelerometer value to see how far forward we're leaning
 		pitch = motorsModule.readIMU('ax')
+
+		# Read battery level
+		voltage = 0#motorsModule.readBatteryVoltage()
 
 		# Read current angles of motors
 		currentAngles = functions.readCurrentAngles(magneticSensors)
@@ -153,8 +156,8 @@ def main():
 		motorsModule.sendMotorCommands(motors, simulator, False, False)
 
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
-		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2] ) )
+		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d.    Battery: %.1f" 
+		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2], voltage ) )
 		#functions.display( "Pitch: %3d. Right, Left: Knees: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
 		#        % (pitch, 0, 0, targetAngles[3], targetAngles[4], motors[3], motors[4] ) )
 #		functions.display( "Pitch: %3d. Right, Left: Feet: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
