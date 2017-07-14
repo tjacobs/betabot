@@ -14,10 +14,15 @@ import functions
 import motors as motorsModule
 import walk
 import sensors
-import remote
 
-#import letsrobot_controller
-#import letsrobot_video
+#import remote
+
+import letsrobot_controller
+import letsrobot_video
+
+# OSC
+#from pythonosc import osc_message_builder
+#from pythonosc import udp_client
 
 # What shall we enable?
 ENABLE_KEYS 		= True
@@ -63,6 +68,11 @@ def main():
 
 	# Wait on other threads to start up
 	time.sleep(0.5)
+	
+	# Send OSC commands
+#	ip = "192.168.4.1"
+#	port = 2222
+#	client = udp_client.SimpleUDPClient(ip, port)
 
 	# Loop
 	while not keys or not keys.esc_key_pressed:
@@ -77,45 +87,53 @@ def main():
 		currentAngles = functions.readCurrentAngles(magneticSensors)
 		
 		# Calculate difference in mouse x position
-		diff_x = remote.x - old_remote_x
-		diff_y = remote.y - old_remote_y
-		old_remote_x = remote.x
-		old_remote_y = remote.y
+		try:
+			diff_x = remote.x - old_remote_x
+			diff_y = remote.y - old_remote_y
+			old_remote_x = remote.x
+			old_remote_y = remote.y
+		except NameError:
+			pass
 
-		FORWARD_SPEED = 15.0
-		BACKWARD_SPEED = 15.0
-		TURNING_SPEED = 5.0
-		MOVEMENT_SPEED = 5.0
+		FORWARD_SPEED = 2.0
+		BACKWARD_SPEED = 2.0
+		TURNING_SPEED = 4.0
+		MOVEMENT_SPEED = 4.0
 
-		# Change motor speeds for turning left right
-		speed_left -= diff_x * TURNING_SPEED / 100.0
-		speed_right += diff_x * TURNING_SPEED / 100.0
+		# Remote
+		try:
+			# Change motor speeds for turning left right
+			speed_left -= diff_x * TURNING_SPEED / 100.0
+			speed_right += diff_x * TURNING_SPEED / 100.0
 
-		# Remote keyboard commands
-		if remote.up:
-			speed_left = speed_left - FORWARD_SPEED
-			speed_right = speed_right - FORWARD_SPEED
-		if remote.down:
-			speed_left = speed_left + BACKWARD_SPEED
-			speed_right = speed_right + BACKWARD_SPEED
-		if remote.left:
-			speed_left += 20.0
-			speed_right -= 20.0
-		if remote.right:
-			speed_left -= 20.0
-			speed_right += 20.0
+			# Remote keyboard commands
+			if remote.up:
+				speed_left = speed_left - FORWARD_SPEED
+				speed_right = speed_right - FORWARD_SPEED
+			if remote.down:
+				speed_left = speed_left + BACKWARD_SPEED
+				speed_right = speed_right + BACKWARD_SPEED
+			if remote.left:
+				speed_left += 20.0
+				speed_right -= 20.0
+			if remote.right:
+				speed_left -= 20.0
+				speed_right += 20.0
+			
+			# Go forward backward on mouse y
+			speed_left += diff_y * MOVEMENT_SPEED / 100.0
+			speed_right += diff_y * MOVEMENT_SPEED / 100.0
+			
+			# Go foward backward on clicks
+			if remote.left_mouse_down:
+				speed_left = speed_left - FORWARD_SPEED
+				speed_right = speed_right - FORWARD_SPEED
+			if remote.right_mouse_down:
+				speed_left = speed_left + BACKWARD_SPEED
+				speed_right = speed_right + BACKWARD_SPEED
 
-		# Go forward backward on mouse y
-		speed_left += diff_y * MOVEMENT_SPEED / 100.0
-		speed_right += diff_y * MOVEMENT_SPEED / 100.0
-
-		# Go foward backward on clicks
-		if remote.left_mouse_down:
-			speed_left = speed_left - FORWARD_SPEED
-			speed_right = speed_right - FORWARD_SPEED
-		if remote.right_mouse_down:
-			speed_left = speed_left + BACKWARD_SPEED
-			speed_right = speed_right + BACKWARD_SPEED
+		except NameError:
+			pass
 
 		# Let's Robot controller
 		try:
@@ -138,30 +156,37 @@ def main():
 		speed_left = functions.clamp( speed_left, -100, 100)
 		speed_right = functions.clamp( speed_right, -100, 100)
 
+		# Send to BROBOT
+#		client.send_message("/1/fader1", 0.5 + speed_left/400.0 + speed_right/400.0)
+#		client.send_message("/1/fader2", 0.5 + speed_left/500.0 - speed_right/500.0)
+
 		# Balance
 		targetAngles = [None, 0, 0]
-		targetAngles[1] = - pitch - 22 + speed_left/10
-		targetAngles[2] = - pitch - 22 + speed_right/10
-
-		# Slow down
-		speed_left = speed_left * 0.75
-		speed_right = speed_right * 0.75
+		targetAngles[1] = - pitch - 22 - speed_left/2
+		targetAngles[2] = - pitch - 22 - speed_right/2
 
 		# Run movement controller to see how fast we should set our motor speeds
 		movement = walk.calculateMovement(currentAngles, targetAngles)
 
 		# Send motor commands
-		motors[1] = speed_right	+ movement[1] 	 # Right motor
-		motors[2] = speed_left  + movement[2] 	 # Left motor
-		motorsModule.sendMotorCommands(motors, simulator, False, False)
+		motors[1] = 0#movement[1] 	 # Right motor
+		motors[2] = 0#movement[2] 	 # Left motor
+		motors[1] = speed_right/5	     # Right motor
+		motors[2] = speed_left/5   	 # Left motor
+		motorsModule.sendMotorCommands(motors, simulator, False, True)
 
 		# Display balance, angles, target angles and speeds
-		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d.    Battery: %.1f" 
-		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2], voltage ) )
+#		functions.display( "Pitch: %3d. Right, Left: Hips: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d.  %3d %3d" 
+#		        % (pitch, currentAngles[1], currentAngles[2], targetAngles[1], targetAngles[2], motors[1], motors[2], speed_left, speed_right ) )
 		#functions.display( "Pitch: %3d. Right, Left: Knees: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
 		#        % (pitch, 0, 0, targetAngles[3], targetAngles[4], motors[3], motors[4] ) )
 #		functions.display( "Pitch: %3d. Right, Left: Feet: %3d, %3d, Targets: %3d, %3d, Speeds: %3d, %3d" 
 #		        % (pitch, 0, 0, targetAngles[5], targetAngles[6], motors[5], motors[6] ) )
+
+		# Slow down
+		speed_left = speed_left * 0.98
+		speed_right = speed_right * 0.98
+
 
 	# Stop motors
 	motorsModule.stopMotors()
