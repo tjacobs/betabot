@@ -3,7 +3,7 @@
 # Start editing
 if [ -d "/home/pi/betabot" ]; then
 	cd /home/pi/betabot
-	geany source/bot.py source/walk.py source/functions.py source/motors.py source/remote.py &
+	geany source/bot.py source/walk.py source/functions.py source/motors.py source/remote.py source/bot.py &
 else
 	/Applications/Sublime\ Text.app/Contents/MacOS/Sublime\ Text . 2> /dev/null &
 fi
