@@ -26,6 +26,9 @@ sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
 sudo apt-get install -y dfu-util
 sudo apt-get install -y git
+sudo apt-get install -y python-visual
+sudo apt-get install -y screen
+
 git config --global push.default simple
 git config --global user.name "Betabot"
 git config --global user.email "hatsmagee@gmail.com"
