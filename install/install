@@ -27,6 +27,9 @@ sudo apt-get install -y python-opencv
 sudo apt-get install -y dfu-util
 sudo apt-get install -y flite
 sudo apt-get install -y git
+sudo apt-get install -y python-visual
+sudo apt-get install -y screen
+
 git config --global push.default simple
 git config --global user.name "Betabot"
 git config --global user.email "hatsmagee@gmail.com"
@@ -45,6 +48,7 @@ sudo pip3 install -q six
 sudo pip3 install -q six --upgrade
 sudo pip3 install -q asyncio
 sudo pip3 install -U socketIO-client
+sudo pip3 install -q python-osc
 echo "Done."
 
 # Install utilities and startup

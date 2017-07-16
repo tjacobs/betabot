@@ -1,4 +1,4 @@
-import serial, time, struct
+import serial, time, struct, math
 
 class MultiWii:
 
@@ -45,6 +45,8 @@ class MultiWii:
 		self.rcChannels = {'roll':0,'pitch':0,'yaw':0,'throttle':0,'elapsed':0,'timestamp':0}
 		self.rawIMU = {'ax':0,'ay':0,'az':0,'gx':0,'gy':0,'gz':0,'mx':0,'my':0,'mz':0,'elapsed':0,'timestamp':0}
 		self.motor = {'m1':0,'m2':0,'m3':0,'m4':0,'elapsed':0,'timestamp':0}
+		self.batteryVoltage = 0
+		self.batteryVoltageSum = 0
 		self.attitude = {'angx':0,'angy':0,'heading':0,'elapsed':0,'timestamp':0}
 		self.altitude = {'estalt':0,'vario':0,'elapsed':0,'timestamp':0}
 		self.message = {'angx':0,'angy':0,'heading':0,'roll':0,'pitch':0,'yaw':0,'throttle':0,'elapsed':0,'timestamp':0}
@@ -194,17 +196,26 @@ class MultiWii:
 			self.sendCMD(0, cmd, [])
 			while True:
 				header = self.ser.read()
-				if header == '$':
+				if header == b'$':
 					header = header+self.ser.read(2)
 					break
-			datalength = struct.unpack('<b', self.ser.read())[0]
-			code = struct.unpack('<b', self.ser.read())
+			datalength = struct.unpack(b'<b', self.ser.read())[0]
+			code = struct.unpack(b'<b', self.ser.read())
 			if datalength == 0:
 				return 0
 			data = self.ser.read(datalength)
 			if len( data ) == 0:
 				return 0
-			temp = struct.unpack('<'+'h'*(datalength/2),data)
+				
+#			print( "\n" + str(cmd) )
+#			print( len( data ) )
+#			print( datalength )
+#			print( int(datalength/2) )
+			
+			if cmd == MultiWii.ANALOG:
+				temp = struct.unpack('<b'+('h'*int(datalength/2)), data)
+			else:
+				temp = struct.unpack('<'+('h'*int(datalength/2)), data)
 			self.ser.flushInput()
 			self.ser.flushOutput()
 			elapsed = time.time() - start
@@ -250,6 +261,10 @@ class MultiWii:
 				self.motor['elapsed']="%0.3f" % (elapsed,)
 				self.motor['timestamp']="%0.2f" % (time.time(),)
 				return self.motor
+			elif cmd == MultiWii.ANALOG:
+				self.batteryVoltage=float(temp[0])
+				self.batteryVoltageSum=float(temp[1])
+				return self.batteryVoltage
 			elif cmd == MultiWii.PID:
 				dataPID=[]
 				if len(temp)>1:

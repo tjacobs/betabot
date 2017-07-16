@@ -90,9 +90,3 @@ def video_function():
 # Start thread
 thread = Thread(target=video_function, args=())
 thread.start()    
-
-#try:
-#	import thread
-#	thread.start_new_thread( remote_listener, () )
-#except:
-#	print( "Error: Cannot start remote listener. Please install python threads." )
