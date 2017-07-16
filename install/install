@@ -31,6 +31,8 @@ sudo apt-get install -y python-opencv
 sudo apt-get install -y dfu-util
 sudo apt-get install -y git
 sudo apt-get install -y geany
+sudo apt-get install -y python-visual
+sudo apt-get install -y screen
 sudo apt-get -y autoremove
 
 git config --global push.default simple
@@ -53,6 +55,7 @@ sudo pip install -q six --upgrade
 sudo pip install -q asyncio
 sudo pip install -U socketIO-client
 sudo pip install -q websockets
+sudo pip3 install -q python-osc
 echo "Done."
 
 # Install utilities and startup

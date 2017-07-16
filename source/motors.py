@@ -93,16 +93,20 @@ def stopMotors():
 	except:
 		pass
 
+go = False
 # Send the motor speeds to the motors, and enable the motors if any have any speed
 def sendMotorCommands(motorSpeedsIn, simulator=None, displayChannels=False, displayCommands=False):
-	global goTime, board, motorEnablePin
+	global goTime, board, motorEnablePin, go
 	motorSpeeds = [0.0] * 9
+	
 	
 	# Any motor speeds?
 	for i in range(len(motorSpeedsIn)):
 		motorSpeeds[i] = motorSpeedsIn[i]
-		if motorSpeeds[i] > 1 or motorSpeeds[i] < -1:
+		if motorSpeeds[i] > 2 or motorSpeeds[i] < -2:
 			# Set used time as now
+#			if go == False:
+#				time.sleep( 2 )
 			go = True
 			goTime = time.time()*1000
 
