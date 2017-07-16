@@ -2,7 +2,7 @@
 
 echo "Stopping Betabot."
 # Kill all other old instances of start other than ourselves
-for PID in `ps ax | grep -E '[s]tart|[v]ideo|[v]ision|[g]st|[r]aspivid' | awk ' { print $1;}'`; do
+for PID in `ps ax | grep -E '[s]tart' | awk ' { print $1;}'`; do
 	echo $PID
 	echo $BASHPID
 	if [ $PID != $BASHPID ] ; then
