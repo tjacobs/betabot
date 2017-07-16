@@ -25,6 +25,7 @@ echo "Installing requirements."
 sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
 sudo apt-get install -y dfu-util
+sudo apt-get install -y flite
 sudo apt-get install -y git
 git config --global push.default simple
 git config --global user.name "Betabot"
