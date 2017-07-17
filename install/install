@@ -28,6 +28,8 @@ sudo apt-get install -y dfu-util
 sudo apt-get install -y git
 sudo apt-get install -y python-visual
 sudo apt-get install -y screen
+sudo apt-get install -y eog
+sudo apt-get install -y python-dev
 
 git config --global push.default simple
 git config --global user.name "Betabot"

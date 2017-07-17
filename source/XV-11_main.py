@@ -9,7 +9,7 @@ from math import pi,cos,sin
 
 import matplotlib.pyplot as pyplot
 
-com_port  = '/dev/cu.usbmodem1411' ##change the COM port if required, check in Arduino IDE
+com_port  = '/dev/serial0' #cu.usbmodem1411' ##change the COM port if required, check in Arduino IDE
 baud_rate = 115200
 
 
@@ -47,7 +47,7 @@ def minimum_value(x):
 
 ##begin
 ser = serial.Serial(com_port,baud_rate)
-print(ser.name) 
+print((ser.name)) 
 
 f = open('coordinates.txt','w')
 f.write("angle (deg), distance (mm)\n")
@@ -116,7 +116,7 @@ while True:
         quad4 = minimum_value(dist_mm_store[135:180])
 
         #print (dist_mm_store[0:44])
-        print (quad1,quad2,quad3,quad4)
+        print((quad1,quad2,quad3,quad4))
 
         ##output to file for debugging later. only output good values, remove the junk
         if quad1 != 6001 and quad2 != 6001 and quad3 != 6001 and quad4 != 6001:
@@ -127,7 +127,7 @@ while True:
         plot_finalize()
         f.close()
         quad.close()
-        print 'interrupted!'
+        print('interrupted!')
 
 
 
