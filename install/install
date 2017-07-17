@@ -22,37 +22,48 @@ fi
 # Install
 echo ""
 echo "Installing requirements."
+
+# You may need to put pip here to have it found when used with sudo
+#sudo ln -s /home/tom/anaconda3/bin/pip /usr/bin/pip
+
 sudo apt-get install -y python-picamera python3-picamera
 sudo apt-get install -y python-opencv
 sudo apt-get install -y dfu-util
 sudo apt-get install -y flite
 sudo apt-get install -y git
+sudo apt-get install -y geany
 sudo apt-get install -y python-visual
 sudo apt-get install -y screen
+sudo apt-get -y autoremove
 
 git config --global push.default simple
 git config --global user.name "Betabot"
 git config --global user.email "hatsmagee@gmail.com"
 
+# Ubuntu has start and stop commands that just break the system. Great. So let's move them away.
+sudo mv /sbin/stop /sbin/bad_start
+sudo mv /sbin/stop /sbin/bad_stop
+
 echo "Installing python modules."
 sudo pip install -q keyboard
 sudo pip install -q picamera[array]
 sudo pip install -q python_Xlib
+sudo pip install -q python_Xlib --upgrade
 sudo pip install -q pynput
-sudo pip3 install -q keyboard
-sudo pip3 install -q pyserial
-sudo pip3 install -q pynput
-sudo pip3 install -q python_Xlib
-sudo pip3 install -q python_Xlib --upgrade
-sudo pip3 install -q six
-sudo pip3 install -q six --upgrade
-sudo pip3 install -q asyncio
-sudo pip3 install -U socketIO-client
+sudo pip install -q pyserial
+sudo pip install -q six
+sudo pip install -q six --upgrade
+sudo pip install -q asyncio
+sudo pip install -U socketIO-client
+sudo pip install -q websockets
 sudo pip3 install -q python-osc
 echo "Done."
 
 # Install utilities and startup
 ./install_utilities
+
+# Install ffmpeg
+./install_ffmpeg
 
 # Clean up stuff we don't need
 ./install_cleanup
