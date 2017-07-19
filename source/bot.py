@@ -184,8 +184,8 @@ def main():
 #		        % (pitch, 0, 0, targetAngles[5], targetAngles[6], motors[5], motors[6] ) )
 
 		# Slow down
-		speed_left = speed_left * 0.98
-		speed_right = speed_right * 0.98
+		speed_left = speed_left * 0.94
+		speed_right = speed_right * 0.94
 
 
 	# Stop motors
