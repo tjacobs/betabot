@@ -34,6 +34,7 @@ server = "runmyrobot.com"
 
 # Enable raspicam driver in case a raspicam is being used
 os.system("sudo modprobe bcm2835-v4l2")
+#os.system("uv4l --driver raspicam --auto-video_nr --extension-presence=1")
 
 if args.env == "dev":
     print("using dev port 8122")
@@ -97,8 +98,10 @@ def getAudioPort():
 
 def runFfmpeg(commandLine):
 #    print(commandLine)
-    ffmpegProcess = subprocess.Popen(shlex.split(commandLine))
-#    print("command started")
+    
+    my_env = os.environ.copy()
+    my_env["LD_PRELOAD"] = "/usr/lib/uv4l/uv4lext/armv6l/libuv4lext.so"
+    ffmpegProcess = subprocess.Popen(shlex.split(commandLine), env=my_env)
     return ffmpegProcess
     
 def handleDarwin(deviceNumber, videoPort, audioPort):
