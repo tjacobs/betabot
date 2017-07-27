@@ -5,7 +5,7 @@
 
 import thread, time, sys, traceback, math
 
-com_port = "COM30" # example: 5 == "COM6" == "/dev/tty5"
+com_port = "/dev/serial0" # example: 5 == "COM6" == "/dev/tty5"
 baudrate = 115200
 visualization = True
 
