@@ -43,7 +43,7 @@ git config --global user.name "Betabot"
 git config --global user.email "hatsmagee@gmail.com"
 
 # Ubuntu has start and stop commands that just break the system. Great. So let's move them away.
-sudo mv /sbin/stop /sbin/bad_start
+sudo mv /sbin/start /sbin/bad_start
 sudo mv /sbin/stop /sbin/bad_stop
 
 echo "Installing python modules."
@@ -58,7 +58,7 @@ sudo pip install -q six --upgrade
 sudo pip install -q asyncio
 sudo pip install -U socketIO-client
 sudo pip install -q websockets
-sudo pip3 install -q python-osc
+sudo pip install -q python-osc
 echo "Done."
 
 # Install utilities and startup

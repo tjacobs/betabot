@@ -3,6 +3,7 @@
 import time
 import sys
 import functions
+import math
 
 # Motor speeds can go from -100 to 100
 def clampMotorSpeeds(motorSpeeds):
@@ -34,22 +35,24 @@ motorEnablePin = 18 # Broadcom 18 = pin 12, 6 from the top corner on the outside
 goTime = 0
 MultiWii = None
 board = None
+sineOffset = 0
 try:
 	from controller_board import MultiWii
 except:
+	print("ERROR initing")
 	pass
 
 # Init motors
 def initMotors():
 	global board
 	try:
-		board = MultiWii("/dev/ttyUSB0")
+		board = MultiWii("/dev/ttyACM1")
 	except:
 		try:
-			board = MultiWii("/dev/ttyACM0")
+			board = MultiWii("/dev/ttyUSB0")
 		except:
 			try:
-				board = MultiWii("/dev/ttyACM1")
+				board = MultiWii("/dev/ttyACM0")
 			except:
 				print( "\nError: Cannot access USB motors." )
 				sys.stdout.flush()
@@ -74,8 +77,8 @@ def initMotors():
 			sys.stdout.write("\n" )
 
 	except:
-#		print( "Error: Cannot access GPIO." )
-#		print( sys.exc_info() )
+		print( "Error: Cannot access GPIO." )
+		print( sys.exc_info() )
 		sys.stdout.flush()
 
 def stopMotors():
@@ -96,7 +99,7 @@ def stopMotors():
 go = False
 # Send the motor speeds to the motors, and enable the motors if any have any speed
 def sendMotorCommands(motorSpeedsIn, simulator=None, displayChannels=False, displayCommands=False):
-	global goTime, board, motorEnablePin, go
+	global goTime, board, motorEnablePin, go, sineOffset
 	motorSpeeds = [0.0] * 9
 	
 	
